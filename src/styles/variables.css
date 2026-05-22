@@ -1,42 +1,18 @@
 :root {
-    --bg: #020202;
-    --surface: transparent;
-    --text: #ffffff;
-    --accent: #40B5E5;
-    --accent-dark: #0077b6;
-    --muted: #888888;
-    --border: rgba(255,255,255,0.05);
-    --modal-bg: rgba(0,0,0,0.95);
-    --modal-panel: #0a0a0a;
-    --font-display: 'Syncopate', sans-serif;
-    --font-body: 'Satoshi', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-    --nav-text: #ffffff;
-    --nav-logo-filter: none;
-    --logo-filter: none;
-    --cta-bg: #ffffff;
-    --cta-text: #000000;
-    --op-card-ratio: 16 / 9;
-    --op-card-ratio-num: 1.777778;
-    --op-card-max-w: 1200px;
-    --op-nav-blur-height: clamp(62px, 8vh, 86px);
-    --op-nav-blur-strength: 10px;
-}
+        --bg: #020202; --surface: transparent; --text: #ffffff; 
+        --accent: #40B5E5; --accent-dark: #0077b6;
+        --muted: #888888; --border: rgba(255,255,255,0.05);
+        --modal-bg: rgba(0,0,0,0.95); --modal-panel: #0a0a0a;
+        --font-display: 'Syncopate', sans-serif; --font-body: 'Satoshi', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+        --nav-text: #ffffff; --nav-logo-filter: none; --cta-bg: #ffffff; --cta-text: #000000;
+        --op-card-ratio: 16 / 9; --op-card-ratio-num: 1.777778; --op-card-max-w: 1200px;
+    }
+    [data-theme="light"], .nav-inverted {
+        --bg: #f4f4f5; --surface: #ffffff; --text: #050505; 
+        --accent: #40B5E5; --accent-dark: #005f8e;
+        --muted: #666666; --border: rgba(0,0,0,0.1);
+        --modal-bg: rgba(244,244,245,0.95); --modal-panel: #ffffff;
+        --nav-text: #050505; --nav-logo-filter: invert(1); --cta-bg: #050505; --cta-text: #ffffff;
+    }
 
-[data-theme="light"],
-.nav-inverted {
-    --bg: #f4f4f5;
-    --surface: #ffffff;
-    --text: #050505;
-    --accent: #40B5E5;
-    --accent-dark: #005f8e;
-    --muted: #666666;
-    --border: rgba(0,0,0,0.1);
-    --modal-bg: rgba(244,244,245,0.95);
-    --modal-panel: #ffffff;
-    --nav-text: #050505;
-    --nav-logo-filter: invert(1);
-    --logo-filter: invert(1);
-    --cta-bg: #050505;
-    --cta-text: #ffffff;
-}
+:root { --op-nav-blur-height: clamp(62px, 8vh, 86px); --op-nav-blur-strength: 10px; }
