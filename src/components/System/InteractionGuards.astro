@@ -1,0 +1,99 @@
+---
+// src/components/System/InteractionGuards.astro
+---
+<script>
+            import { gsap } from 'gsap';
+            import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            const opRuntime = (window as any).__opRuntime || {};
+            const opCoarsePointer = opRuntime.opCoarsePointer || window.matchMedia('(pointer: coarse)');
+            const opViewportWidth = opRuntime.opViewportWidth || (() => Math.round(window.visualViewport?.width || window.innerWidth || 0));
+            const opViewportHeight = opRuntime.opViewportHeight || (() => Math.round(window.visualViewport?.height || window.innerHeight || 0));
+            const opIsPhoneLikeViewport = opRuntime.opIsPhoneLikeViewport || (() => opViewportWidth() < 768 || (opCoarsePointer.matches && opViewportHeight() <= 560));
+            const opIsMobilePerf = opRuntime.opIsMobilePerf || (() => opIsPhoneLikeViewport());
+            const opUseSmoothScroll = Boolean(opRuntime.opUseSmoothScroll ?? true);
+            const lenis = {
+                scrollTo(target: any, options: any = {}) {
+                    const instance = (window as any).__opLenis;
+                    if (instance?.scrollTo) return instance.scrollTo(target, options);
+                    if (target === 0) return window.scrollTo({ top: 0, behavior: options?.immediate ? 'auto' : 'smooth' });
+                    if (target?.scrollIntoView) return target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            };
+            function opScrollToTopPreservingWebgl(duration = 1.5) {
+                const api = (window as any).__opSmoothScroll;
+                if (api?.opScrollToTopPreservingWebgl) return api.opScrollToTopPreservingWebgl(duration);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            // --- 7. BLOQUEO DE CLICK DERECHO Y ARRASTRE ---
+            document.addEventListener('contextmenu', (e) => {
+                const target = e.target as HTMLElement;
+                if (target.tagName === 'IMG' || target.tagName === 'VIDEO' || target.classList.contains('v-bg') || target.classList.contains('target-img') || target.classList.contains('reel-bg')) {
+                    e.preventDefault();
+                }
+            });
+
+            document.addEventListener('dragstart', (e) => {
+                const target = e.target as HTMLElement;
+                if (target.tagName === 'IMG' || target.tagName === 'VIDEO') {
+                    e.preventDefault();
+                }
+            });
+
+            if (!opIsMobilePerf()) {
+                ScrollTrigger.create({
+                    trigger: ".site-footer", start: "top 90%",
+                    onEnter: () => { gsap.to('.btn-cta-nav', { scale: 1.1, boxShadow: "0 0 20px rgba(255,255,255,0.4)", duration: 0.4, yoyo: true, repeat: 1, ease: "power2.out" }); }
+                });
+            }
+
+            const backToTop = document.getElementById('backToTop');
+            function opScrollToElement(targetEl, duration = 1.5) {
+                if (!targetEl) return;
+                if (opUseSmoothScroll) {
+                    lenis.scrollTo(targetEl, { offset: 0, duration });
+                } else {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            if(backToTop) {
+                backToTop.addEventListener('click', () => {
+                    opScrollToTopPreservingWebgl(1.5);
+                });
+            }
+
+            function opDisableFooterLogoRedirect(scope = document) {
+                const footerLogoTargets = Array.from(scope.querySelectorAll('.site-footer .footer-logo-wrap, .site-footer .footer-logo'));
+                footerLogoTargets.forEach((target) => {
+                    const link = target.matches?.('a') ? target : (target.closest?.('a') || target.querySelector?.('a'));
+                    if (!link || !link.closest?.('.site-footer')) return;
+                    link.removeAttribute('href');
+                    link.removeAttribute('data-astro-prefetch');
+                    link.classList.remove('nav-link');
+                    link.setAttribute('tabindex', '-1');
+                    link.setAttribute('aria-disabled', 'true');
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }, { capture: true });
+                });
+            }
+            opDisableFooterLogoRedirect(document);
+            document.addEventListener('astro:page-load', () => opDisableFooterLogoRedirect(document));
+
+            document.querySelectorAll('.nav-link').forEach(anchor => { anchor.addEventListener('click', function(e) { e.preventDefault(); const href = this.getAttribute('href'); if(!href) return; const targetEl = document.querySelector(href); opScrollToElement(targetEl, 1.5); }); });
+
+            if(window.innerWidth > 768) {
+                if (!opIsMobilePerf()) {
+                    document.querySelectorAll('.reel-item').forEach(item => {
+                        const hoverVid = item.querySelector('.hover-video'); 
+                        item.addEventListener('mouseenter', () => { if(hoverVid) { hoverVid.currentTime = 0; hoverVid.play(); gsap.to(hoverVid, {opacity: 1, duration: 0.4}); } });
+                        item.addEventListener('mouseleave', () => { if(hoverVid) { gsap.to(hoverVid, {opacity: 0, duration: 0.3, onComplete: () => hoverVid.pause()}); } });
+                    });
+                }
+            }
+
+</script>
