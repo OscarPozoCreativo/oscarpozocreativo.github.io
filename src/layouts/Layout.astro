@@ -10,19 +10,16 @@ import LiquidCursor from '../components/WebGL/LiquidCursor.astro';
 
 import SmoothScroll from '../components/System/SmoothScroll.astro';
 import AudioEngine from '../components/System/AudioEngine.astro';
-import InteractionGuards from '../components/System/InteractionGuards.astro';
 
 import '../styles/global.css';
 
 interface Props {
-    title: string;
-    description: string;
-    lang: string;
-    nav?: Record<string, string>;
-    footer?: Record<string, string>;
+	title: string;
+	description: string;
+	lang: string;
 }
 
-const { title, description, lang, nav, footer } = Astro.props;
+const { title, description, lang } = Astro.props;
 const currentPath = Astro.url?.pathname || '/';
 const isEnglish = String(lang || '').toLowerCase().startsWith('en') || currentPath.startsWith('/en');
 const effectiveLang = isEnglish ? 'en' : 'es';
@@ -35,33 +32,32 @@ const lbViewTitle = isEnglish ? 'Project view' : 'Vista del proyecto';
 
 <!doctype html>
 <html lang={effectiveLang} data-theme="dark">
-    <head>
-        <HeadSEO title={title} description={description} lang={effectiveLang} />
-    </head>
-    <body>
-        <Preloader loaderLabel={loaderLabel} />
-        {nav && <Navigation nav={nav} lang={effectiveLang} />}
+	<head>
+		<HeadSEO title={title} description={description} lang={effectiveLang} />
+	</head>
+	<body>
+		<Preloader loaderLabel={loaderLabel} />
+		<Navigation />
 
-        <!-- Motores gráficos aislados -->
-        <ParticlesBackground />
-        <LiquidCursor />
+		<!-- Motores Gráficos aislados -->
+		<ParticlesBackground />
+		<LiquidCursor />
 
-        <!-- Contenido de la página -->
-        <main>
-            <slot />
-        </main>
+		<!-- Contenido de la página -->
+		<main>
+			<slot />
+		</main>
 
-        {footer && <Footer footer={footer} />}
-        <Lightbox
-            lbCloseLabel={lbCloseLabel}
-            lbPrevLabel={lbPrevLabel}
-            lbNextLabel={lbNextLabel}
-            lbViewTitle={lbViewTitle}
-        />
+		<Footer />
+		<Lightbox
+			lbCloseLabel={lbCloseLabel}
+			lbPrevLabel={lbPrevLabel}
+			lbNextLabel={lbNextLabel}
+			lbViewTitle={lbViewTitle}
+		/>
 
-        <!-- Motores lógicos -->
-        <SmoothScroll />
-        <AudioEngine />
-        <InteractionGuards />
-    </body>
+		<!-- Motores Lógicos -->
+		<SmoothScroll />
+		<AudioEngine />
+	</body>
 </html>
