@@ -1,0 +1,237 @@
+---
+interface ContactLink {
+    label: string;
+    url: string;
+    solid: boolean;
+}
+
+interface ContactData {
+    eyebrow: string;
+    title: string;
+    desc: string;
+    locLabel: string;
+    locVal: string;
+    specLabel: string;
+    specVal: string;
+    dispLabel: string;
+    dispVal: string;
+    links: ContactLink[];
+}
+
+interface Props {
+    contact: ContactData;
+}
+
+const { contact } = Astro.props;
+const isExternal = (url: string) => /^https?:\/\//.test(url);
+---
+
+<section class="terminal-wrapper" id="contacto">
+    <div class="terminal-grid">
+        <article class="t-panel">
+            <span class="t-eyebrow">{contact.eyebrow}</span>
+            <h2 class="t-title has-reveal">{contact.title}</h2>
+            <p class="t-desc">{contact.desc}</p>
+            <div class="t-meta-grid">
+                <div class="t-meta-box"><strong>{contact.locLabel}</strong><span>{contact.locVal}</span></div>
+                <div class="t-meta-box"><strong>{contact.specLabel}</strong><span>{contact.specVal}</span></div>
+                <div class="t-meta-box"><strong>{contact.dispLabel}</strong><span>{contact.dispVal}</span></div>
+            </div>
+        </article>
+        <article class="t-panel terminal-actions-panel">
+            <div class="t-actions">
+                {contact.links.map((link) => (
+                    <a
+                        href={link.url}
+                        class:list={["btn-outline", "hover-target", "magnetic-target", { "btn-solid": link.solid }]}
+                        target={isExternal(link.url) ? '_blank' : undefined}
+                        rel={isExternal(link.url) ? 'noopener noreferrer' : undefined}
+                    >
+                        {link.label}
+                    </a>
+                ))}
+            </div>
+        </article>
+    </div>
+</section>
+
+<style>
+.terminal-wrapper {
+    background: transparent !important;
+    position: relative;
+    z-index: 10;
+    padding: clamp(60px, 8vh, 100px) 5vw;
+    border-top: 1px solid var(--border);
+}
+
+.terminal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(20px, 3vw, 40px);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.t-panel {
+    padding: 40px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 0 20px rgba(255,255,255,0.02);
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), border-color 0.3s, box-shadow 0.3s;
+    pointer-events: auto;
+    transform: translate3d(0,0,0);
+    will-change: transform, opacity;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.t-eyebrow {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 8px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.t-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    line-height: 1.3;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.t-desc {
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+.t-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.t-meta-box {
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+}
+
+.t-meta-box strong {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 8px;
+    color: var(--accent);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.t-meta-box span,
+.t-meta-box a {
+    color: var(--text);
+    font-size: 0.9rem;
+    text-decoration: none;
+    line-height: 1.5;
+    pointer-events: auto;
+    display: inline-block;
+}
+
+.t-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    pointer-events: auto;
+}
+
+.btn-outline {
+    padding: 16px 32px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--text);
+    font-size: 0.7rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(0);
+}
+
+.btn-outline:hover {
+    background: var(--text);
+    color: #000;
+    border-color: var(--text);
+    transform: translate3d(0, -3px, 0);
+}
+
+.btn-solid {
+    background: var(--text);
+    color: #000;
+    border: 1px solid var(--text);
+}
+
+.btn-solid:hover {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border);
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+    .terminal-wrapper {
+        padding: 40px 15px !important;
+        pointer-events: auto !important;
+        background: transparent !important;
+    }
+
+    .terminal-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    .t-panel {
+        padding: 25px !important;
+        width: 100% !important;
+        transform: none !important;
+    }
+
+    .t-meta-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 1024px), (pointer: coarse) {
+    :global(html.op-mobile-perf) .terminal-wrapper {
+        content-visibility: auto;
+        contain-intrinsic-size: 1px 900px;
+    }
+
+    :global(html.op-mobile-perf) .t-panel {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .t-panel {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+</style>

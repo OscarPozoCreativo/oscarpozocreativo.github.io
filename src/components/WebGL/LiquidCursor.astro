@@ -1,1 +1,440 @@
-<canvas id="liquid-refraction-canvas" aria-hidden="true"></canvas>
+---
+// src/components/WebGL/LiquidCursor.astro
+---
+<canvas id="liquid-refraction-canvas" aria-hidden="true" style="position: fixed; inset: 0; z-index: 9999; pointer-events: none;"></canvas>
+
+<!-- BEGIN SCOPED CSS: generated from src/styles/global.css split -->
+<style>
+#liquid-refraction-canvas { position: fixed; left: 0; top: 0; width: 100vw; height: calc(var(--op-vh, 1vh) * 100); z-index: 99999; pointer-events: none; opacity: 0; mix-blend-mode: screen; contain: strict; transform: translate3d(0,0,0); will-change: opacity; }
+
+@media (pointer: coarse), (max-width: 859px), (prefers-reduced-motion: reduce) {
+#liquid-refraction-canvas { display: none !important; }
+}
+
+@media (max-width: 1024px), (pointer: coarse) {
+:global(html.op-mobile-perf) #liquid-refraction-canvas { display: none !important; }
+}
+</style>
+<!-- END SCOPED CSS -->
+
+<script>
+    const opBootLiquidCursor = () => {
+        if (!window.matchMedia('(pointer: fine)').matches || window.innerWidth < 860) return;
+        const opScheduleLiquidIdle = (callback: () => void, timeout = 3000) => {
+            if ('requestIdleCallback' in window) return (window as any).requestIdleCallback(callback, { timeout });
+            return window.setTimeout(callback, 1000);
+        };
+        opScheduleLiquidIdle(async () => {
+            const THREE = await import('three');
+            const opRuntime = (window as any).__opRuntime || {};
+            const opRuntimeLowPower = Boolean(opRuntime.opRuntimeLowPower ?? Boolean((navigator as any).connection?.saveData) || Number((navigator as any).deviceMemory || 4) <= 2 || Number(navigator.hardwareConcurrency || 4) <= 4);
+            // --- 2.5. LIQUID CURSOR PREMIUM (WEBGL LIGERO / TODAS LAS DIRECCIONES) ---
+            (() => {
+                try {
+                const liquidCanvas = document.getElementById('liquid-refraction-canvas') as HTMLCanvasElement | null;
+                const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+                const finePointer = window.matchMedia('(pointer: fine)');
+                const minWidth = 860;
+                const lightbox = document.getElementById('lightbox') as HTMLElement | null;
+
+                if (!liquidCanvas || (window as any).__opLiquidCursorMounted || reduceMotion.matches || !finePointer.matches || window.innerWidth < minWidth) {
+                    if (liquidCanvas) liquidCanvas.style.display = 'none';
+                    return;
+                }
+
+                (window as any).__opLiquidCursorMounted = true;
+
+                const MAX_SPLATS = 24;
+                const OP_ACTIVE_SPLATS = opRuntimeLowPower ? 18 : MAX_SPLATS;
+                const splats = Array.from({ length: MAX_SPLATS }, () => ({
+                    x: 0, y: 0, vx: 1, vy: 0, age: 999, life: 1, radius: 0, force: 0, speed: 0, seed: Math.random() * 10
+                }));
+
+                let splatIndex = 0;
+                let rafId = 0;
+                let lastFrame = performance.now();
+                let lastInputAt = 0;
+                let lastPointer: { x: number; y: number; t: number; vx: number; vy: number } | null = null;
+                let scaleX = 1;
+                let scaleY = 1;
+                let canvasVisible = 0;
+                let quality = opRuntimeLowPower ? 0.46 : 0.54;
+                let slowFrameCount = 0;
+
+                const renderer = new THREE.WebGLRenderer({
+                    canvas: liquidCanvas,
+                    alpha: true,
+                    premultipliedAlpha: true,
+                    antialias: false,
+                    depth: false,
+                    stencil: false,
+                    powerPreference: opRuntimeLowPower ? 'low-power' : 'high-performance'
+                });
+
+                renderer.setClearColor(0x000000, 0);
+                renderer.autoClear = true;
+                if ('outputColorSpace' in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+                const scene = new THREE.Scene();
+                const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+                const splatUniforms = Array.from({ length: MAX_SPLATS }, () => new THREE.Vector4(0, 0, 0, 0));
+                const motionUniforms = Array.from({ length: MAX_SPLATS }, () => new THREE.Vector4(1, 0, 0, 0));
+
+                const material = new THREE.ShaderMaterial({
+                    transparent: true,
+                    depthTest: false,
+                    depthWrite: false,
+                    blending: THREE.NormalBlending,
+                    uniforms: {
+                        uResolution: { value: new THREE.Vector2(1, 1) },
+                        uTime: { value: 0 },
+                        uSplat: { value: splatUniforms },
+                        uMotion: { value: motionUniforms }
+                    },
+                    vertexShader: `
+                        varying vec2 vUv;
+                        void main() {
+                            vUv = uv;
+                            gl_Position = vec4(position.xy, 0.0, 1.0);
+                        }
+                    `,
+                    fragmentShader: `
+                        precision mediump float;
+                        #define MAX_SPLATS 24
+
+                        uniform vec2 uResolution;
+                        uniform float uTime;
+                        uniform vec4 uSplat[MAX_SPLATS];
+                        uniform vec4 uMotion[MAX_SPLATS];
+                        varying vec2 vUv;
+
+                        float hash21(vec2 p) {
+                            p = fract(p * vec2(123.34, 456.21));
+                            p += dot(p, p + 34.345);
+                            return fract(p.x * p.y);
+                        }
+
+                        float noise(vec2 p) {
+                            vec2 i = floor(p);
+                            vec2 f = fract(p);
+                            f = f * f * (3.0 - 2.0 * f);
+                            float a = hash21(i);
+                            float b = hash21(i + vec2(1.0, 0.0));
+                            float c = hash21(i + vec2(0.0, 1.0));
+                            float d = hash21(i + vec2(1.0, 1.0));
+                            return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+                        }
+
+                        void main() {
+                            vec2 p = vUv * uResolution;
+                            float field = 0.0;
+                            float rim = 0.0;
+                            float energy = 0.0;
+                            vec2 normal = vec2(0.0);
+
+                            for (int i = 0; i < MAX_SPLATS; i++) {
+                                vec4 s = uSplat[i];
+                                float amp = s.w;
+                                if (amp <= 0.001) { continue; }
+
+                                vec2 center = s.xy;
+                                float radius = max(s.z, 1.0);
+                                vec4 m = uMotion[i];
+                                vec2 dir = normalize(m.xy + vec2(0.00001));
+                                vec2 perp = vec2(-dir.y, dir.x);
+                                float speed = clamp(m.z, 0.0, 1.0);
+                                float seed = m.w;
+
+                                vec2 q = p - center;
+                                float along = dot(q, dir);
+                                float across = dot(q, perp);
+
+                                float organic = noise(p * 0.018 + seed + normal * 0.65 + uTime * 0.16);
+                                float tail = radius * mix(1.45, 4.75, speed);
+                                float front = radius * mix(0.42, 0.86, speed);
+                                float clampedAlong = clamp(along, -tail, front);
+                                float a = (along - clampedAlong) / (radius * mix(0.58, 0.82, speed));
+                                float b = across / (radius * mix(0.46, 0.76, speed));
+                                float capsule = exp(-(a * a + b * b) * 3.15);
+
+                                float headA = along / (radius * mix(0.85, 1.20, speed));
+                                float headB = across / (radius * mix(0.52, 0.78, speed));
+                                float head = exp(-(headA * headA + headB * headB) * 3.5);
+
+                                float wakeA = (along + tail * 0.52) / max(tail * 0.78, 1.0);
+                                float wakeB = across / (radius * mix(0.92, 1.22, speed));
+                                float wake = exp(-(wakeA * wakeA + wakeB * wakeB) * 1.8) * 0.22;
+
+                                float f = (capsule * 0.78 + head * 0.28 + wake) * amp * (0.88 + organic * 0.18);
+                                field += f;
+                                rim += (smoothstep(0.035, 0.18, f) - smoothstep(0.25, 0.55, f)) * amp;
+                                normal += (dir * a + perp * b) * f;
+                                energy += amp * (0.42 + speed * 0.72);
+                            }
+
+                            field = clamp(field, 0.0, 1.65);
+                            rim = clamp(rim, 0.0, 1.0);
+
+                            float n1 = noise(p * 0.022 + normal * 1.15 + uTime * 0.12);
+                            float n2 = noise(p * 0.041 - normal * 0.78 - uTime * 0.07);
+                            float body = smoothstep(0.05, 0.50, field) * (1.0 - smoothstep(0.94, 1.46, field));
+                            float edge = smoothstep(0.045, 0.16, field) - smoothstep(0.29, 0.68, field);
+                            float contour = abs(fract(field * 3.35 + n1 * 0.23 - n2 * 0.12 + uTime * 0.014) - 0.5);
+                            float caustic = (1.0 - smoothstep(0.0, 0.18, contour)) * edge * 0.42;
+
+                            float normalLen = clamp(length(normal) * 0.78, 0.0, 1.0);
+                            float fresnel = pow(normalLen, 0.74) * smoothstep(0.05, 0.72, field);
+                            float angle = atan(normal.y, normal.x);
+                            float film = field * 0.82 + angle * 0.13 + n1 * 0.22 - n2 * 0.12 + uTime * 0.024;
+
+                            vec3 prism = 0.55 + 0.45 * cos(6.2831853 * (film + vec3(0.00, 0.34, 0.67)));
+                            vec3 ice = vec3(0.68, 0.88, 1.00);
+                            vec3 pearl = vec3(0.96, 0.985, 1.00);
+                            vec3 amber = vec3(1.00, 0.70, 0.38);
+                            vec3 violet = vec3(0.82, 0.72, 1.00);
+                            vec3 chroma = mix(mix(ice, amber, smoothstep(-0.2, 0.92, sin(film * 6.2831853))), prism, 0.52);
+                            chroma = mix(chroma, violet, smoothstep(0.74, 1.0, n2) * 0.22);
+
+                            vec3 color = pearl * body * 0.07;
+                            color += chroma * edge * rim * 0.82;
+                            color += vec3(1.0, 0.96, 0.84) * caustic * 0.20;
+                            color += mix(ice, amber, n1) * fresnel * 0.15;
+
+                            float alpha = body * 0.020 + edge * rim * 0.30 + caustic * 0.09 + fresnel * 0.052;
+                            alpha *= clamp(0.30 + energy * 0.42, 0.30, 1.0);
+                            alpha = min(alpha, 0.48);
+
+                            if (alpha < 0.0025) discard;
+                            gl_FragColor = vec4(color, alpha);
+                        }
+                    `
+                });
+
+                const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+                mesh.frustumCulled = false;
+                scene.add(mesh);
+
+                function viewportWidth() {
+                    return Math.round(window.visualViewport?.width || window.innerWidth);
+                }
+
+                function viewportHeight() {
+                    return Math.round(window.visualViewport?.height || window.innerHeight);
+                }
+
+                function resizeLiquid() {
+                    const vw = viewportWidth();
+                    const vh = viewportHeight();
+                    const dpr = Math.min(Math.max((window.devicePixelRatio || 1) * quality, 0.46), opRuntimeLowPower ? 0.60 : 0.72);
+                    renderer.setPixelRatio(dpr);
+                    renderer.setSize(vw, vh, false);
+                    scaleX = liquidCanvas.width / Math.max(1, vw);
+                    scaleY = liquidCanvas.height / Math.max(1, vh);
+                    material.uniforms.uResolution.value.set(liquidCanvas.width, liquidCanvas.height);
+                    liquidCanvas.style.width = `${vw}px`;
+                    liquidCanvas.style.height = `${vh}px`;
+                }
+
+                let liquidResizeRaf = 0;
+                function scheduleLiquidResize() {
+                    if (liquidResizeRaf) return;
+                    liquidResizeRaf = requestAnimationFrame(() => {
+                        liquidResizeRaf = 0;
+                        if (window.innerWidth < minWidth || reduceMotion.matches || !finePointer.matches) {
+                            liquidCanvas.style.display = 'none';
+                            clearLiquid();
+                            resetLiquidPointer();
+                            return;
+                        }
+                        liquidCanvas.style.display = 'block';
+                        resizeLiquid();
+                        clearLiquid();
+                        resetLiquidPointer();
+                    });
+                }
+
+                function clearLiquid() {
+                    renderer.clear();
+                    canvasVisible = 0;
+                    liquidCanvas.style.opacity = '0';
+                }
+
+                function addSplat(x, y, vx, vy, speedNorm, force) {
+                    if (force <= 0.008) return;
+                    const p = splats[splatIndex];
+                    splatIndex = (splatIndex + 1) % OP_ACTIVE_SPLATS;
+                    const screenScale = (scaleX + scaleY) * 0.5;
+                    p.x = x;
+                    p.y = y;
+                    p.vx = vx;
+                    p.vy = vy;
+                    p.age = 0;
+                    p.life = 0.28 + speedNorm * 0.48;
+                    p.radius = (18 + speedNorm * 58) * screenScale;
+                    p.force = force;
+                    p.speed = speedNorm;
+                    p.seed = Math.random() * 20;
+                }
+
+                function scheduleLiquid() {
+                    if (!rafId) {
+                        rafId = requestAnimationFrame(renderLiquid);
+                    }
+                }
+
+                let lastPointerEventAt = 0;
+                function onPointerMove(e: PointerEvent) {
+                    if (document.hidden) return;
+                    if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+                    if (lightbox && lightbox.style.display === 'flex') return;
+
+                    const now = performance.now();
+                    const pointerInterval = opRuntimeLowPower ? 18 : 10;
+                    if (now - lastPointerEventAt < pointerInterval) return;
+                    lastPointerEventAt = now;
+                    const x = e.clientX * scaleX;
+                    const y = (viewportHeight() - e.clientY) * scaleY;
+
+                    if (!lastPointer) {
+                        lastPointer = { x, y, t: now, vx: 1, vy: 0 };
+                        return;
+                    }
+
+                    const dt = Math.max(12, now - lastPointer.t);
+                    const dx = x - lastPointer.x;
+                    const dy = y - lastPointer.y;
+                    const dist = Math.hypot(dx, dy);
+                    const cssDist = dist / Math.max(0.001, (scaleX + scaleY) * 0.5);
+                    if (cssDist < (opRuntimeLowPower ? 1.8 : 1.05)) return;
+
+                    const speed = cssDist / (dt / 1000);
+                    const speedNorm = Math.min(1, Math.max(0, (speed - 42) / 980));
+                    const distanceGain = Math.min(1, cssDist / 18);
+                    const force = Math.pow(speedNorm, 0.98) * (0.24 + distanceGain * 0.76);
+
+                    if (force > 0.012) {
+                        const prevVx = lastPointer.vx || dx / dt;
+                        const prevVy = lastPointer.vy || dy / dt;
+                        const vx = prevVx * 0.62 + (dx / dt) * 0.38;
+                        const vy = prevVy * 0.62 + (dy / dt) * 0.38;
+                        const len = Math.max(Math.hypot(dx, dy), 0.001);
+                        const nx = -dy / len;
+                        const ny = dx / len;
+                        const steps = Math.min(opRuntimeLowPower ? 3 : 5, Math.max(1, Math.ceil(cssDist / 22)));
+
+                        for (let i = 1; i <= steps; i++) {
+                            const t = i / steps;
+                            const eased = t * t * (3 - 2 * t);
+                            const jitter = (Math.random() - 0.5) * 1.45 * (0.18 + speedNorm);
+                            addSplat(
+                                lastPointer.x + dx * eased + nx * jitter,
+                                lastPointer.y + dy * eased + ny * jitter,
+                                vx,
+                                vy,
+                                speedNorm,
+                                force * (0.72 + 0.28 * t)
+                            );
+                        }
+
+                        lastInputAt = now;
+                        scheduleLiquid();
+                    }
+
+                    lastPointer = { x, y, t: now, vx: dx / dt, vy: dy / dt };
+                }
+
+                function renderLiquid(now: number) {
+                    rafId = 0;
+                    const elapsedMs = now - lastFrame;
+                    const liquidFrameInterval = opRuntimeLowPower ? 1000 / 45 : 1000 / 75;
+                    if (elapsedMs < liquidFrameInterval) {
+                        scheduleLiquid();
+                        return;
+                    }
+                    const dt = Math.min(0.034, Math.max(0.001, elapsedMs / 1000));
+                    lastFrame = now;
+
+                    if (dt > 0.029) slowFrameCount += 1;
+                    else slowFrameCount = Math.max(0, slowFrameCount - 1);
+                    if (slowFrameCount > 12 && quality > 0.42) {
+                        quality = Math.max(0.42, quality - 0.04);
+                        slowFrameCount = 0;
+                        resizeLiquid();
+                    }
+
+                    let count = 0;
+                    let energy = 0;
+                    for (let i = 0; i < OP_ACTIVE_SPLATS; i++) {
+                        const p = splats[i];
+                        if (p.age >= p.life) continue;
+                        p.age += dt;
+                        const lifeT = Math.min(1, p.age / p.life);
+                        const fade = Math.pow(1 - lifeT, 2.45) * p.force;
+                        if (fade <= 0.002) {
+                            p.age = p.life + 1;
+                            continue;
+                        }
+                        const drift = (1 - lifeT) * dt * 12.0;
+                        p.x += p.vx * drift;
+                        p.y += p.vy * drift;
+                        const radius = p.radius * (1 + lifeT * (0.18 + p.speed * 0.20));
+                        splatUniforms[count].set(p.x, p.y, radius, fade);
+                        motionUniforms[count].set(p.vx, p.vy, p.speed, p.seed);
+                        energy += fade * (0.50 + p.speed * 0.72);
+                        count++;
+                        if (count >= MAX_SPLATS) break;
+                    }
+
+                    for (let i = count; i < MAX_SPLATS; i++) {
+                        splatUniforms[i].set(0, 0, 0, 0);
+                        motionUniforms[i].set(1, 0, 0, 0);
+                    }
+
+                    if (!count && now - lastInputAt > 90) {
+                        clearLiquid();
+                        return;
+                    }
+
+                    material.uniforms.uTime.value = now * 0.001;
+                    canvasVisible += (Math.min(1, energy * 1.18) - canvasVisible) * 0.22;
+                    liquidCanvas.style.opacity = String(Math.min(1, Math.max(0, canvasVisible)));
+                    renderer.render(scene, camera);
+
+                    if (count || canvasVisible > 0.004) {
+                        scheduleLiquid();
+                    } else {
+                        clearLiquid();
+                    }
+                }
+
+                function resetLiquidPointer() {
+                    lastPointer = null;
+                }
+
+                resizeLiquid();
+                clearLiquid();
+                window.addEventListener('pointermove', onPointerMove, { passive: true });
+                window.addEventListener('pointerleave', resetLiquidPointer, { passive: true });
+                window.addEventListener('blur', () => { resetLiquidPointer(); clearLiquid(); }, { passive: true });
+                window.addEventListener('resize', scheduleLiquidResize, { passive: true });
+                window.visualViewport?.addEventListener('resize', scheduleLiquidResize, { passive: true });
+                document.addEventListener('op:perf-stress', () => {
+                    quality = Math.max(0.40, quality - 0.06);
+                    scheduleLiquidResize();
+                });
+                document.addEventListener('visibilitychange', () => {
+                    resetLiquidPointer();
+                    if (document.hidden) clearLiquid();
+                });
+                } catch (_) {
+                    const liquidCanvas = document.getElementById('liquid-refraction-canvas') as HTMLCanvasElement | null;
+                    if (liquidCanvas) liquidCanvas.style.display = 'none';
+                }
+            })();
+
+        }, 3000);
+    };
+
+    if (document.readyState === 'complete') opBootLiquidCursor();
+    else window.addEventListener('load', opBootLiquidCursor, { once: true });
+</script>

@@ -1,6 +1,218 @@
 ---
-// El Web Audio API original comparte estado con el runtime principal.
-// Se conserva su punto de montaje para aislarlo en una siguiente pasada sin cambiar comportamiento.
+// src/components/System/AudioEngine.astro
 ---
 
-<Fragment />
+<!-- BEGIN SCOPED CSS: generated from src/styles/global.css split -->
+<style>
+[data-sfx-toggle].is-sfx-on { color: var(--accent) !important; opacity: 1 !important; text-shadow: 0 0 18px rgba(64,181,229,0.35); }
+
+.sfx-toggle.is-sfx-on { color: var(--accent) !important; opacity: 1 !important; text-shadow: 0 0 18px rgba(64,181,229,0.35); }
+
+#sfx-toggle.is-sfx-on { color: var(--accent) !important; opacity: 1 !important; text-shadow: 0 0 18px rgba(64,181,229,0.35); }
+
+#sfxToggle.is-sfx-on { color: var(--accent) !important; opacity: 1 !important; text-shadow: 0 0 18px rgba(64,181,229,0.35); }
+</style>
+<!-- END SCOPED CSS -->
+
+<script>
+            const opPrefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            function opSafeStorageGet(key: string) {
+                try { return sessionStorage.getItem(key); } catch (_) { return null; }
+            }
+            function opSafeStorageSet(key: string, value: string) {
+                try { sessionStorage.setItem(key, value); } catch (_) {}
+            }
+            // --- 5.5. SFX PREMIUM SUAVE (WEB AUDIO, SIN ARCHIVOS EXTERNOS) ---
+            const OP_SFX_KEY = 'op-premium-sfx-enabled';
+            const opPremiumSfx = (() => {
+                let ctx: AudioContext | null = null;
+                let master: GainNode | null = null;
+                let compressor: DynamicsCompressorNode | null = null;
+                let enabled = opSafeStorageGet(OP_SFX_KEY) === '1';
+                let lastHover = 0;
+                let lastTap = 0;
+
+                function ensureAudio() {
+                    if (ctx) return ctx;
+                    const AudioCtor = (window as any).AudioContext || (window as any).webkitAudioContext;
+                    if (!AudioCtor) return null;
+                    ctx = new AudioCtor();
+                    master = ctx.createGain();
+                    master.gain.value = 0.16;
+                    compressor = ctx.createDynamicsCompressor();
+                    compressor.threshold.value = -28;
+                    compressor.knee.value = 24;
+                    compressor.ratio.value = 3;
+                    compressor.attack.value = 0.003;
+                    compressor.release.value = 0.18;
+                    master.connect(compressor);
+                    compressor.connect(ctx.destination);
+                    return ctx;
+                }
+
+                function resumeAudio() {
+                    const audio = ensureAudio();
+                    if (!audio) return null;
+                    if (audio.state === 'suspended') audio.resume().catch(() => {});
+                    return audio;
+                }
+
+                function tone(freq: number, duration: number, gainValue: number, type: OscillatorType = 'sine', delay = 0, detune = 0) {
+                    const audio = resumeAudio();
+                    if (!audio || !master) return;
+                    const start = audio.currentTime + delay;
+                    const osc = audio.createOscillator();
+                    const gain = audio.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, start);
+                    osc.detune.setValueAtTime(detune, start);
+                    gain.gain.setValueAtTime(0.0001, start);
+                    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, gainValue), start + 0.012);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+                    osc.connect(gain);
+                    gain.connect(master);
+                    osc.start(start);
+                    osc.stop(start + duration + 0.025);
+                }
+
+                function filteredNoise(duration: number, gainValue: number, frequency: number, delay = 0) {
+                    const audio = resumeAudio();
+                    if (!audio || !master) return;
+                    const start = audio.currentTime + delay;
+                    const bufferSize = Math.max(1, Math.floor(audio.sampleRate * duration));
+                    const buffer = audio.createBuffer(1, bufferSize, audio.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+                    const src = audio.createBufferSource();
+                    const filter = audio.createBiquadFilter();
+                    const gain = audio.createGain();
+                    src.buffer = buffer;
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(frequency, start);
+                    filter.Q.value = 5.8;
+                    gain.gain.setValueAtTime(0.0001, start);
+                    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, gainValue), start + 0.006);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+                    src.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(master);
+                    src.start(start);
+                    src.stop(start + duration + 0.02);
+                }
+
+                function play(kind: 'hover' | 'tap' | 'open' | 'close' | 'next' | 'enable' | 'disable') {
+                    if (!enabled && kind !== 'enable' && kind !== 'disable') return;
+                    if (opPrefersReducedMotion.matches && kind === 'hover') return;
+                    const now = performance.now();
+                    if (kind === 'hover' && now - lastHover < 95) return;
+                    if (kind === 'tap' && now - lastTap < 70) return;
+                    if (kind === 'hover') lastHover = now;
+                    if (kind === 'tap') lastTap = now;
+
+                    if (kind === 'hover') {
+                        tone(1460, 0.045, 0.010, 'sine');
+                        tone(2190, 0.035, 0.004, 'triangle', 0.006);
+                        return;
+                    }
+                    if (kind === 'tap') {
+                        filteredNoise(0.035, 0.018, 3200);
+                        tone(720, 0.07, 0.018, 'triangle', 0.004);
+                        return;
+                    }
+                    if (kind === 'open') {
+                        tone(420, 0.10, 0.018, 'sine');
+                        tone(840, 0.16, 0.014, 'triangle', 0.026);
+                        filteredNoise(0.12, 0.010, 1800, 0.012);
+                        return;
+                    }
+                    if (kind === 'close') {
+                        tone(640, 0.10, 0.014, 'triangle');
+                        tone(320, 0.15, 0.012, 'sine', 0.026);
+                        return;
+                    }
+                    if (kind === 'next') {
+                        tone(980, 0.055, 0.014, 'triangle');
+                        tone(1320, 0.07, 0.010, 'sine', 0.018);
+                        return;
+                    }
+                    if (kind === 'enable') {
+                        enabled = true;
+                        resumeAudio();
+                        tone(520, 0.09, 0.018, 'sine');
+                        tone(1040, 0.16, 0.014, 'triangle', 0.045);
+                        return;
+                    }
+                    if (kind === 'disable') {
+                        tone(780, 0.07, 0.012, 'triangle');
+                        tone(390, 0.12, 0.010, 'sine', 0.024);
+                    }
+                }
+
+                function syncButtons() {
+                    document.querySelectorAll('[data-sfx-toggle], .sfx-toggle, #sfx-toggle, #sfxToggle, button, a').forEach((el) => {
+                        const target = el as HTMLElement;
+                        const label = (target.getAttribute('aria-label') || target.textContent || '').trim().toLowerCase();
+                        const idClass = `${target.id || ''} ${target.className || ''}`.toLowerCase();
+                        const isSfxButton = target.matches('[data-sfx-toggle], .sfx-toggle, #sfx-toggle, #sfxToggle') || label === 'sfx' || label.includes('sfx') || label.includes('sonido') || label.includes('sound') || idClass.includes('sfx') || idClass.includes('sonido') || idClass.includes('sound');
+                        if (!isSfxButton) return;
+                        target.setAttribute('data-sfx-toggle', 'true');
+                        const visibleState = enabled ? 'ON' : 'OFF';
+                        const visibleLabel = `SFX ${visibleState}`;
+                        target.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+                        target.setAttribute('aria-label', enabled ? 'SFX activado' : 'SFX desactivado');
+                        target.setAttribute('title', visibleLabel);
+                        target.classList.toggle('is-sfx-on', enabled);
+                        if (!target.querySelector('svg, img, picture, canvas')) {
+                            const currentText = (target.textContent || '').trim().toLowerCase();
+                            const canReplaceText = !currentText || /^(sfx|sound|sonido)(\s*:?\s*(on|off))?$/i.test(currentText);
+                            if (canReplaceText) target.textContent = visibleLabel;
+                        }
+                    });
+                }
+
+                function setEnabled(next: boolean) {
+                    enabled = next;
+                    opSafeStorageSet(OP_SFX_KEY, next ? '1' : '0');
+                    syncButtons();
+                    play(next ? 'enable' : 'disable');
+                }
+
+                function toggle() {
+                    setEnabled(!enabled);
+                }
+
+                function init() {
+                    syncButtons();
+                    document.addEventListener('click', (event) => {
+                        const target = event.target as HTMLElement | null;
+                        const control = target?.closest?.('[data-sfx-toggle], .sfx-toggle, #sfx-toggle, #sfxToggle') as HTMLElement | null;
+                        if (!control) return;
+                        event.preventDefault();
+                        toggle();
+                    }, true);
+
+                    document.addEventListener('pointerdown', (event) => {
+                        const target = event.target as HTMLElement | null;
+                        if (!target || target.closest('[data-sfx-toggle], .sfx-toggle, #sfx-toggle, #sfxToggle')) return;
+                        if (target.closest('button, a, .hover-target, .magnetic-target, .lb-trigger')) play('tap');
+                    }, { passive: true });
+
+                    document.addEventListener('pointerover', (event) => {
+                        if (!window.matchMedia('(pointer: fine)').matches) return;
+                        const target = event.target as HTMLElement | null;
+                        if (!target || !target.closest('button, a, .hover-target, .magnetic-target, .lb-trigger')) return;
+                        play('hover');
+                    }, { passive: true });
+                }
+
+                return { init, syncButtons, play, setEnabled };
+            })();
+
+            opPremiumSfx.init();
+            document.addEventListener('astro:page-load', () => opPremiumSfx.syncButtons());
+
+            (window as any).__opPremiumSfx = opPremiumSfx;
+            document.addEventListener('astro:before-swap', () => {
+                if ((window as any).__opPremiumSfx === opPremiumSfx) (window as any).__opPremiumSfx = null;
+            });
+</script>

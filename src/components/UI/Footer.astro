@@ -1,6 +1,123 @@
 ---
-// El Layout original no contenía markup de footer para extraer.
-// Este placeholder conserva el punto de extensión sin duplicar footers existentes en las páginas.
+interface FooterData {
+    backToTop: string;
+    port: string;
+    proc: string;
+    rights: string;
+}
+
+interface Props {
+    footer: FooterData;
+}
+
+const { footer } = Astro.props;
 ---
 
-<Fragment />
+<footer class="site-footer">
+    <div class="footer-container footer-grid">
+        <div>
+            <a href="#" class="footer-logo-wrap hover-target magnetic-target">
+                <img
+                    src="/favicon-light.png"
+                    alt="Oscar Pozo Creativo"
+                    class="footer-logo"
+                    loading="lazy"
+                    decoding="async"
+                />
+            </a>
+        </div>
+        <div class="footer-links">
+            <button type="button" id="backToTop" class="hover-target magnetic-target">{footer.backToTop}</button>
+            <a href="#casos" class="hover-target nav-link magnetic-target">{footer.port}</a>
+            <a href="#metodo" class="hover-target nav-link magnetic-target">{footer.proc}</a>
+        </div>
+        <div><span>{footer.rights}</span></div>
+    </div>
+</footer>
+
+<style>
+.site-footer {
+    background: transparent !important;
+    position: relative;
+    z-index: 10;
+    padding: 40px 5vw;
+    border-top: 1px solid var(--border);
+}
+
+.footer-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.footer-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-logo-wrap {
+    display: block;
+    pointer-events: none;
+    cursor: default;
+}
+
+.footer-logo {
+    height: 85px;
+    width: auto;
+    filter: var(--logo-filter);
+    transform: translateZ(0);
+}
+
+.footer-grid span {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-links a,
+.footer-links button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+    pointer-events: auto;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-links a:hover,
+.footer-links button:hover {
+    color: var(--text);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+    .footer-grid {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 30px !important;
+    }
+
+    .footer-links {
+        justify-content: center !important;
+    }
+}
+</style>

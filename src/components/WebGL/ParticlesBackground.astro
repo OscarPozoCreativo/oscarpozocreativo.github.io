@@ -1,3 +1,248 @@
-<!-- WEBGL ORIGINAL (SOLO PARTÍCULAS) -->
-        <canvas id="webgl-canvas" style="position: fixed; inset: 0; z-index: -2; pointer-events: none; width: 100vw; height: 100vh;"></canvas>
-<div class="noise-overlay" style="position: fixed; inset: 0; z-index: -1; opacity: 0.03; pointer-events: none; background-image: url('data:image/svg+xml,%3Csvg viewBox=\\'0 0 200 200\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cfilter id=\\'noiseFilter\\'%3E%3CfeTurbulence type=\\'fractalNoise\\' baseFrequency=\\'0.9\\' numOctaves=\\'3\\' stitchTiles=\\'stitch\\'/%3E%3C/filter%3E%3Crect width=\\'100%25\\' height=\\'100%25\\' filter=\\'url(%23noiseFilter)\\'/%3E%3C/svg%3E'); mix-blend-mode: overlay;"></div>
+---
+// src/components/WebGL/ParticlesBackground.astro
+---
+<canvas id="webgl-canvas" style="position: fixed; inset: 0; z-index: -2; pointer-events: none; width: 100vw; height: 100vh;"></canvas>
+<div class="noise-overlay" style="position: fixed; inset: 0; z-index: -1; opacity: 0.03; pointer-events: none; background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E'); mix-blend-mode: overlay;"></div>
+
+<!-- BEGIN SCOPED CSS: generated from src/styles/global.css split -->
+<style>
+:global(html.op-webgl-fallback) body::before { content: ""; position: fixed; inset: 0; z-index: -3; pointer-events: none; background: radial-gradient(circle at 18% 24%, rgba(255,255,255,0.055), transparent 26vw), radial-gradient(circle at 78% 18%, rgba(64,181,229,0.05), transparent 30vw), radial-gradient(circle at 50% 92%, rgba(255,255,255,0.035), transparent 32vw), #050505; }
+
+#webgl-canvas { height: calc(var(--op-vh, 1vh) * 100) !important; transform: translate3d(0,0,0); contain: strict; will-change: transform; }
+
+:global(html.op-low-power) .noise-overlay { opacity: 0.02 !important; }
+
+:global(html.op-perf-stress) .noise-overlay { opacity: 0.02 !important; }
+
+@media (max-width: 1024px), (pointer: coarse) {
+:global(html.op-mobile-perf) .noise-overlay { display: block !important; opacity: 0.025 !important; contain: strict; transform: translate3d(0,0,0); }
+}
+
+@media (max-width: 1024px), (pointer: coarse) {
+:global(html.op-mobile-perf) #webgl-canvas { display: block !important; }
+}
+</style>
+<!-- END SCOPED CSS -->
+
+<script>
+    const opScheduleParticlesIdle = (callback: () => void, timeout = 2000) => {
+        if ('requestIdleCallback' in window) return (window as any).requestIdleCallback(callback, { timeout });
+        return window.setTimeout(callback, 500);
+    };
+
+    const opBootParticles = () => {
+        if ((window as any).__opParticlesBooted) return;
+        (window as any).__opParticlesBooted = true;
+        opScheduleParticlesIdle(async () => {
+            const THREE = await import('three');
+            const opRuntime = (window as any).__opRuntime || {};
+            const opCoarsePointer = opRuntime.opCoarsePointer || window.matchMedia('(pointer: coarse)');
+            const opViewportWidth = opRuntime.opViewportWidth || (() => Math.round(window.visualViewport?.width || window.innerWidth || 0));
+            const opRuntimeLowPower = Boolean(opRuntime.opRuntimeLowPower ?? Boolean((navigator as any).connection?.saveData) || Number((navigator as any).deviceMemory || 4) <= 2 || Number(navigator.hardwareConcurrency || 4) <= 4);
+            const opUseSmoothScroll = Boolean(opRuntime.opUseSmoothScroll ?? true);
+            const opIsProgrammaticTopScrollActive = () => Boolean((window as any).__opSmoothScroll?.opIsProgrammaticTopScrollActive?.());
+            let globalScrollVelocity = Number((window as any).__opScrollVelocity || 0);
+            document.addEventListener('op:scroll-velocity', (event) => {
+                globalScrollVelocity = Number((event as CustomEvent).detail?.velocity || 0);
+            });
+            // --- 2. WEBGL ORIGINAL (SOLO PARTÍCULAS) / 10-10 PERFORMANCE ---
+            const canvas = document.getElementById('webgl-canvas');
+            if(canvas) {
+                const opWebglPhone = opViewportWidth() < 768;
+                const opWebglTabletTouch = !opWebglPhone && opCoarsePointer.matches;
+                const opDeviceMemory = Number((navigator as any).deviceMemory || 4);
+                const opCpuCores = Number(navigator.hardwareConcurrency || 4);
+                const opVerySmallPhone = opViewportWidth() <= 420 || opDeviceMemory <= 2 || opCpuCores <= 4;
+                const opSaveData = Boolean((navigator as any).connection?.saveData);
+                const opDisableDecorativeWebgl = false;
+
+                const opCanUseWebgl = (() => {
+                    try {
+                        const testCanvas = document.createElement('canvas');
+                        return !!(window.WebGLRenderingContext && (
+                            testCanvas.getContext('webgl2', { alpha: false, antialias: false }) ||
+                            testCanvas.getContext('webgl', { alpha: false, antialias: false }) ||
+                            testCanvas.getContext('experimental-webgl', { alpha: false, antialias: false })
+                        ));
+                    } catch (_) { return false; }
+                })();
+
+                if (opDisableDecorativeWebgl || !opCanUseWebgl) {
+                    document.documentElement.classList.add('op-webgl-fallback');
+                    (canvas as HTMLCanvasElement).style.display = 'none';
+                } else {
+                try {
+                const renderer = new THREE.WebGLRenderer({
+                    canvas,
+                    alpha: false,
+                    powerPreference: (opWebglPhone || opWebglTabletTouch || opRuntimeLowPower) ? "low-power" : "high-performance",
+                    antialias: false,
+                    depth: false,
+                    stencil: false,
+                    preserveDrawingBuffer: false,
+                    failIfMajorPerformanceCaveat: false
+                });
+
+                const opNativeDpr = window.devicePixelRatio || 1;
+                const opInitialDpr = opWebglPhone
+                    ? (opVerySmallPhone || opSaveData ? Math.min(opNativeDpr, 0.78) : Math.min(opNativeDpr, 1.0))
+                    : (opWebglTabletTouch ? Math.min(opNativeDpr, opRuntimeLowPower ? 0.78 : 0.92) : Math.min(opNativeDpr, opRuntimeLowPower ? 0.88 : 1.12));
+                let opAdaptivePixelRatio = opInitialDpr;
+                renderer.setPixelRatio(opAdaptivePixelRatio);
+                renderer.setSize(opViewportWidth(), opViewportHeight(), false);
+                renderer.setClearColor(0x050505, 1);
+                renderer.autoClear = true;
+                if ('outputColorSpace' in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+                const isMobileInit = opWebglPhone;
+                const sceneDark = new THREE.Scene(); sceneDark.background = new THREE.Color('#050505');
+                const cameraDark = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); cameraDark.position.z = 100;
+
+                // Estética original preservada: mismo color, tamaño, opacidad y movimiento.
+                // Optimización: densidad adaptativa, DPR progresivo, drawRange y pausa invisible.
+                const particleCount = opWebglPhone
+                    ? (opVerySmallPhone || opSaveData ? 280 : 400)
+                    : (opWebglTabletTouch ? (opRuntimeLowPower ? 340 : 440) : (opRuntimeLowPower ? 480 : 660));
+                let opActiveParticleCount = particleCount;
+                const posArray = new Float32Array(particleCount * 3);
+                for(let i=0; i<particleCount*3; i++) { posArray[i] = (Math.random() - 0.5) * 200; }
+                const particlesGeom = new THREE.BufferGeometry();
+                const particlesPosition = new THREE.BufferAttribute(posArray, 3).setUsage(THREE.DynamicDrawUsage);
+                particlesGeom.setAttribute('position', particlesPosition);
+                particlesGeom.setDrawRange(0, opActiveParticleCount);
+                const particlesMat = new THREE.PointsMaterial({ size: 0.8, color: '#ffffff', transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending, depthWrite: false });
+                const particleSystem = new THREE.Points(particlesGeom, particlesMat); sceneDark.add(particleSystem);
+
+                let opWebglResizeRaf = 0;
+                let opLastWebglWidth = 0;
+                let opLastWebglHeight = 0;
+                const opResizeWebgl = () => {
+                    opWebglResizeRaf = 0;
+                    const nextW = Math.max(1, opViewportWidth());
+                    const nextH = Math.max(1, opViewportHeight());
+                    if (Math.abs(nextW - opLastWebglWidth) < 2 && Math.abs(nextH - opLastWebglHeight) < 2) return;
+                    opLastWebglWidth = nextW;
+                    opLastWebglHeight = nextH;
+                    renderer.setSize(nextW, nextH, false);
+                    cameraDark.aspect = nextW / nextH;
+                    cameraDark.updateProjectionMatrix();
+                };
+                const opScheduleWebglResize = () => {
+                    if (opWebglResizeRaf) return;
+                    opWebglResizeRaf = requestAnimationFrame(opResizeWebgl);
+                };
+                window.addEventListener('resize', opScheduleWebglResize, { passive: true });
+                window.visualViewport?.addEventListener('resize', opScheduleWebglResize, { passive: true });
+
+                let targetMouseX = 0; let targetMouseY = 0;
+                let opPointerRaf = 0;
+                let opPendingPointerX = 0;
+                let opPendingPointerY = 0;
+                if (!isMobileInit) {
+                    window.addEventListener('pointermove', (e) => {
+                        if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+                        opPendingPointerX = e.clientX;
+                        opPendingPointerY = e.clientY;
+                        if (opPointerRaf) return;
+                        opPointerRaf = requestAnimationFrame(() => {
+                            opPointerRaf = 0;
+                            const w = Math.max(1, window.innerWidth);
+                            const h = Math.max(1, window.innerHeight);
+                            targetMouseX = (opPendingPointerX / w) * 2 - 1;
+                            targetMouseY = -(opPendingPointerY / h) * 2 + 1;
+                        });
+                    }, {passive: true});
+                }
+
+                let webglRunning = false;
+                let opWebglLastFrame = performance.now();
+                document.addEventListener('op:webgl-home-resync', () => {
+                    globalScrollVelocity = 0;
+                    opWebglLastFrame = performance.now();
+                    targetMouseX = 0;
+                    targetMouseY = 0;
+                    cameraDark.position.x *= 0.86;
+                    cameraDark.position.y *= 0.86;
+                    opScheduleWebglResize();
+                });
+                let opSlowFrameCount = 0;
+                const opWebglBaseFrameInterval = opWebglPhone ? (opVerySmallPhone || opSaveData ? 1000 / 36 : 1000 / 55) : (opWebglTabletTouch || opRuntimeLowPower ? 1000 / 55 : 0);
+                const opApplyAdaptiveQuality = () => {
+                    const minDpr = opWebglPhone ? 0.62 : (opWebglTabletTouch ? 0.74 : 0.78);
+                    if (opAdaptivePixelRatio > minDpr) {
+                        opAdaptivePixelRatio = Math.max(minDpr, opAdaptivePixelRatio - 0.08);
+                        renderer.setPixelRatio(opAdaptivePixelRatio);
+                        renderer.setSize(Math.max(1, opViewportWidth()), Math.max(1, opViewportHeight()), false);
+                    }
+                    const particleFloor = opWebglPhone ? 240 : (opWebglTabletTouch ? 340 : 480);
+                    if (opActiveParticleCount > particleFloor) {
+                        opActiveParticleCount = Math.max(particleFloor, Math.floor(opActiveParticleCount * 0.88));
+                        particlesGeom.setDrawRange(0, opActiveParticleCount);
+                    }
+                };
+
+                document.addEventListener('op:perf-stress', () => {
+                    opApplyAdaptiveQuality();
+                    opApplyAdaptiveQuality();
+                });
+
+                const renderWebGL = (now = performance.now()) => {
+                    if (document.hidden) { webglRunning = false; return; }
+                    webglRunning = true;
+                    const elapsed = now - opWebglLastFrame;
+                    const lightboxOpen = document.documentElement.classList.contains('op-lightbox-open');
+                    const frameInterval = lightboxOpen ? 1000 / 30 : opWebglBaseFrameInterval;
+                    if (frameInterval > 0 && elapsed < frameInterval) {
+                        requestAnimationFrame(renderWebGL);
+                        return;
+                    }
+
+                    if (elapsed > (opWebglPhone ? 42 : opWebglTabletTouch ? 34 : 28)) {
+                        opSlowFrameCount += 1;
+                        if (opSlowFrameCount > 8) { opSlowFrameCount = 0; opApplyAdaptiveQuality(); }
+                    } else if (opSlowFrameCount > 0) {
+                        opSlowFrameCount -= 1;
+                    }
+
+                    opWebglLastFrame = now;
+                    const dtScale = Math.max(0.65, Math.min(2.2, elapsed / 16.6667));
+                    const positions = particlesPosition.array;
+                    const scrollPush = (opUseSmoothScroll && !opIsProgrammaticTopScrollActive()) ? globalScrollVelocity * 0.05 : 0;
+                    const end = opActiveParticleCount * 3;
+                    for(let i=1; i<end; i+=3) {
+                        positions[i] += (scrollPush + 0.05) * dtScale;
+                        if(positions[i] > 100) positions[i] = -100;
+                        else if(positions[i] < -100) positions[i] = 100;
+                    }
+                    particlesPosition.needsUpdate = true;
+                    particleSystem.rotation.y += 0.001 * dtScale;
+
+                    if (!isMobileInit) {
+                        cameraDark.position.x += (targetMouseX * 10 - cameraDark.position.x) * 0.05;
+                        cameraDark.position.y += (targetMouseY * 10 - cameraDark.position.y) * 0.05;
+                        cameraDark.lookAt(sceneDark.position);
+                    }
+
+                    renderer.render(sceneDark, cameraDark);
+                    requestAnimationFrame(renderWebGL);
+                };
+                requestAnimationFrame(renderWebGL);
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden && !webglRunning) {
+                        opWebglLastFrame = performance.now();
+                        requestAnimationFrame(renderWebGL);
+                    }
+                });
+                } catch (_) {
+                    document.documentElement.classList.add('op-webgl-fallback');
+                    (canvas as HTMLCanvasElement).style.display = 'none';
+                }
+                }
+            }
+
+        }, 2000);
+    };
+
+    if (document.readyState === 'complete') opBootParticles();
+    else window.addEventListener('load', opBootParticles, { once: true });
+</script>

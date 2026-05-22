@@ -31,3 +31,1403 @@ const { lbCloseLabel, lbPrevLabel, lbNextLabel, lbViewTitle } = Astro.props;
                 </div>
             </div>
         </div>
+
+<!-- BEGIN SCOPED CSS: generated from src/styles/global.css split -->
+<style>
+@media (min-width: 768px) and (max-width: 1180px) {
+.lightbox__image-wrapper { width: 62vw; padding: clamp(24px, 3vw, 40px); }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) {
+.lightbox__info { width: 38vw; padding: clamp(28px, 4vw, 40px) clamp(5vw, 7vw, 8vw) clamp(28px, 4vw, 40px) 0; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) {
+.lightbox__info h3 { font-size: clamp(1.25rem, 3vw, 2.1rem); }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) {
+.lightbox__info .project-details { font-size: clamp(0.95rem, 1.35vw, 1.05rem); line-height: 1.55; }
+}
+
+.lightbox { position: fixed; inset: 0; background: #050505; z-index: 1000000; display: none; opacity: 0; align-items: center; justify-content: center; overflow: hidden; will-change: opacity; height: calc(var(--op-vh, 1vh) * 100); touch-action: none; }
+
+.lightbox__ambient { position: absolute; inset: -10%; width: 120%; height: 120%; background-size: cover; background-position: center; filter: blur(60px) saturate(150%); opacity: 0; z-index: 0; pointer-events: none; transform: translateZ(0); will-change: opacity, background-image; }
+
+.lightbox__ui { position: absolute; top: 0; left: 0; width: 100%; padding: 40px; display: flex; justify-content: space-between; z-index: 10; pointer-events: none; }
+
+.lb-close { background: transparent; border: none; color: #fff; font-family: var(--font-display); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; pointer-events: auto; opacity: 0.7; transition: opacity 0.3s; }
+
+.lb-nav { background: transparent; border: none; color: #fff; font-family: var(--font-display); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; pointer-events: auto; opacity: 0.7; transition: opacity 0.3s; }
+
+.lb-close:hover { opacity: 1; }
+
+.lb-nav:hover { opacity: 1; }
+
+.lb-controls { display: flex; gap: 40px; }
+
+.lightbox__content { position: relative; z-index: 1; width: 100vw; height: calc(var(--op-vh, 1vh) * 100); 
+        display: flex; align-items: center; justify-content: center;
+        will-change: transform, opacity; }
+
+.lightbox__image-wrapper { width: 60vw; height: calc(var(--op-vh, 1vh) * 100); padding: 40px; cursor: default; 
+        display: flex; align-items: center; justify-content: center; 
+        transition: width 0.6s cubic-bezier(0.19, 1, 0.22, 1), padding 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
+
+.lightbox__img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); will-change: transform, opacity; }
+
+.lightbox__video { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); will-change: transform, opacity; }
+
+.lightbox__image-wrapper.is-video-wrapper { padding: 28px 40px; }
+
+.lightbox__image-wrapper.is-video-wrapper .lightbox__video { height: min(calc(var(--op-vh, 1vh) * 92), 980px); width: auto; max-width: 100%; aspect-ratio: 9/16; object-fit: contain; }
+
+.is-video-wrapper .lightbox__video { height: min(calc(var(--op-vh, 1vh) * 92), 980px); width: auto; max-width: 100%; aspect-ratio: 9/16; object-fit: contain; }
+
+.lightbox__info { width: 40vw; height: calc(var(--op-vh, 1vh) * 100); padding: 40px 10vw 40px 0; 
+        display: flex; flex-direction: column; justify-content: center; 
+        transition: opacity 0.4s, transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
+
+.lb-info-inner { will-change: transform, opacity; }
+
+.lightbox__info h3 { font-family: var(--font-display); font-size: clamp(1.15rem, 1.6vw, 1.75rem); font-weight: 700; margin: 0 0 26px; line-height: 1.12; color: var(--text); text-transform: uppercase; letter-spacing: 0.02em; }
+
+.lightbox__info .project-details { font-size: 1.1rem; line-height: 1.6; color: rgba(255,255,255,0.7); }
+
+.lightbox__info .m-summary { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+.lightbox__info .m-item { border-left: 2px solid var(--accent); padding-left: 20px; margin-bottom: 20px; }
+
+.lightbox__info .m-item strong { display: block; font-family: var(--font-display); font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; }
+
+.lightbox__info .m-item p { font-size: 1rem; line-height: 1.6; color: #fff; }
+
+.lightbox.is-fullscreen .lightbox__image-wrapper { width: 60vw; padding: 40px; cursor: default; }
+
+.lightbox.is-fullscreen .lightbox__img { border-radius: 12px; }
+
+.lightbox.is-fullscreen .lightbox__video { border-radius: 12px; }
+
+.lightbox.is-fullscreen .lightbox__info { opacity: 1; pointer-events: auto; transform: none; }
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox { align-items: flex-start !important;
+            overflow: hidden !important;
+            touch-action: pan-y !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__content { flex-direction: column !important;
+            justify-content: flex-start !important;
+            align-items: stretch !important;
+            height: calc(var(--op-vh, 1vh) * 100) !important;
+            padding-top: calc(68px + env(safe-area-inset-top, 0px)) !important;
+            overflow: hidden !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__image-wrapper { width: 100vw !important;
+            height: clamp(260px, calc(var(--op-vh, 1vh) * 38), 520px) !important;
+            flex: 0 0 auto !important;
+            padding: 14px clamp(34px, 6vw, 72px) 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 0 !important;
+            cursor: default !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox.is-fullscreen .lightbox__image-wrapper { width: 100vw !important;
+            height: clamp(260px, calc(var(--op-vh, 1vh) * 38), 520px) !important;
+            flex: 0 0 auto !important;
+            padding: 14px clamp(34px, 6vw, 72px) 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 0 !important;
+            cursor: default !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__img { width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            border-radius: 12px !important;
+            object-fit: contain !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__video { width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            border-radius: 12px !important;
+            object-fit: contain !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__image-wrapper.is-video-wrapper { height: clamp(420px, calc(var(--op-vh, 1vh) * 58), 740px) !important;
+            padding: 8px clamp(28px, 5vw, 64px) 16px !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox.is-fullscreen .lightbox__image-wrapper.is-video-wrapper { height: clamp(420px, calc(var(--op-vh, 1vh) * 58), 740px) !important;
+            padding: 8px clamp(28px, 5vw, 64px) 16px !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__image-wrapper.is-video-wrapper .lightbox__video { width: auto !important;
+            height: 100% !important;
+            max-width: 92vw !important;
+            max-height: 100% !important;
+            aspect-ratio: 9 / 16 !important;
+            object-fit: contain !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.is-video-wrapper .lightbox__video { width: auto !important;
+            height: 100% !important;
+            max-width: 92vw !important;
+            max-height: 100% !important;
+            aspect-ratio: 9 / 16 !important;
+            object-fit: contain !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__info { width: 100vw !important;
+            height: auto !important;
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            padding: 18px clamp(42px, 8vw, 96px) calc(34px + env(safe-area-inset-bottom, 0px)) !important;
+            justify-content: flex-start !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
+            display: block !important;
+            opacity: 1 !important;
+            transform: none !important;
+            pointer-events: auto !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox.is-fullscreen .lightbox__info { width: 100vw !important;
+            height: auto !important;
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            padding: 18px clamp(42px, 8vw, 96px) calc(34px + env(safe-area-inset-bottom, 0px)) !important;
+            justify-content: flex-start !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
+            display: block !important;
+            opacity: 1 !important;
+            transform: none !important;
+            pointer-events: auto !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lb-info-inner { display: block !important;
+            max-width: 780px !important;
+            margin: 0 auto !important;
+            padding-bottom: 30px !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__info h3 { font-size: clamp(1.12rem, 2.6vw, 1.5rem) !important;
+            line-height: 1.16 !important;
+            margin-bottom: 14px !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__info .project-details { font-size: 0.96rem !important;
+            line-height: 1.5 !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__info .m-summary { margin-bottom: 18px !important;
+            padding-bottom: 14px !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__info .m-item { margin-bottom: 14px !important;
+            padding-left: 16px !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (pointer: coarse),
+           (min-width: 768px) and (max-width: 1180px) and (orientation: portrait) and (any-pointer: coarse) {
+.lightbox__info .m-item p { font-size: 0.92rem !important;
+            line-height: 1.48 !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox { align-items: flex-start !important; overflow: hidden !important; touch-action: pan-y !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__content { flex-direction: column !important; 
+            justify-content: flex-start !important; 
+            align-items: stretch !important;
+            height: calc(var(--op-vh, 1vh) * 100) !important;
+            padding-top: calc(56px + env(safe-area-inset-top, 0px)) !important;
+            overflow: hidden !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__image-wrapper { width: 100vw !important; 
+            height: clamp(170px, calc(var(--op-vh, 1vh) * 34), 310px) !important; 
+            flex: 0 0 auto !important;
+            padding: 8px 18px 12px !important; 
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 0 !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__img { width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; border-radius: 12px !important; object-fit: contain !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__image-wrapper.is-video-wrapper { height: clamp(330px, calc(var(--op-vh, 1vh) * 60), 620px) !important;
+            padding: 4px 12px 12px !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__image-wrapper.is-video-wrapper .lightbox__video { height: 100% !important; 
+            width: auto !important; 
+            max-width: 96vw !important;
+            max-height: 100% !important;
+            aspect-ratio: 9/16 !important; 
+            object-fit: contain !important; 
+            border-radius: 12px !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.is-video-wrapper .lightbox__video { height: 100% !important; 
+            width: auto !important; 
+            max-width: 96vw !important;
+            max-height: 100% !important;
+            aspect-ratio: 9/16 !important; 
+            object-fit: contain !important; 
+            border-radius: 12px !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__info { width: 100vw !important; 
+            height: auto !important;
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            padding: 12px 20px calc(22px + env(safe-area-inset-bottom, 0px)) !important; 
+            justify-content: flex-start !important; 
+            overflow-y: auto !important; 
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
+            display: block !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lb-info-inner { display: block !important; 
+            max-width: 760px !important;
+            margin: 0 auto !important;
+            padding-bottom: 28px !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__info h3 { font-size: clamp(1.05rem, 5vw, 1.35rem) !important; line-height: 1.15 !important; margin-bottom: 12px !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__info .project-details { font-size: 0.92rem !important; line-height: 1.45 !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__info .m-summary { margin-bottom: 16px !important; padding-bottom: 12px !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__info .m-item { margin-bottom: 12px !important; padding-left: 16px !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__info .m-item strong { font-size: 8px !important; margin-bottom: 6px !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__info .m-item p { font-size: 0.88rem !important; line-height: 1.45 !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lightbox__ui { padding: calc(16px + env(safe-area-inset-top, 0px)) 18px 12px !important; }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+.lb-controls { gap: 20px !important; }
+}
+
+@media (max-width: 767px) {
+.lightbox { overscroll-behavior: contain; }
+}
+
+@media (max-width: 420px) {
+.lightbox__ui { padding: calc(14px + env(safe-area-inset-top, 0px)) 14px 10px !important; }
+}
+
+@media (max-width: 420px) {
+.lb-controls { gap: 14px !important; }
+}
+
+@media (max-width: 420px) {
+.lightbox__content { padding-top: calc(52px + env(safe-area-inset-top, 0px)) !important; }
+}
+
+@media (max-width: 420px) {
+.lightbox__image-wrapper { height: clamp(145px, calc(var(--op-vh, 1vh) * 30), 230px) !important; padding: 6px 14px 10px !important; }
+}
+
+@media (max-width: 420px) {
+.lightbox__image-wrapper.is-video-wrapper { height: clamp(310px, calc(var(--op-vh, 1vh) * 58), 520px) !important; padding: 4px 10px 10px !important; }
+}
+
+@media (max-width: 420px) {
+.lightbox__info { padding: 10px 18px calc(18px + env(safe-area-inset-bottom, 0px)) !important; }
+}
+
+@media (max-width: 420px) {
+.lightbox__info h3 { font-size: 1rem !important; margin-bottom: 10px !important; }
+}
+
+@media (max-width: 420px) {
+.lightbox__info .project-details { font-size: 0.86rem !important; line-height: 1.42 !important; }
+}
+
+@media (max-width: 420px) {
+.lightbox__info .m-summary { margin-bottom: 12px !important; }
+}
+
+@media (max-width: 420px) {
+.lightbox__info .m-item { margin-bottom: 10px !important; }
+}
+
+@media (max-width: 420px) {
+.lightbox__info .m-item p { font-size: 0.84rem !important; line-height: 1.42 !important; }
+}
+
+@media (max-width: 767px) and (orientation: landscape), (max-height: 560px) and (pointer: coarse) and (orientation: landscape) {
+.lightbox__content { flex-direction: row !important;
+            align-items: stretch !important;
+            padding-top: calc(50px + env(safe-area-inset-top, 0px)) !important; }
+}
+
+@media (max-width: 767px) and (orientation: landscape), (max-height: 560px) and (pointer: coarse) and (orientation: landscape) {
+.lightbox__image-wrapper { width: 54vw !important;
+            height: calc((var(--op-vh, 1vh) * 100) - 50px - env(safe-area-inset-top, 0px)) !important;
+            padding: 8px 12px calc(12px + env(safe-area-inset-bottom, 0px)) !important; }
+}
+
+@media (max-width: 767px) and (orientation: landscape), (max-height: 560px) and (pointer: coarse) and (orientation: landscape) {
+.lightbox__image-wrapper.is-video-wrapper { width: 48vw !important;
+            height: calc((var(--op-vh, 1vh) * 100) - 50px - env(safe-area-inset-top, 0px)) !important; }
+}
+
+@media (max-width: 767px) and (orientation: landscape), (max-height: 560px) and (pointer: coarse) and (orientation: landscape) {
+.lightbox__info { width: 46vw !important;
+            height: calc((var(--op-vh, 1vh) * 100) - 50px - env(safe-area-inset-top, 0px)) !important;
+            padding: 10px 18px calc(16px + env(safe-area-inset-bottom, 0px)) 8px !important; }
+}
+</style>
+<!-- END SCOPED CSS -->
+
+<script>
+            import { gsap } from 'gsap';
+            import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            const opRuntime = (window as any).__opRuntime || {};
+            const opCoarsePointer = opRuntime.opCoarsePointer || window.matchMedia('(pointer: coarse)');
+            const opViewportWidth = opRuntime.opViewportWidth || (() => Math.round(window.visualViewport?.width || window.innerWidth || 0));
+            const opViewportHeight = opRuntime.opViewportHeight || (() => Math.round(window.visualViewport?.height || window.innerHeight || 0));
+            const opIsTabletPortraitViewport = opRuntime.opIsTabletPortraitViewport || (() => {
+                const w = opViewportWidth();
+                const h = opViewportHeight();
+                return (opCoarsePointer.matches || navigator.maxTouchPoints > 0) && w >= 768 && w <= 1180 && h > w;
+            });
+            const opIsPhoneLikeViewport = opRuntime.opIsPhoneLikeViewport || (() => opViewportWidth() < 768 || (opCoarsePointer.matches && opViewportHeight() <= 560));
+            const opIsMobilePerf = opRuntime.opIsMobilePerf || (() => opIsPhoneLikeViewport());
+            const opUseStackedProjectLightbox = opRuntime.opUseStackedProjectLightbox || (() => opViewportWidth() < 768 || opIsTabletPortraitViewport());
+            const opIdle = opRuntime.opIdle || ((callback: () => void, timeout = 700) => {
+                if ('requestIdleCallback' in window) return (window as any).requestIdleCallback(callback, { timeout });
+                return window.setTimeout(callback, Math.min(timeout, 160));
+            });
+            const lenis = {
+                stop() { (window as any).__opLenis?.stop?.(); },
+                start() { (window as any).__opLenis?.start?.(); },
+                scrollTo(target: any, options: any = {}) {
+                    const instance = (window as any).__opLenis;
+                    if (instance?.scrollTo) return instance.scrollTo(target, options);
+                    if (target === 0) return window.scrollTo({ top: 0, behavior: options?.immediate ? 'auto' : 'smooth' });
+                    if (target?.scrollIntoView) return target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            };
+            const opPremiumSfx = {
+                play(kind: 'hover' | 'tap' | 'open' | 'close' | 'next' | 'enable' | 'disable') { (window as any).__opPremiumSfx?.play?.(kind); },
+                syncButtons() { (window as any).__opPremiumSfx?.syncButtons?.(); }
+            };
+            function opSetHeaderChromeHidden(hidden: boolean) { (window as any).__opSetHeaderChromeHidden?.(hidden); }
+            function opRestoreHeaderBlur() { (window as any).__opRestoreHeaderBlur?.(); }
+            // --- 6. LIGHTBOX CINEMATOGRÁFICO (OPTIMIZADO) ---
+            const lightbox = document.getElementById('lightbox'); 
+            const lbImgWrapper = document.getElementById('lb-img-wrapper');
+            const lbAmbient = document.getElementById('lb-ambient');
+            const lbTitle = document.getElementById('lb-title');
+            const lbDesc = document.getElementById('lb-desc');
+            let currentLbIndex = 0;
+            let isLbFullscreen = false;
+            let isAnimating = false;
+            const allLbTriggers = Array.from(document.querySelectorAll('.lb-trigger'));
+
+            // --- RESPONSIVE REAL DE PROYECTOS ---
+            // La tarjeta toma la proporción natural de cada imagen/video.
+            // Así no hay bordes negros laterales, no se estira el arte y tampoco se deforma en laptop, PC, iMac, tablet o iPad.
+            const opProjectFrameSelector = '.monolith, .h-card, .v-item';
+            let opProjectFrameRaf = 0;
+            let opProjectFrameLastViewportWidth = -1;
+            const opMobileProjectMediaGeometryPrepared = new WeakSet();
+
+            function opPrepareMobileProjectMediaGeometry(scope = document) {
+                if (!opIsMobilePerf()) return;
+                const cards = Array.from(scope.querySelectorAll('.monolith, .h-card, .v-item, .reel-item'));
+                cards.forEach((card) => {
+                    const cardEl = card as HTMLElement;
+                    cardEl.classList.add('op-mobile-standard-project');
+                    cardEl.style.setProperty('transform-origin', '50% 50%');
+                    const img = cardEl.querySelector('img') as HTMLImageElement | null;
+                    const video = cardEl.querySelector('video') as HTMLVideoElement | null;
+                    const media = img || video;
+                    if (!media || opMobileProjectMediaGeometryPrepared.has(media)) return;
+                    opMobileProjectMediaGeometryPrepared.add(media);
+
+                    const isReel = cardEl.classList.contains('reel-item');
+                    const isVertical = isReel || cardEl.classList.contains('v-item');
+                    const fallbackW = isVertical ? 563 : 1000;
+                    const fallbackH = isVertical ? 1000 : 563;
+
+                    // Geometría estable desde el primer layout: evita cambios de alto/ratio justo al entrar en pantalla.
+                    if (!media.hasAttribute('width')) media.setAttribute('width', String(fallbackW));
+                    if (!media.hasAttribute('height')) media.setAttribute('height', String(fallbackH));
+                    media.setAttribute('draggable', 'false');
+                    media.setAttribute('decoding', 'async');
+                    if (img) {
+                        img.setAttribute('loading', 'eager');
+                        if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'auto');
+                    } else if (video) {
+                        video.playsInline = true;
+                        video.setAttribute('playsinline', '');
+                        if (!video.hasAttribute('preload')) video.setAttribute('preload', 'metadata');
+                    }
+                });
+            }
+
+            function opApplyResponsiveProjectFrames(scope = document) {
+                const cards = Array.from(scope.querySelectorAll(opProjectFrameSelector));
+
+                cards.forEach((card) => {
+                    const cardEl = card as HTMLElement;
+                    const media = cardEl.querySelector('img, video') as HTMLImageElement | HTMLVideoElement | null;
+                    if (!media) return;
+
+                    const applyRatio = () => {
+                        let naturalW = 0;
+                        let naturalH = 0;
+
+                        if (media instanceof HTMLImageElement) {
+                            naturalW = media.naturalWidth || Number(media.getAttribute('width')) || 0;
+                            naturalH = media.naturalHeight || Number(media.getAttribute('height')) || 0;
+                        } else if (media instanceof HTMLVideoElement) {
+                            naturalW = media.videoWidth || Number(media.getAttribute('width')) || 0;
+                            naturalH = media.videoHeight || Number(media.getAttribute('height')) || 0;
+                        }
+
+                        if (!naturalW || !naturalH) return;
+
+                        const ratio = Math.max(0.55, Math.min(3.4, naturalW / naturalH));
+                        const viewportH = Math.max(320, opViewportHeight());
+                        const viewportW = Math.max(320, opViewportWidth());
+                        const isSmallViewport = viewportW < 768 || (opCoarsePointer.matches && viewportH <= 560);
+                        const needsPremiumBreath = !isSmallViewport && (
+                            viewportW <= 1680 ||
+                            viewportH <= 980 ||
+                            (opCoarsePointer.matches && viewportW <= 1366)
+                        );
+                        const heightCap = cardEl.matches('.v-item')
+                            ? (isSmallViewport ? 0.42 : needsPremiumBreath ? 0.30 : 0.38)
+                            : (isSmallViewport ? 0.56 : needsPremiumBreath ? 0.58 : 0.76);
+                        const maxWidthByHeight = Math.max(260, Math.floor(viewportH * heightCap * ratio));
+
+                        cardEl.style.setProperty('--op-card-ratio', `${naturalW} / ${naturalH}`);
+                        cardEl.style.setProperty('--op-card-ratio-num', ratio.toFixed(6));
+                        cardEl.style.setProperty('--op-card-max-w', `${maxWidthByHeight}px`);
+                    };
+
+                    const applyRatioWhenSafe = () => {
+                        if (!opIsMobilePerf()) {
+                            applyRatio();
+                            return;
+                        }
+
+                        const run = () => {
+                            const quietFor = performance.now() - opLastScrollInputAt;
+                            if (quietFor < 180) {
+                                window.setTimeout(run, 200 - quietFor);
+                                return;
+                            }
+                            applyRatio();
+                            if (typeof opRefreshMobileScrollLifeMetrics === 'function') opRefreshMobileScrollLifeMetrics();
+                        };
+
+                        if ('requestIdleCallback' in window) {
+                            (window as any).requestIdleCallback(run, { timeout: 1200 });
+                        } else {
+                            window.setTimeout(run, 90);
+                        }
+                    };
+
+                    applyRatio();
+
+                    if (media instanceof HTMLImageElement && !media.complete) {
+                        media.addEventListener('load', applyRatioWhenSafe, { once: true, passive: true });
+                    }
+
+                    if (media instanceof HTMLVideoElement && !media.videoWidth) {
+                        media.addEventListener('loadedmetadata', applyRatioWhenSafe, { once: true, passive: true });
+                    }
+                });
+            }
+
+            function opScheduleResponsiveProjectFrames(scope = document, force = false) {
+                // En móvil, el navegador dispara resize al esconder/mostrar la barra de URL.
+                // Recalcular ratios durante ese gesto produce tirones; solo refrescamos si cambia el ancho real.
+                if (!force && opIsMobilePerf()) {
+                    const widthNow = opViewportWidth();
+                    if (opProjectFrameLastViewportWidth > 0 && Math.abs(widthNow - opProjectFrameLastViewportWidth) <= 8) return;
+                    opProjectFrameLastViewportWidth = widthNow;
+                }
+
+                if (opProjectFrameRaf) cancelAnimationFrame(opProjectFrameRaf);
+                opProjectFrameRaf = requestAnimationFrame(() => {
+                    opProjectFrameRaf = 0;
+                    opApplyResponsiveProjectFrames(scope);
+                });
+            }
+
+            opPrepareMobileProjectMediaGeometry(document);
+            opScheduleResponsiveProjectFrames(document, true);
+            window.addEventListener('resize', () => opScheduleResponsiveProjectFrames(), { passive: true });
+            window.visualViewport?.addEventListener('resize', () => opScheduleResponsiveProjectFrames(), { passive: true });
+            window.addEventListener('orientationchange', () => window.setTimeout(() => opScheduleResponsiveProjectFrames(document, true), 220), { passive: true });
+            document.addEventListener('astro:page-load', () => {
+                opPrepareMobileProjectMediaGeometry(document);
+                opScheduleResponsiveProjectFrames(document, true);
+            });
+
+            // --- EFECTO SCROLL-LIFE TIPO ANTIGRAVITY / 10-10 ---
+            // La pieza empieza realmente más pequeña y llega a su tamaño exacto sin cambiar proporciones.
+            // En móvil aplica a todos los proyectos; en tablet/escritorio protege los 3 primeros y su efecto especial.
+            // En móvil usa un motor ligero propio; en desktop/tablet usa transform directo con ScrollTrigger.
+            const opScrollLifeSelector = '.monolith, .h-card, .v-item, .reel-item';
+            let opScrollLifeTweens = [];
+            let opScrollLifeTargets = [];
+            let opScrollLifeResizeRaf = 0;
+            let opScrollLifeLastViewportWidth = -1;
+            const opMobileScrollLifeProfiles = new WeakMap();
+            const opMobileScrollLifeMetrics = new WeakMap();
+            const opMobileScrollLifeMeasured = new WeakSet();
+            const OP_MOBILE_LIFE_ACTIVE_MARGIN = 80;
+            const opMobileScrollLifeActive = new Set();
+            const opMobileScrollLifeLastProgress = new WeakMap();
+            let opMobileScrollLifeTargets = [];
+            let opMobileScrollLifeObserver = null;
+            let opMobileScrollLifeReadyObserver = null;
+            let opMobileScrollLifeRaf = 0;
+            let opMobileScrollLifeEventsBound = false;
+
+            function opClearMobileScrollLifeProjects() {
+                if (opMobileScrollLifeObserver) opMobileScrollLifeObserver.disconnect();
+                if (opMobileScrollLifeReadyObserver) opMobileScrollLifeReadyObserver.disconnect();
+                opMobileScrollLifeObserver = null;
+                opMobileScrollLifeReadyObserver = null;
+                if (opMobileScrollLifeRaf) cancelAnimationFrame(opMobileScrollLifeRaf);
+                opMobileScrollLifeRaf = 0;
+                opMobileScrollLifeActive.clear();
+                opMobileScrollLifeTargets.forEach((entry) => {
+                    const target = entry?.target || entry;
+                    if (!target) return;
+                    target.classList.remove('op-scroll-life-target', 'op-scroll-life-mobile', 'is-scroll-life-active', 'is-scroll-life-ready');
+                    target.style.removeProperty('transform');
+                    target.style.removeProperty('opacity');
+                    target.style.removeProperty('transform-origin');
+                    target.style.removeProperty('will-change');
+                    target.style.removeProperty('contain');
+                    opMobileScrollLifeLastProgress.delete(target);
+                });
+                opMobileScrollLifeTargets = [];
+            }
+
+            function opClearScrollLifeProjects() {
+                opScrollLifeTweens.forEach((tween) => tween?.kill?.());
+                opScrollLifeTweens = [];
+                opClearMobileScrollLifeProjects();
+                opScrollLifeTargets.forEach((target) => {
+                    target.classList.remove('op-scroll-life-target', 'is-scroll-life-active', 'is-scroll-life-ready');
+                    gsap.set(target, { clearProps: 'scale,y,x,autoAlpha,opacity,transform,transformOrigin,willChange,force3D' });
+                    target.style?.removeProperty?.('--op-scroll-life-scale');
+                    target.style?.removeProperty?.('--op-scroll-life-y');
+                    target.style?.removeProperty?.('--op-scroll-life-opacity');
+                });
+                opScrollLifeTargets = [];
+            }
+
+            function opProjectLifeTargetFromTrigger(trigger) {
+                if (!trigger) return null;
+                if (trigger.matches?.(opScrollLifeSelector)) return trigger;
+
+                // El trigger del lightbox puede estar en la imagen/wrapper interno, no siempre en la tarjeta.
+                // closest() garantiza que desktop, laptop, iPad/tablet y móvil reciban el mismo efecto.
+                const closestTarget = trigger.closest?.(opScrollLifeSelector);
+                if (closestTarget) return closestTarget;
+
+                return trigger.querySelector?.(opScrollLifeSelector) || null;
+            }
+
+            function opGetScrollLifeProfile(target, isMobile, isTouchTablet) {
+                const isReel = target.classList.contains('reel-item');
+                const isVault = target.classList.contains('v-item');
+                if (isMobile) {
+                    return {
+                        startScale: isReel ? 0.86 : isVault ? 0.82 : 0.80,
+                        startY: isReel ? 14 : isVault ? 18 : 22,
+                        start: 'top 112%',
+                        end: isReel ? 'center 70%' : 'center 64%',
+                        scrub: 0.55
+                    };
+                }
+                return {
+                    startScale: isReel ? 0.78 : isVault ? 0.72 : isTouchTablet ? 0.70 : 0.68,
+                    startY: isReel ? 26 : isVault ? 36 : 52,
+                    start: 'top 106%',
+                    end: isReel ? 'center 62%' : 'center 56%',
+                    scrub: 0.95
+                };
+            }
+
+            function opSmoothLifeProgress(t) {
+                const clamped = Math.max(0, Math.min(1, t));
+                return clamped * clamped * (3 - 2 * clamped);
+            }
+
+            function opApplyMobileScrollLifeTransform(target, profile, progress, force = false) {
+                const clampedProgress = Math.max(0, Math.min(1, progress));
+                const previousProgress = opMobileScrollLifeLastProgress.get(target);
+                if (!force && previousProgress !== undefined && Math.abs(previousProgress - clampedProgress) < 0.0035) return;
+                opMobileScrollLifeLastProgress.set(target, clampedProgress);
+
+                const eased = opSmoothLifeProgress(clampedProgress);
+                const scale = profile.startScale + ((1 - profile.startScale) * eased);
+                const y = profile.startY * (1 - eased);
+                target.style.setProperty('transform', `translate3d(0, ${y.toFixed(3)}px, 0) scale(${scale.toFixed(5)})`, 'important');
+                target.style.setProperty('opacity', '1', 'important');
+            }
+
+            function opMeasureMobileScrollLifeTarget(target, profile) {
+                if (!target || !profile || !opIsMobilePerf()) return;
+                const vh = Math.max(360, opViewportHeight());
+                const startPx = vh * (target.classList.contains('reel-item') ? 1.08 : 1.12);
+                const endPx = vh * (target.classList.contains('reel-item') ? 0.70 : target.classList.contains('v-item') ? 0.68 : 0.64);
+                const range = Math.max(1, startPx - endPx);
+                const top = target.getBoundingClientRect().top + (window.scrollY || window.pageYOffset || 0);
+                opMobileScrollLifeMetrics.set(target, { top, startPx, endPx, range });
+                opMobileScrollLifeMeasured.add(target);
+            }
+
+            let opMobileMetricsRefreshRaf = 0;
+            let opMobileMetricsRefreshTimer = 0;
+            let opMobileMetricsLastWidth = -1;
+
+            function opRefreshMobileScrollLifeMetrics(force = false) {
+                if (!opIsMobilePerf() || !opMobileScrollLifeTargets.length) return;
+
+                const widthNow = opViewportWidth();
+                const quietFor = performance.now() - opLastScrollInputAt;
+                const widthStable = opMobileMetricsLastWidth > 0 && Math.abs(widthNow - opMobileMetricsLastWidth) <= 8;
+
+                // En móvil, la barra del navegador dispara resize mientras se hace scroll.
+                // Medir todas las tarjetas en ese momento es una de las causas típicas de microtirones.
+                if (!force && widthStable && quietFor < 280) {
+                    if (!opMobileMetricsRefreshTimer) {
+                        opMobileMetricsRefreshTimer = window.setTimeout(() => {
+                            opMobileMetricsRefreshTimer = 0;
+                            opRefreshMobileScrollLifeMetrics(false);
+                        }, 320);
+                    }
+                    return;
+                }
+
+                if (opMobileMetricsRefreshRaf) cancelAnimationFrame(opMobileMetricsRefreshRaf);
+                opMobileMetricsRefreshRaf = requestAnimationFrame(() => {
+                    opMobileMetricsRefreshRaf = 0;
+                    opMobileMetricsLastWidth = widthNow;
+                    opMobileScrollLifeTargets.forEach(({ target, profile }) => opMeasureMobileScrollLifeTarget(target, profile));
+                    opRequestMobileScrollLifeTick();
+                });
+            }
+
+            function opMobileScrollLifeTick() {
+                opMobileScrollLifeRaf = 0;
+                if (!opIsMobilePerf() || !opMobileScrollLifeActive.size) return;
+
+                const scrollY = window.scrollY || window.pageYOffset || 0;
+                opMobileScrollLifeActive.forEach((target) => {
+                    const profile = opMobileScrollLifeProfiles.get(target);
+                    if (!profile) return;
+                    if (!opMobileScrollLifeMeasured.has(target)) opMeasureMobileScrollLifeTarget(target, profile);
+                    const metrics = opMobileScrollLifeMetrics.get(target);
+                    if (!metrics) return;
+                    const progress = ((scrollY + metrics.startPx) - metrics.top) / metrics.range;
+                    opApplyMobileScrollLifeTransform(target, profile, progress);
+                });
+            }
+
+            function opRequestMobileScrollLifeTick() {
+                if (!opIsMobilePerf() || opMobileScrollLifeRaf) return;
+                opMobileScrollLifeRaf = requestAnimationFrame(opMobileScrollLifeTick);
+            }
+
+            function opInitMobileScrollLifeProjects(entries) {
+                opClearMobileScrollLifeProjects();
+                if (!entries.length || !opIsMobilePerf()) return;
+
+                opMobileScrollLifeTargets = entries;
+                const supportsObserver = 'IntersectionObserver' in window;
+
+                if (supportsObserver) {
+                    opMobileScrollLifeReadyObserver = new IntersectionObserver((observerEntries) => {
+                        observerEntries.forEach((entry) => {
+                            const target = entry.target;
+                            target.classList.toggle('is-scroll-life-ready', entry.isIntersecting);
+                        });
+                    }, { root: null, rootMargin: '1600px 0px 1600px 0px', threshold: 0 });
+
+                    opMobileScrollLifeObserver = new IntersectionObserver((observerEntries) => {
+                        observerEntries.forEach((entry) => {
+                            const target = entry.target;
+                            const profile = opMobileScrollLifeProfiles.get(target);
+                            if (!profile) return;
+
+                            if (entry.isIntersecting) {
+                                opMobileScrollLifeActive.add(target);
+                                target.classList.add('is-scroll-life-active');
+                            } else {
+                                opMobileScrollLifeActive.delete(target);
+                                target.classList.remove('is-scroll-life-active');
+                                const belowViewport = entry.boundingClientRect.top > 0;
+                                opApplyMobileScrollLifeTransform(target, profile, belowViewport ? 0 : 1, true);
+                            }
+                        });
+                        opRequestMobileScrollLifeTick();
+                    }, { root: null, rootMargin: `${OP_MOBILE_LIFE_ACTIVE_MARGIN}px 0px ${OP_MOBILE_LIFE_ACTIVE_MARGIN}px 0px`, threshold: 0 });
+                }
+
+                entries.forEach(({ target, profile }) => {
+                    opMobileScrollLifeProfiles.set(target, profile);
+                    target.classList.add('op-scroll-life-target', 'op-scroll-life-mobile');
+                    target.style.setProperty('transform-origin', '50% 50%', 'important');
+                    target.style.setProperty('contain', 'layout style');
+                    opApplyMobileScrollLifeTransform(target, profile, 0, true);
+                    opMeasureMobileScrollLifeTarget(target, profile);
+
+                    if (supportsObserver) {
+                        opMobileScrollLifeReadyObserver.observe(target);
+                        opMobileScrollLifeObserver.observe(target);
+                    } else {
+                        opMobileScrollLifeActive.add(target);
+                        target.classList.add('is-scroll-life-active', 'is-scroll-life-ready');
+                    }
+                });
+
+                if (!opMobileScrollLifeEventsBound) {
+                    opMobileScrollLifeEventsBound = true;
+                    window.addEventListener('resize', opRefreshMobileScrollLifeMetrics, { passive: true });
+                    window.visualViewport?.addEventListener('resize', opRefreshMobileScrollLifeMetrics, { passive: true });
+                    window.addEventListener('load', () => window.setTimeout(() => opRefreshMobileScrollLifeMetrics(true), 260), { once: true, passive: true });
+                }
+                requestAnimationFrame(() => opRefreshMobileScrollLifeMetrics(true));
+                opRequestMobileScrollLifeTick();
+            }
+
+            function opInitScrollLifeProjects() {
+                opClearScrollLifeProjects();
+
+                const opScrollLifeMobile = opViewportWidth() < 768;
+                const keepDesktopHeroEffects = !opScrollLifeMobile;
+                const orderedProjects = Array.from(document.querySelectorAll(opScrollLifeSelector));
+                const triggerSources = Array.from(new Set([
+                    ...Array.from(document.querySelectorAll('.lb-trigger')),
+                    ...orderedProjects
+                ]));
+                const seen = new Set();
+                const mobileScrollLifeEntries = [];
+
+                triggerSources.forEach((trigger) => {
+                    const target = opProjectLifeTargetFromTrigger(trigger);
+                    if (!target || seen.has(target)) return;
+
+                    const projectIndex = orderedProjects.indexOf(target);
+                    if (keepDesktopHeroEffects && (projectIndex < 3 || target.closest?.('.z-wrapper'))) return;
+                    seen.add(target);
+
+                    const inHorizontalPortfolio = !!target.closest('.h-wrapper');
+                    const inReels = !!target.closest('.reels-wrapper');
+                    const containerAnimation = inHorizontalPortfolio ? opHorizontalPortfolioTween : inReels ? opReelsScrollTween : null;
+                    const isTouchTablet = !opScrollLifeMobile && opCoarsePointer.matches;
+                    const profile = opGetScrollLifeProfile(target, opScrollLifeMobile, isTouchTablet);
+                    if (opScrollLifeMobile) {
+                        mobileScrollLifeEntries.push({ target, profile });
+                        return;
+                    }
+
+                    const activityCallbacks = {
+                        onEnter: () => target.classList.add('is-scroll-life-active'),
+                        onEnterBack: () => target.classList.add('is-scroll-life-active'),
+                        onLeave: () => target.classList.remove('is-scroll-life-active'),
+                        onLeaveBack: () => target.classList.remove('is-scroll-life-active')
+                    };
+                    const triggerConfig = containerAnimation
+                        ? { trigger: target, containerAnimation, start: 'left 102%', end: 'center 58%', scrub: profile.scrub, invalidateOnRefresh: true, ...activityCallbacks }
+                        : { trigger: target, start: profile.start, end: profile.end, scrub: profile.scrub, invalidateOnRefresh: true, ...activityCallbacks };
+
+                    target.classList.add('op-scroll-life-target');
+                    target.style.setProperty('transform-origin', '50% 50%');
+                    opScrollLifeTargets.push(target);
+
+                    const tween = gsap.fromTo(target,
+                        {
+                            scale: profile.startScale,
+                            y: profile.startY,
+                            autoAlpha: 1,
+                            force3D: true,
+                            transformOrigin: '50% 50%'
+                        },
+                        {
+                            scale: 1,
+                            y: 0,
+                            autoAlpha: 1,
+                            force3D: true,
+                            ease: 'none',
+                            overwrite: 'auto',
+                            scrollTrigger: triggerConfig
+                        }
+                    );
+
+                    opScrollLifeTweens.push(tween);
+                });
+
+                if (opScrollLifeMobile) {
+                    opInitMobileScrollLifeProjects(mobileScrollLifeEntries);
+                    return;
+                }
+
+                ScrollTrigger.refresh();
+            }
+
+            function opScheduleScrollLifeProjects(force = false) {
+                // Evita destruir/recrear ScrollTriggers durante el scroll móvil por cambios de altura del navegador.
+                if (!force && opIsMobilePerf()) {
+                    const widthNow = opViewportWidth();
+                    if (opScrollLifeLastViewportWidth > 0 && Math.abs(widthNow - opScrollLifeLastViewportWidth) <= 8) return;
+                    opScrollLifeLastViewportWidth = widthNow;
+                }
+
+                if (opScrollLifeResizeRaf) cancelAnimationFrame(opScrollLifeResizeRaf);
+                opScrollLifeResizeRaf = requestAnimationFrame(() => {
+                    opScrollLifeResizeRaf = 0;
+                    opInitScrollLifeProjects();
+                });
+            }
+
+            requestAnimationFrame(() => opInitScrollLifeProjects());
+            window.addEventListener('resize', () => opScheduleScrollLifeProjects(), { passive: true });
+            window.visualViewport?.addEventListener('resize', () => opScheduleScrollLifeProjects(), { passive: true });
+            window.addEventListener('orientationchange', () => window.setTimeout(() => opScheduleScrollLifeProjects(true), 240), { passive: true });
+            window.addEventListener('load', () => window.setTimeout(() => opScheduleScrollLifeProjects(true), 260), { once: true, passive: true });
+            document.addEventListener('astro:page-load', () => {
+                opPrepareMobileProjectMediaGeometry(document);
+                opScheduleResponsiveProjectFrames(document, true);
+                opScheduleScrollLifeProjects(true);
+            });
+
+            // --- OPTIMIZACIÓN PASIVA DE MEDIOS 10-10 ---
+            // No cambia diseño ni proporciones: solo guía al navegador para cargar, decodificar y pausar mejor.
+            function opApplyMediaPerformanceHints(scope = document) {
+                const mediaNodes = Array.from(scope.querySelectorAll('img, video'));
+                const projectImages = Array.from(scope.querySelectorAll('.monolith img, .h-card img, .v-item img, .reel-item img'));
+                const projectImageIndex = new WeakMap();
+                projectImages.forEach((img, index) => projectImageIndex.set(img, index));
+
+                mediaNodes.forEach((node, index) => {
+                    const inFirstDesktopProjects = index < 3 || Boolean(node.closest?.('.z-wrapper'));
+                    if (node instanceof HTMLImageElement) {
+                        const mobileProjectIndex = projectImageIndex.has(node) ? projectImageIndex.get(node) : -1;
+                        node.setAttribute('decoding', 'async');
+                        node.setAttribute('draggable', 'false');
+
+                        if (opIsMobilePerf() && mobileProjectIndex >= 0) {
+                            // Pipeline móvil único para proyectos normales y videos/reels:
+                            // la imagen queda lista antes de aparecer, pero sin prioridades agresivas que bloqueen el scroll.
+                            const isMobileReelThumb = Boolean(node.closest?.('.reel-item'));
+                            node.setAttribute('loading', mobileProjectIndex < 10 ? 'eager' : 'lazy');
+                            node.setAttribute('fetchpriority', mobileProjectIndex < 4 ? 'high' : isMobileReelThumb ? 'low' : 'auto');
+                            if (isMobileReelThumb) {
+                                if (!node.hasAttribute('width')) node.setAttribute('width', '563');
+                                if (!node.hasAttribute('height')) node.setAttribute('height', '1000');
+                            }
+                        } else {
+                            if (!node.hasAttribute('fetchpriority') && inFirstDesktopProjects) node.setAttribute('fetchpriority', 'high');
+                            if (!node.hasAttribute('loading') && !inFirstDesktopProjects) node.setAttribute('loading', 'lazy');
+                        }
+                    } else if (node instanceof HTMLVideoElement) {
+                        node.playsInline = true;
+                        node.setAttribute('playsinline', '');
+                        if (opIsMobilePerf() && (node.classList.contains('hover-video') || Boolean(node.closest?.('.reel-item')))) {
+                            node.setAttribute('preload', 'none');
+                            node.pause?.();
+                        } else if (!node.hasAttribute('preload') && !inFirstDesktopProjects) {
+                            node.setAttribute('preload', 'metadata');
+                        }
+                    }
+                });
+            }
+
+            const opPrimedScrollMedia = new WeakSet();
+
+            function opPrimeMediaNodeForSmoothScroll(node) {
+                if (!node || opPrimedScrollMedia.has(node)) return;
+                opPrimedScrollMedia.add(node);
+
+                if (node instanceof HTMLImageElement) {
+                    node.setAttribute('decoding', 'async');
+                    node.setAttribute('draggable', 'false');
+                    // En móvil se cambia a eager justo antes de llegar al viewport, no al cargar la página.
+                    // Esto evita el decode justo cuando aparece la tarjeta.
+                    if (opIsMobilePerf()) node.setAttribute('loading', 'eager');
+                    const decodeImage = () => {
+                        if (typeof node.decode !== 'function') return;
+                        const run = () => {
+                            if (opIsMobilePerf()) {
+                                const quietFor = performance.now() - opLastScrollInputAt;
+                                if (quietFor < 700) {
+                                    window.setTimeout(run, 760 - quietFor);
+                                    return;
+                                }
+                                if (!node.complete || !node.naturalWidth) return;
+                            }
+                            node.decode().catch(() => {});
+                        };
+                        if ('requestIdleCallback' in window) {
+                            (window as any).requestIdleCallback(run, { timeout: 1600 });
+                        } else {
+                            window.setTimeout(run, 180);
+                        }
+                    };
+                    if (node.complete && node.naturalWidth) decodeImage();
+                    else node.addEventListener('load', decodeImage, { once: true, passive: true });
+                } else if (node instanceof HTMLVideoElement) {
+                    node.playsInline = true;
+                    node.setAttribute('playsinline', '');
+                    if (opIsMobilePerf()) {
+                        node.setAttribute('preload', 'none');
+                        try { node.pause?.(); } catch (_) {}
+                        return;
+                    }
+                    if (!node.hasAttribute('preload') || node.getAttribute('preload') === 'none') node.setAttribute('preload', 'metadata');
+                    try { node.load(); } catch (_) {}
+                }
+            }
+
+            function opPrimeProjectMediaForSmoothScroll(scope = document) {
+                const mediaSelector = opIsMobilePerf()
+                    ? '.monolith img, .h-card img, .v-item img, .reel-item img'
+                    : '.monolith img, .h-card img, .v-item img, .reel-item img, .monolith video, .h-card video, .v-item video, .reel-item video';
+                const mediaNodes = Array.from(scope.querySelectorAll(mediaSelector));
+                if (!mediaNodes.length) return;
+
+                if (!("IntersectionObserver" in window)) {
+                    mediaNodes.forEach(opPrimeMediaNodeForSmoothScroll);
+                    return;
+                }
+
+                const rootMargin = opIsMobilePerf() ? '1100px 0px 1100px 0px' : '1100px 0px 1100px 0px';
+                const observer = new IntersectionObserver((entries, io) => {
+                    entries.forEach((entry) => {
+                        if (!entry.isIntersecting) return;
+                        opPrimeMediaNodeForSmoothScroll(entry.target);
+                        io.unobserve(entry.target);
+                    });
+                }, { root: null, rootMargin, threshold: 0.01 });
+
+                mediaNodes.forEach((node) => {
+                    if (opPrimedScrollMedia.has(node)) return;
+                    observer.observe(node);
+                });
+            }
+
+            const opMobileWarmDecodedImages = new WeakSet();
+            const opMobilePreloadedImages = new Set();
+
+            function opPreloadImageForMobile(img, priority = 'high') {
+                const src = img.currentSrc || img.getAttribute('src');
+                if (!src || opMobilePreloadedImages.has(src)) return;
+                opMobilePreloadedImages.add(src);
+                const link = document.createElement('link');
+                link.rel = 'preload';
+                link.as = 'image';
+                link.href = src;
+                link.setAttribute('fetchpriority', priority);
+                document.head.appendChild(link);
+            }
+
+            function opWarmMobileProjectImages(scope = document) {
+                if (!opIsMobilePerf()) return;
+                const imgs = Array.from(scope.querySelectorAll('.monolith img, .h-card img, .v-item img, .reel-item img')).filter((img) => img instanceof HTMLImageElement) as HTMLImageElement[];
+                if (!imgs.length) return;
+
+                const reelThumbs = imgs.filter((img) => Boolean(img.closest?.('.reel-item')));
+                const warm = Array.from(new Set([...imgs.slice(0, 16), ...reelThumbs.slice(0, 4)]));
+
+                warm.forEach((img, index) => {
+                    const isReelThumb = Boolean(img.closest?.('.reel-item'));
+                    const isVertical = isReelThumb || Boolean(img.closest?.('.v-item'));
+                    img.setAttribute('loading', 'eager');
+                    img.setAttribute('decoding', 'async');
+                    img.setAttribute('draggable', 'false');
+                    if (!img.hasAttribute('width')) img.setAttribute('width', isVertical ? '563' : '1000');
+                    if (!img.hasAttribute('height')) img.setAttribute('height', isVertical ? '1000' : '563');
+                    img.setAttribute('fetchpriority', index < 4 ? 'high' : 'auto');
+                    if (index < 6 || (isReelThumb && index < 10)) opPreloadImageForMobile(img, index < 3 ? 'high' : 'auto');
+                });
+            }
+
+            async function opMobilePreEntranceMediaWarmup(budgetMs = 520) {
+                if (!opIsMobilePerf()) return;
+                const started = performance.now();
+                const imgs = Array.from(document.querySelectorAll('.monolith img, .h-card img, .v-item img, .reel-item img')).filter((img) => img instanceof HTMLImageElement) as HTMLImageElement[];
+                if (!imgs.length) return;
+
+                const critical = imgs.filter((img, index) => {
+                    const card = img.closest?.('.monolith, .h-card, .v-item, .reel-item') as HTMLElement | null;
+                    return index < 18 || Boolean(card?.closest?.('.h-wrapper')) || Boolean(card?.closest?.('.reels-wrapper'));
+                });
+
+                critical.forEach((img, index) => {
+                    const card = img.closest?.('.monolith, .h-card, .v-item, .reel-item') as HTMLElement | null;
+                    const isReel = Boolean(card?.classList?.contains('reel-item'));
+                    const isVertical = isReel || Boolean(card?.classList?.contains('v-item'));
+                    img.setAttribute('loading', 'eager');
+                    img.setAttribute('decoding', 'async');
+                    img.setAttribute('draggable', 'false');
+                    if (!img.hasAttribute('width')) img.setAttribute('width', isVertical ? '563' : '1000');
+                    if (!img.hasAttribute('height')) img.setAttribute('height', isVertical ? '1000' : '563');
+                    if (index < 4) img.setAttribute('fetchpriority', 'high');
+                    else if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'auto');
+                    if (index < 8 || (isReel && index < 12)) opPreloadImageForMobile(img, index < 3 ? 'high' : 'auto');
+                });
+
+                const loaded = critical.filter((img) => img.complete && img.naturalWidth && !opMobileWarmDecodedImages.has(img));
+                for (const img of loaded) {
+                    if (performance.now() - started > budgetMs) break;
+                    opMobileWarmDecodedImages.add(img);
+                    if (typeof img.decode !== 'function') continue;
+                    await Promise.race([
+                        img.decode().catch(() => {}),
+                        new Promise((resolve) => window.setTimeout(resolve, 72))
+                    ]);
+                }
+            }
+
+            const opMobileVideoThumbOptimized = new WeakSet();
+
+            function opStripMobileHoverVideoSources(video) {
+                if (!video || !opIsMobilePerf()) return;
+                try { video.pause?.(); } catch (_) {}
+                video.setAttribute('preload', 'none');
+                video.setAttribute('playsinline', '');
+                video.muted = true;
+
+                if (video.getAttribute('src')) {
+                    video.setAttribute('data-op-mobile-src', video.getAttribute('src'));
+                    video.removeAttribute('src');
+                }
+
+                video.querySelectorAll?.('source').forEach((source) => {
+                    const src = source.getAttribute('src');
+                    if (!src) return;
+                    source.setAttribute('data-op-mobile-src', src);
+                    source.removeAttribute('src');
+                });
+
+                try { video.load?.(); } catch (_) {}
+            }
+
+            function opOptimizeMobileVideoProjectThumbs(scope = document) {
+                if (!opIsMobilePerf()) return;
+                const reels = Array.from(scope.querySelectorAll('.reel-item'));
+                if (!reels.length) return;
+
+                const reelImages = [] as HTMLImageElement[];
+                reels.forEach((item) => {
+                    const card = item as HTMLElement;
+                    card.classList.add('op-mobile-standard-project', 'op-mobile-video-card');
+                    card.style.setProperty('transform-origin', '50% 50%');
+                    card.style.setProperty('contain', 'layout paint style');
+                    card.style.setProperty('isolation', 'isolate');
+
+                    const img = card.querySelector('img') as HTMLImageElement | null;
+                    if (img) {
+                        img.setAttribute('loading', 'eager');
+                        img.setAttribute('decoding', 'async');
+                        img.setAttribute('fetchpriority', 'auto');
+                        img.setAttribute('draggable', 'false');
+                        if (!img.hasAttribute('width')) img.setAttribute('width', '563');
+                        if (!img.hasAttribute('height')) img.setAttribute('height', '1000');
+                        reelImages.push(img);
+                    }
+
+                    card.querySelectorAll('video.hover-video, video').forEach(opStripMobileHoverVideoSources);
+                });
+
+                reelImages.slice(0, 8).forEach((img, index) => opPreloadImageForMobile(img, index < 2 ? 'high' : 'auto'));
+            }
+
+            function opMountVideoBudget(scope = document) {
+                if (opIsMobilePerf()) return;
+                const videos = Array.from(scope.querySelectorAll('video')).filter((video) => !video.closest?.('.lightbox'));
+                if (!videos.length || !("IntersectionObserver" in window)) return;
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        const video = entry.target as HTMLVideoElement;
+                        if (!entry.isIntersecting && !video.paused) video.pause();
+                    });
+                }, { root: null, rootMargin: '220px 0px', threshold: 0.01 });
+                videos.forEach((video) => observer.observe(video));
+            }
+
+            opApplyMediaPerformanceHints();
+            opOptimizeMobileVideoProjectThumbs();
+            opWarmMobileProjectImages();
+            opIdle(() => {
+                opPrimeProjectMediaForSmoothScroll();
+                opMountVideoBudget();
+            }, 900);
+            document.addEventListener('astro:page-load', () => {
+                opPrepareMobileProjectMediaGeometry(document);
+                opApplyMediaPerformanceHints();
+                opOptimizeMobileVideoProjectThumbs(document);
+                opWarmMobileProjectImages();
+                opPrimeProjectMediaForSmoothScroll();
+                opMountVideoBudget();
+            });
+
+            function populateLightbox(index, direction = 0) {
+                const item = allLbTriggers[index];
+                const title = item.getAttribute('data-title');
+                const videoFullSrc = item.getAttribute('data-video-full');
+                const imgNode = item.querySelector('img');
+                const imgSrc = imgNode ? imgNode.getAttribute('src') : '';
+                
+                const outX = direction === 1 ? -30 : (direction === -1 ? 30 : 0);
+                const inX = direction === 1 ? 30 : (direction === -1 ? -30 : 0);
+
+                const updateContent = () => {
+                    lbTitle.textContent = title;
+                    const projectDetails = item.querySelector('.project-details');
+                    if(projectDetails) { lbDesc.innerHTML = projectDetails.innerHTML; } 
+                    if(imgSrc) { lbAmbient.style.backgroundImage = `url('${imgSrc}')`; } 
+
+                    lbImgWrapper.innerHTML = ''; 
+                    let mediaEl;
+                    
+                    if (videoFullSrc) {
+                        mediaEl = document.createElement('video'); 
+                        mediaEl.src = videoFullSrc; 
+                        mediaEl.className = 'lightbox__video'; 
+                        mediaEl.autoplay = true; 
+                        mediaEl.loop = true; 
+                        mediaEl.controls = true; 
+                        mediaEl.playsInline = true;
+                        mediaEl.preload = 'auto';
+                        mediaEl.setAttribute('playsinline', '');
+                        mediaEl.setAttribute('webkit-playsinline', '');
+                        mediaEl.setAttribute('controlsList', 'nodownload noplaybackrate');
+                        mediaEl.disablePictureInPicture = true;
+                        lbImgWrapper.classList.add('is-video-wrapper');
+                        lightbox.classList.add('has-video-active');
+                    } else {
+                        mediaEl = document.createElement('img'); 
+                        mediaEl.src = imgSrc; 
+                        mediaEl.className = 'lightbox__img'; 
+                        mediaEl.alt = title;
+                        lbImgWrapper.classList.remove('is-video-wrapper');
+                        lightbox.classList.remove('has-video-active');
+                    }
+                    lbImgWrapper.appendChild(mediaEl);
+
+                    const entranceY = direction === 0 ? 18 : 0;
+                    const entranceBlur = direction === 0 ? 'blur(10px)' : 'blur(0px)';
+                    const entranceDelay = direction === 0 ? 0.08 : 0;
+                    gsap.fromTo(mediaEl, { x: inX, y: entranceY, opacity: 0, filter: entranceBlur }, { x: 0, y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.48, delay: entranceDelay, ease: "power3.out", clearProps: 'filter' });
+                    gsap.fromTo('.lb-info-inner', { x: inX, y: entranceY, opacity: 0, filter: entranceBlur }, { x: 0, y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.48, delay: entranceDelay, ease: "power3.out", clearProps: 'filter' });
+                };
+
+                if (direction !== 0) {
+                    gsap.to('.lightbox__img, .lightbox__video', { x: outX, opacity: 0, duration: 0.2, ease: "power2.in" });
+                    gsap.to('.lb-info-inner', { x: outX, opacity: 0, duration: 0.2, ease: "power2.in", onComplete: updateContent });
+                } else {
+                    updateContent();
+                }
+            }
+
+            function openLightbox(index) {
+                currentLbIndex = index; 
+                isLbFullscreen = false;
+                lightbox.classList.remove('is-fullscreen');
+                lightbox.style.display = 'flex';
+                lightbox.style.opacity = '0';
+                lenis.stop();
+                
+                populateLightbox(index, 0);
+                opPremiumSfx.play('open');
+                document.documentElement.classList.add('op-lightbox-open');
+                
+                opSetHeaderChromeHidden(true);
+                gsap.fromTo(lightbox, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" });
+                
+                if (!opUseStackedProjectLightbox()) {
+                    gsap.fromTo('.lightbox__image-wrapper', { width: '100vw', padding: 0 }, { width: '60vw', padding: '40px', duration: 0.6, ease: "power3.inOut" });
+                    gsap.fromTo('.lightbox__info', { xPercent: 100 }, { xPercent: 0, duration: 0.6, ease: "power3.inOut" });
+                } else {
+                    gsap.set('.lightbox__image-wrapper, .lightbox__info', { clearProps: 'width,height,padding,xPercent' });
+                    gsap.set('.lightbox__info', { xPercent: 0 });
+                }
+            }
+
+            function opSyncProjectLightboxLayout() {
+                if (!lightbox || lightbox.style.display !== 'flex') return;
+                gsap.set('.lightbox__image-wrapper, .lightbox__info', { clearProps: 'width,height,padding,xPercent' });
+                gsap.set('.lightbox__info', { xPercent: 0 });
+            }
+
+            window.addEventListener('resize', () => window.setTimeout(opSyncProjectLightboxLayout, 120), { passive: true });
+            window.addEventListener('orientationchange', () => window.setTimeout(opSyncProjectLightboxLayout, 180), { passive: true });
+
+            function changeLightboxItem(direction) {
+                if(isAnimating) return;
+                isAnimating = true;
+                currentLbIndex = (currentLbIndex + direction + allLbTriggers.length) % allLbTriggers.length;
+                opPremiumSfx.play('next');
+                populateLightbox(currentLbIndex, direction);
+                setTimeout(() => { isAnimating = false; }, 400);
+            }
+
+            lbImgWrapper.addEventListener('click', (e) => {
+                // Fullscreen falso desactivado: evita que desaparezca el texto al hacer click
+                // sobre la imagen, manteniendo intacto el lightbox y la navegación.
+                const target = e.target as HTMLElement;
+                if(target && target.tagName === 'VIDEO') return;
+                e.stopPropagation();
+                isLbFullscreen = false;
+                lightbox.classList.remove('is-fullscreen');
+            });
+
+            const closeLightbox = () => {
+                isLbFullscreen = false;
+                lightbox.classList.remove('is-fullscreen');
+                const videoEl = lbImgWrapper.querySelector('video');
+                if (videoEl) {
+                    videoEl.pause();
+                    videoEl.removeAttribute('src'); 
+                    videoEl.load();
+                }
+
+                opPremiumSfx.play('close');
+                document.documentElement.classList.remove('op-lightbox-open');
+                lightbox.classList.remove('has-video-active');
+                opSetHeaderChromeHidden(false);
+                gsap.to(lightbox, { opacity: 0, duration: 0.4, ease: "power2.inOut", onComplete: () => { lightbox.style.display = 'none'; lenis.start(); opRestoreHeaderBlur(); }});
+            };
+
+            allLbTriggers.forEach((item, index) => { item.addEventListener('click', () => openLightbox(index)); });
+            document.getElementById('lb-prev').addEventListener('click', (e) => { e.stopPropagation(); changeLightboxItem(-1); });
+            document.getElementById('lb-next').addEventListener('click', (e) => { e.stopPropagation(); changeLightboxItem(1); });
+            document.getElementById('lb-close').addEventListener('click', closeLightbox);
+
+            document.addEventListener('keydown', (e) => {
+                if (lightbox.style.display === 'flex') {
+                    if (e.key === 'Escape') closeLightbox();
+                    if (e.key === 'ArrowRight') changeLightboxItem(1);
+                    if (e.key === 'ArrowLeft') changeLightboxItem(-1);
+                }
+            });
+
+            let touchStartX = 0;
+            let touchEndX = 0;
+            lightbox.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+            lightbox.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchEndX < touchStartX - 50) changeLightboxItem(1); 
+                if (touchEndX > touchStartX + 50) changeLightboxItem(-1); 
+            }, {passive: true});
+
+            // CORRECCIÓN: Scroll más sensible en el Lightbox
+            let scrollTimeout;
+            lightbox.addEventListener('wheel', (e) => {
+                if (lightbox.style.display === 'flex') e.preventDefault();
+                if (lightbox.style.display === 'flex' && !isAnimating) {
+                    if (scrollTimeout) return; 
+                    if (e.deltaY > 15) { // Umbral bajado de 50 a 15 para que reaccione rápido
+                        changeLightboxItem(1); 
+                        scrollTimeout = setTimeout(() => { scrollTimeout = null; }, 800); 
+                    } else if (e.deltaY < -15) {
+                        changeLightboxItem(-1); 
+                        scrollTimeout = setTimeout(() => { scrollTimeout = null; }, 800); 
+                    }
+                }
+            }, {passive: false});
+
+            if (typeof opMobileScrollLifeTick === 'function') {
+                (window as any).__opMobileScrollLifeTick = opMobileScrollLifeTick;
+            }
+            document.addEventListener('astro:before-swap', () => {
+                if ((window as any).__opMobileScrollLifeTick === opMobileScrollLifeTick) (window as any).__opMobileScrollLifeTick = null;
+            });
+</script>
