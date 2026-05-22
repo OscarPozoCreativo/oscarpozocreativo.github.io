@@ -1,0 +1,175 @@
+---
+interface FocusItem {
+    title: string;
+    desc: string;
+}
+
+interface ProfileData {
+    eyebrow: string;
+    title: string;
+    p1: string;
+    p2: string;
+    p3: string;
+    focusEyebrow: string;
+    focusList: FocusItem[];
+}
+
+interface Props {
+    profile: ProfileData;
+}
+
+const { profile } = Astro.props;
+---
+
+<section class="profile-wrapper" id="perfil">
+    <div class="profile-grid">
+        <div class="profile-main">
+            <span class="t-eyebrow">{profile.eyebrow}</span>
+            <h2 class="t-title has-reveal">{profile.title}</h2>
+            <p>{profile.p1}</p>
+            <p>{profile.p2}</p>
+            <p>{profile.p3}</p>
+        </div>
+        <aside class="profile-sidebar">
+            <span class="t-eyebrow">{profile.focusEyebrow}</span>
+            <div class="t-focus-list">
+                {profile.focusList.map((item) => (
+                    <div class="t-focus-item">
+                        <strong>{item.title}</strong>
+                        <span>{item.desc}</span>
+                    </div>
+                ))}
+            </div>
+        </aside>
+    </div>
+</section>
+
+<style>
+.profile-wrapper {
+    background: transparent !important;
+    position: relative;
+    z-index: 10;
+    padding: clamp(60px, 8vh, 100px) 5vw;
+    border-top: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: clamp(20px, 3vw, 40px);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.profile-sidebar {
+    padding: 40px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 0 20px rgba(255,255,255,0.02);
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), border-color 0.3s, box-shadow 0.3s;
+    pointer-events: auto;
+    transform: translate3d(0,0,0);
+    will-change: transform, opacity;
+}
+
+.profile-main .t-eyebrow,
+.profile-sidebar .t-eyebrow {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 8px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+.profile-main .t-eyebrow {
+    margin-bottom: 20px;
+}
+
+.profile-main .t-title {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    margin-bottom: 30px;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+}
+
+.profile-main p {
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 1.05rem;
+    margin-bottom: 20px;
+}
+
+.t-focus-list {
+    display: grid;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.t-focus-item {
+    border-left: 2px solid var(--border);
+    padding-left: 20px;
+}
+
+.t-focus-item strong {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--text);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.t-focus-item span {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    display: block;
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+    .profile-wrapper {
+        padding: 40px 15px !important;
+        pointer-events: auto !important;
+        background: transparent !important;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    .profile-sidebar {
+        padding: 25px !important;
+        width: 100% !important;
+        transform: none !important;
+    }
+}
+
+@media (max-width: 1024px), (pointer: coarse) {
+    :global(html.op-mobile-perf) .profile-wrapper {
+        content-visibility: auto;
+        contain-intrinsic-size: 1px 900px;
+    }
+
+    :global(html.op-mobile-perf) .profile-sidebar {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .profile-sidebar {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+}
+</style>

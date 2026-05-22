@@ -1,0 +1,275 @@
+---
+import ProjectCard from './ProjectCard.astro';
+
+interface HeroData {
+    title1: string;
+    title2: string;
+    desc: string;
+    scroll: string;
+}
+
+interface ProjectData {
+    title: string;
+    img: string;
+    meta1: string;
+    meta2: string;
+    summary: string;
+    reto: string;
+    enfoque: string;
+    resultado: string;
+}
+
+interface Props {
+    hero: HeroData;
+    projects: ProjectData[];
+}
+
+const { hero, projects } = Astro.props;
+---
+
+<section class="z-wrapper">
+    <div class="z-layer layer-hero">
+        <h1 class="hero-title">
+            <span class="reveal-wrap"><span class="reveal-text">{hero.title1}</span></span><br />
+            <span class="reveal-wrap"><span class="reveal-text glow-text">{hero.title2}</span></span>
+        </h1>
+        <p class="hero-desc">{hero.desc}</p>
+        <div class="scroll-indicator"><div class="scroll-line"></div><span>{hero.scroll}</span></div>
+    </div>
+
+    {projects.map((project) => (
+        <div class="z-layer">
+            <ProjectCard project={project} variant="z" />
+        </div>
+    ))}
+</section>
+
+<style>
+.reveal-wrap {
+    overflow: visible !important;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+}
+
+.reveal-text {
+    display: inline-block;
+    transform: translateY(30px);
+    opacity: 0;
+    position: relative;
+    z-index: 2;
+    padding: 10px 20px;
+    margin: -10px -20px;
+    will-change: transform, opacity;
+}
+
+.glow-text {
+    background: linear-gradient(270deg, var(--accent), #00d4ff, var(--accent));
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: flowPlasma 4s ease-in-out infinite alternate;
+    text-shadow: 0 0 20px rgba(64,181,229,0.3), 0 0 40px rgba(0,119,182,0.2);
+    transform: translateZ(0);
+}
+
+@keyframes flowPlasma {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+.z-wrapper {
+    background: transparent !important;
+    position: relative;
+    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.z-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate3d(0,0,0);
+    backface-visibility: hidden;
+    pointer-events: none;
+    will-change: transform, filter, opacity;
+}
+
+.z-layer:not(.layer-hero) {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.layer-hero {
+    flex-direction: column;
+    text-align: center;
+    pointer-events: auto;
+    position: relative;
+    justify-content: center;
+    margin-top: -5vh;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 9rem);
+    font-weight: 700;
+    line-height: 0.85;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+}
+
+.hero-desc {
+    max-width: 650px;
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    line-height: 1.6;
+    color: rgba(255,255,255,0.7);
+    font-weight: 400;
+    padding: 0 20px;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 8vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.scroll-line {
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.scroll-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: var(--accent);
+    animation: scrollDrop 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.scroll-indicator span {
+    font-family: var(--font-display);
+    font-size: 7px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+@keyframes scrollDrop {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(200%); }
+}
+
+@media (max-width: 767px), (max-height: 560px) and (pointer: coarse) {
+    .z-wrapper {
+        height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: visible !important;
+        padding: 0 15px 40px !important;
+        pointer-events: auto !important;
+        background: transparent !important;
+    }
+
+    .z-layer {
+        position: relative !important;
+        height: auto !important;
+        margin-bottom: 40px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        display: block !important;
+        transform: none !important;
+        filter: none !important;
+    }
+
+    .z-layer:not(.layer-hero) {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        filter: none !important;
+    }
+
+    .layer-hero {
+        min-height: calc(var(--op-vh, 1vh) * 100) !important;
+        min-height: 100svh !important;
+        padding: 100px 0 40px 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .reveal-text {
+        transform: none !important;
+    }
+
+    .scroll-indicator {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1024px), (pointer: coarse) {
+    :global(html.op-mobile-perf) .z-layer {
+        will-change: auto !important;
+        backface-visibility: visible !important;
+    }
+
+    :global(html.op-mobile-perf) .z-wrapper {
+        content-visibility: visible !important;
+        contain-intrinsic-size: auto !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .layer-hero {
+        padding-inline: 14px !important;
+    }
+
+    .hero-title {
+        font-size: clamp(3.35rem, 16.8vw, 5.8rem) !important;
+        line-height: 0.78 !important;
+        letter-spacing: -0.075em !important;
+        margin-bottom: 18px !important;
+        max-width: 96vw !important;
+        text-align: center !important;
+    }
+
+    .hero-title .reveal-wrap,
+    .hero-title .reveal-text {
+        display: inline-block !important;
+    }
+
+    .hero-desc {
+        max-width: 86vw !important;
+        font-size: clamp(0.86rem, 3.55vw, 1rem) !important;
+        line-height: 1.55 !important;
+        color: rgba(255,255,255,0.62) !important;
+        font-weight: 400 !important;
+        margin-inline: auto !important;
+    }
+}
+</style>
