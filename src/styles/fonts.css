@@ -1,0 +1,52 @@
+/*
+  Self-hosted typography.
+  Put the WOFF2 binaries in public/fonts/ using the exact paths below.
+  Do not use Google Fonts, Fontshare API, Adobe Fonts, or CSS @import URLs in production.
+*/
+@font-face { font-family: "Syncopate";
+    src: url("/fonts/syncopate/Syncopate-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap; }
+
+@font-face { font-family: "Syncopate";
+    src: url("/fonts/syncopate/Syncopate-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap; }
+
+@font-face { font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-Light.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap; }
+
+@font-face { font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap; }
+
+@font-face { font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-Medium.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap; }
+
+@font-face { font-family: "Satoshi";
+    src: url("/fonts/satoshi/Satoshi-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap; }
+
+@font-face { font-family: "JetBrains Mono";
+    src: url("/fonts/jetbrains-mono/JetBrainsMono-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap; }
+
+@font-face { font-family: "JetBrains Mono";
+    src: url("/fonts/jetbrains-mono/JetBrainsMono-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap; }
