@@ -1,0 +1,88 @@
+{
+  "nav": {
+    "role": "Senior Graphic Designer",
+    "loc": "Graphic Design",
+    "cta": "START PROJECT",
+    "langUrl": "/",
+    "langText": "ES"
+  },
+  "hero": {
+    "title1": "VISUAL",
+    "title2": "DESIGN.",
+    "desc": "Graphic solutions designed to sell. From packaging that stands out on the shelf to clear and direct digital campaigns.",
+    "scroll": "SCROLL"
+  },
+  "zProjects": [
+    { "title": "Packaging design for Gold Selects Oatmeal", "img": "/assets/page4.webp", "meta1": "Packaging Design", "meta2": "Gold Selects / Plaza Lama", "summary": "Oatmeal bag redesign to organize information and make the product stand out on the shelf.", "reto": "Modernize the image without losing the brand's essence or confusing the regular customer.", "enfoque": "Clean colors to differentiate varieties and a direct design that shows nutritional benefits straight to the point.", "resultado": "A packaging that immediately catches the eye and makes it easier for the customer to find their favorite oatmeal." },
+    { "title": "Promotional insert for supermarket.", "img": "/assets/page11.webp", "meta1": "Supermarkets", "meta2": "Plaza Lama", "summary": "Insert design focused on organizing a large number of offers without making the page look cluttered or messy.", "reto": "Show many products and aggressive prices in the same space, maintaining a comfortable reading experience for the customer.", "enfoque": "Creation of clean visual blocks, highlighting hook products with strong contrast to guide the eye.", "resultado": "An easy-to-read insert that helps the consumer find the best offers in seconds, driving traffic to the store." },
+    { "title": "Commercial display for Gold Care.", "img": "/assets/page13.webp", "meta1": "Displays", "meta2": "Gold Care / Plaza Lama", "summary": "Display furniture designed to organize the hair care line and gain a prominent presence in the beauty aisle.", "reto": "Group shampoos, conditioners, and treatments in a single place that looks neat, premium, and attractive to the customer.", "enfoque": "Structured design by hair type, use of elegant brand colors, and a space where the consumer finds her ideal routine without wandering.", "resultado": "A display that organizes the merchandise, elevates brand perception, and acts as a silent salesperson." }
+  ],
+  "hProjects": [
+    { "title": "Premium endcap for Melodramatic wine", "img": "/assets/page1.webp", "meta1": "Premium Display", "meta2": "Melodramatic", "summary": "High-impact display design to highlight this wine line in the supermarket's liquor area.", "reto": "Make the wine brand stand out in an aisle full of options, conveying elegance and quality.", "enfoque": "Use of dark tones, suggested lighting, and an imposing structure that elevates the product's perception.", "resultado": "A display that stops the customer in the aisle, increasing curiosity and brand sales." },
+    { "title": "Advertising page for Plaza Lama", "img": "/assets/page3.webp", "meta1": "Press & Offers", "meta2": "Plaza Lama", "summary": "Press and print media design structured to communicate low prices with clarity and trust.", "reto": "Announce strong discounts without the brand losing its level or the design looking sloppy.", "enfoque": "Smart space distribution, large typography for prices, and a logical reading order.", "resultado": "Direct and effective communication that ensures the savings message reaches the customer without confusion." },
+    { "title": "Packaging design for Cheese Sticks.", "img": "/assets/page5.webp", "meta1": "Packaging", "meta2": "Gold Selects / Plaza Lama", "summary": "Packaging design for cheese sticks, highlighting the product to make it look appetizing and stand out in the snack aisle.", "reto": "Make the product catch the eye in an aisle full of colors and snack brands, where the customer buys on impulse.", "enfoque": "Large and provocative photography, bright colors that open the appetite, and clear letters that say exactly what it is.", "resultado": "A packaging that provokes instant purchase and competes head-to-head with traditional brands." },
+    { "title": "Endcap header for baby area", "img": "/assets/page15.webp", "meta1": "Displays", "meta2": "Plaza Lama", "summary": "Display material designed to signal and highlight the children's category in the supermarket.", "reto": "Catch the attention of parents in an aisle that is usually full of competing colors and brands.", "enfoque": "Use of soft colors, tender images, and direct messages that connect emotionally with the buyer.", "resultado": "A much more attractive and easy-to-locate area, improving the shopping experience for parents." },
+    { "title": "Label design for Gold Selects Salami", "img": "/assets/page6.webp", "meta1": "Label Design", "meta2": "Gold Selects / Plaza Lama", "summary": "Premium label design for deli meat, focused on projecting high quality and freshness in the supermarket fridge.", "reto": "Compete against traditional brands in the country, making the customer perceive this salami as a superior option.", "enfoque": "Use of black and gold to give status, strong typography, and a large transparent window to show the meat.", "resultado": "A product that immediately stands out in the deli area, conveying trust and quality." },
+    { "title": "Endcap header for Coco Dream Blend", "img": "/assets/page12.webp", "meta1": "Displays", "meta2": "Coco Dream Blend / Plaza Lama", "summary": "Endcap header design with a fresh and tropical style to highlight this new coconut-based hair care line.", "reto": "Convey the hydration and naturalness of the product in a highly competitive beauty aisle.", "enfoque": "Use of natural textures, palm leaves, and a clear structure that highlights the benefits for sulfate-free hair.", "resultado": "A striking point of sale that educates the customer about the product's benefits and drives impulse purchases." }
+  ],
+  "reelsTitle": "Videos & Social",
+  "reels": [
+    { "title": "Salto Alto de Bayaguana", "thumb": "/assets/thumb-bayaguana.webp", "videoHover": "/assets/Salto-Alto-De-Bayaguana-hover.mp4", "videoFull": "/assets/Salto-Alto-De-Bayaguana-full.mp4", "meta": "Video & Social", "summary": "Video for social media showing the real experience of the jump. Fast cuts and ambient sound so people feel the adrenaline and want to share it." },
+    { "title": "Humpback Whales", "thumb": "/assets/thumb-ballenas.webp", "videoHover": "/assets/Ballenas-Jorobadas-Cayo-Levantado-hover.mp4", "videoFull": "/assets/Ballenas-Jorobadas-Cayo-Levantado-full.mp4", "meta": "Video & Social", "summary": "Video of the whale watching tour. Deep colors and a rhythm that captures attention from the first second to achieve more interaction." },
+    { "title": "Buggy Congo Bar", "thumb": "/assets/thumb-congo.webp", "videoHover": "/assets/Buggy-De-Punta-Cana-Con-Congo-Bar-hover.mp4", "videoFull": "/assets/Buggy-De-Punta-Cana-Con-Congo-Bar-full.mp4", "meta": "Video & Social", "summary": "A video showing the complete adventure: from the mud in the buggies to the party at night. Made to keep people watching until the end." },
+    { "title": "Cayo Arena", "thumb": "/assets/thumb-arena.webp", "videoHover": "/assets/Cayo-Arena-hover.mp4", "videoFull": "/assets/Cayo-Arena-full.mp4", "meta": "Video & Social", "summary": "Attractive video with bright colors that highlight the crystal clear water. The goal is for whoever sees it to feel the immediate desire to go." },
+    { "title": "Buggy Foam Party", "thumb": "/assets/thumb-espuma.webp", "videoHover": "/assets/Buggy-De-Punta-Cana-Con-Espuma-Party-2-hover.mp4", "videoFull": "/assets/Buggy-De-Punta-Cana-Con-Espuma-Party-2-full.mp4", "meta": "Video & Social", "summary": "Pure energy. Fast cuts to the rhythm of the music showing the fun mess of the foam party. Ideal format for TikTok and Instagram Reels." },
+    { "title": "Four Wheels Boca Chica", "thumb": "/assets/thumb-fourwheels.webp", "videoHover": "/assets/Four-Wheels-Boca-Chica-hover.mp4", "videoFull": "/assets/Four-Wheels-Boca-Chica-Amigosxsiempretours-full.mp4", "meta": "Video & Social", "summary": "Recorded in first person so you can feel the speed and the mud. A video without filters that connects directly with the young audience." },
+    { "title": "Fricolandia", "thumb": "/assets/thumb-fricolandia.webp", "videoHover": "/assets/Fricolandia-hover.mp4", "videoFull": "/assets/Fricolandia-full.mp4", "meta": "Video & Social", "summary": "A visual tour that highlights the comfort and exclusivity of the place. Smooth camera movements that convey relaxation." },
+    { "title": "Easter Giveaway", "thumb": "/assets/thumb-giveaway.webp", "videoHover": "/assets/Giveaway-Semana-Santa-hover.mp4", "videoFull": "/assets/Giveaway-Semana-Santa-full.mp4", "meta": "Promo Video", "summary": "Straight to the point promotional video. Large and striking letters so people quickly understand how to participate and win." }
+  ],
+  "vaultTitle": "More Projects",
+  "vault": [
+    { "title": "Beauty Insert 2025", "img": "/assets/page14.webp", "meta": "Beauty Offers", "summary": "Promotional insert with a refined tone for cosmetics and personal care, balancing elegance and commercial clarity.", "reto": "Show beauty offers while maintaining an image of luxury and care.", "enfoque": "Clean design, white backgrounds, and elegant letters.", "resultado": "Better presentation of the category and higher purchase interest." },
+    { "title": "Social Media Arts", "img": "/assets/page2.webp", "meta": "Social Media", "summary": "Promotional pieces focused on clarity, contrast, and fast reading for mobile.", "reto": "Catch attention quickly on Instagram and Facebook without losing the offer's message.", "enfoque": "Large texts, striking colors, and the product as the protagonist.", "resultado": "More clicks and store visits from digital ads." },
+    { "title": "Dog Food Packaging", "img": "/assets/page7.webp", "meta": "Packaging Design", "summary": "Packaging design created to highlight benefits and gain presence in the pet aisle.", "reto": "Highlight a new product among so many dog food brands in the supermarket.", "enfoque": "Strong colors and clear nutritional benefits at a glance.", "resultado": "A solid design that competes strongly in the market." }
+  ],
+  "processTitle": "Process",
+  "process": [
+    { "num": "01", "title": "Diagnosis", "desc": "Identification of visual, reading, or clutter problems in the brand's current designs." },
+    { "num": "02", "title": "System", "desc": "Definition of clear rules for colors, letters, and information order so everything looks like the same family." },
+    { "num": "03", "title": "Application", "desc": "Creation of final designs for packaging, displays, social media, or inserts, ensuring the brand looks impeccable." },
+    { "num": "04", "title": "Control", "desc": "Review of all materials to ensure the design maintains its quality as the brand grows." }
+  ],
+  "profile": {
+    "eyebrow": "Profile",
+    "title": "Graphic design tailored to help your business grow.",
+    "p1": "Hi, I'm Oscar. I've spent years working as a graphic designer, helping brands look professional and connect better with their customers.",
+    "p2": "I understand how the market works: a pretty design isn't enough. The customer needs to quickly understand what you offer, whether they're looking at a product in the supermarket or an ad on their phone.",
+    "p3": "My job is to save you headaches. I organize your ideas and turn them into clear, direct designs that actually work to sell.",
+    "focusEyebrow": "Focus",
+    "focusList": [
+      { "title": "Campaigns & Offers", "desc": "Insert and promotion design. I organize the information so prices stand out and people buy." },
+      { "title": "Packaging Design", "desc": "Labels and packaging that make your product catch the eye on the shelf against the competition." },
+      { "title": "Displays & POP", "desc": "Materials for supermarkets and stores that stop the customer while walking down the aisle." },
+      { "title": "Social Media", "desc": "I bring your brand's visual quality to Instagram and Facebook so you maintain a professional image online." }
+    ]
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Available for projects where design really helps sell more.",
+    "desc": "If your brand needs to look better, stand out from the competition, and have materials that catch the eye, let's talk.",
+    "locLabel": "Location",
+    "locVal": "Dominican Republic",
+    "specLabel": "Specialty",
+    "specVal": "Supermarkets, Packaging & Displays",
+    "dispLabel": "Availability",
+    "dispVal": "Projects / Remote & On-site",
+    "links": [
+      { "label": "WhatsApp", "url": "https://wa.link/wauh28", "solid": true },
+      { "label": "Email", "url": "mailto:oscarpozo072@gmail.com", "solid": false },
+      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/oscar-enrique-g-pozo-187a7b245/", "solid": false }
+    ]
+  },
+  "footer": {
+    "rights": "© 2026 Oscar Pozo Creativo. All rights reserved.",
+    "backToTop": "Back to top",
+    "port": "Portfolio",
+    "proc": "Process"
+  }
+}

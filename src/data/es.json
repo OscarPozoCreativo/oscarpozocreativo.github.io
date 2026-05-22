@@ -1,0 +1,88 @@
+{
+  "nav": {
+    "role": "Diseñador Gráfico Senior",
+    "loc": "Diseño Gráfico",
+    "cta": "INICIAR PROYECTO",
+    "langUrl": "/en",
+    "langText": "EN"
+  },
+  "hero": {
+    "title1": "DISEÑO",
+    "title2": "VISUAL.",
+    "desc": "Soluciones gráficas pensadas para vender. Desde empaques que resaltan en la góndola hasta campañas digitales claras y directas.",
+    "scroll": "SCROLL"
+  },
+  "zProjects": [
+    { "title": "Diseño de empaque para Avena Gold Selects", "img": "/assets/page4.webp", "meta1": "Diseño de empaque", "meta2": "Gold Selects / Plaza Lama", "summary": "Rediseño de la funda de avena para organizar la información y hacer que el producto resalte en la góndola.", "reto": "Modernizar la imagen sin perder la esencia de la marca ni confundir al cliente de siempre.", "enfoque": "Colores limpios para diferenciar las variedades y un diseño directo que muestra los beneficios nutricionales al grano.", "resultado": "Un empaque que llama la atención de inmediato y facilita que el cliente encuentre su avena favorita." },
+    { "title": "Encarte de ofertas para supermercado.", "img": "/assets/page11.webp", "meta1": "Supermercados", "meta2": "Plaza Lama", "summary": "Diseño de encarte enfocado en organizar una gran cantidad de ofertas sin que la página se vea saturada o desordenada.", "reto": "Mostrar muchos productos y precios agresivos en un mismo espacio, manteniendo una lectura cómoda para el cliente.", "enfoque": "Creación de bloques visuales limpios, destacando los productos gancho con un contraste fuerte para guiar la vista.", "resultado": "Un encarte fácil de leer que ayuda al consumidor a encontrar las mejores ofertas en segundos, impulsando las visitas a la tienda." },
+    { "title": "Exhibidor comercial para Gold Care.", "img": "/assets/page13.webp", "meta1": "Exhibidores", "meta2": "Gold Care / Plaza Lama", "summary": "Mueble de exhibición diseñado para organizar la línea de cuidado capilar y ganar presencia destacada en el pasillo de belleza.", "reto": "Agrupar champús, acondicionadores y tratamientos en un solo lugar que se vea ordenado, premium y atractivo para la clienta.", "enfoque": "Diseño estructurado por tipo de cabello, uso de colores elegantes de la marca y un espacio donde la consumidora encuentra su rutina ideal sin dar vueltas.", "resultado": "Un exhibidor que organiza la mercancía, eleva la percepción de la marca y actúa como un vendedor silencioso." }
+  ],
+  "hProjects": [
+    { "title": "Punta de góndola para vino Melodramatic", "img": "/assets/page1.webp", "meta1": "Exhibidor premium", "meta2": "Melodramatic", "summary": "Diseño de exhibidor de alto impacto para destacar esta línea de vinos en el área de licores del supermercado.", "reto": "Lograr que la marca de vino resalte en un pasillo lleno de opciones, transmitiendo elegancia y calidad.", "enfoque": "Uso de tonos oscuros, iluminación sugerida y una estructura imponente que eleva la percepción del producto.", "resultado": "Una exhibición que frena al cliente en el pasillo, aumentando la curiosidad y las ventas de la marca." },
+    { "title": "Publicidad de ofertas para Plaza Lama", "img": "/assets/page3.webp", "meta1": "Prensa y ofertas", "meta2": "Plaza Lama", "summary": "Diseño de prensa y medios impresos estructurado para comunicar precios bajos con claridad y confianza.", "reto": "Anunciar descuentos fuertes sin que la marca pierda su nivel ni el diseño se vea descuidado.", "enfoque": "Distribución inteligente del espacio, letras grandes para los precios y un orden lógico de lectura.", "resultado": "Comunicación directa y efectiva que asegura que el mensaje de ahorro llegue al cliente sin confusiones." },
+    { "title": "Diseño de empaque para Palitos de Queso.", "img": "/assets/page5.webp", "meta1": "Empaque", "meta2": "Gold Selects / Plaza Lama", "summary": "Diseño de empaque para palitos de queso, destacando el producto para que se vea apetitoso y resalte en el pasillo de picaderas.", "reto": "Hacer que el producto llame la atención en un pasillo lleno de colores y marcas de snacks, donde el cliente compra por antojo.", "enfoque": "Fotografía grande y provocativa, colores vivos que abren el apetito y letras claras que dicen exactamente qué es.", "resultado": "Un empaque que provoca comprarlo al instante y compite de tú a tú con las marcas tradicionales." },
+    { "title": "Cabezal de góndola para área de bebés", "img": "/assets/page15.webp", "meta1": "Exhibidores", "meta2": "Plaza Lama", "summary": "Material de exhibición diseñado para señalizar y destacar la categoría infantil en el supermercado.", "reto": "Llamar la atención de los padres en un pasillo que suele estar lleno de colores y marcas compitiendo.", "enfoque": "Uso de colores suaves, imágenes tiernas y mensajes directos que conectan emocionalmente con el comprador.", "resultado": "Un área mucho más atractiva y fácil de ubicar, mejorando la experiencia de compra de los padres." },
+    { "title": "Diseño de etiqueta para Salami Gold Selects", "img": "/assets/page6.webp", "meta1": "Diseño de etiqueta", "meta2": "Gold Selects / Plaza Lama", "summary": "Diseño de etiqueta premium para embutido, enfocada en proyectar alta calidad y frescura en la nevera del supermercado.", "reto": "Competir contra marcas de tradición en el país, logrando que el cliente perciba este salami como una opción superior.", "enfoque": "Uso de negro y dorado para dar estatus, tipografía fuerte y una ventana transparente amplia para mostrar la carne.", "resultado": "Un producto que destaca inmediatamente en el área de embutidos, transmitiendo confianza y calidad." },
+    { "title": "Cabezal de góndola para Coco Dream Blend", "img": "/assets/page12.webp", "meta1": "Exhibidores", "meta2": "Coco Dream Blend / Plaza Lama", "summary": "Diseño de cabezal de góndola con un estilo fresco y tropical para destacar esta nueva línea capilar a base de coco.", "reto": "Transmitir la hidratación y naturalidad del producto en un pasillo de belleza altamente competitivo.", "enfoque": "Uso de texturas naturales, hojas de palma y una estructura clara que resalta los beneficios para el cabello libre de sulfatos.", "resultado": "Un punto de venta llamativo que educa a la clienta sobre los beneficios del producto e impulsa la compra por impulso." }
+  ],
+  "reelsTitle": "Videos y Redes",
+  "reels": [
+    { "title": "Salto Alto de Bayaguana", "thumb": "/assets/thumb-bayaguana.webp", "videoHover": "/assets/Salto-Alto-De-Bayaguana-hover.mp4", "videoFull": "/assets/Salto-Alto-De-Bayaguana-full.mp4", "meta": "Video y redes", "summary": "Video para redes mostrando la experiencia real del salto. Cortes rápidos y sonido ambiente para que la gente sienta la adrenalina y quiera compartirlo." },
+    { "title": "Ballenas Jorobadas", "thumb": "/assets/thumb-ballenas.webp", "videoHover": "/assets/Ballenas-Jorobadas-Cayo-Levantado-hover.mp4", "videoFull": "/assets/Ballenas-Jorobadas-Cayo-Levantado-full.mp4", "meta": "Video y redes", "summary": "Video del recorrido para ver las ballenas. Colores profundos y un ritmo que capta la atención desde el primer segundo para lograr más interacción." },
+    { "title": "Buggy Congo Bar", "thumb": "/assets/thumb-congo.webp", "videoHover": "/assets/Buggy-De-Punta-Cana-Con-Congo-Bar-hover.mp4", "videoFull": "/assets/Buggy-De-Punta-Cana-Con-Congo-Bar-full.mp4", "meta": "Video y redes", "summary": "Un video que muestra la aventura completa: desde el lodo en los buggys hasta la fiesta en la noche. Hecho para mantener a la gente viendo hasta el final." },
+    { "title": "Cayo Arena", "thumb": "/assets/thumb-arena.webp", "videoHover": "/assets/Cayo-Arena-hover.mp4", "videoFull": "/assets/Cayo-Arena-full.mp4", "meta": "Video y redes", "summary": "Video atractivo y con colores vivos que resaltan el agua cristalina. El objetivo es que quien lo vea sienta el deseo inmediato de ir." },
+    { "title": "Buggy Espuma Party", "thumb": "/assets/thumb-espuma.webp", "videoHover": "/assets/Buggy-De-Punta-Cana-Con-Espuma-Party-2-hover.mp4", "videoFull": "/assets/Buggy-De-Punta-Cana-Con-Espuma-Party-2-full.mp4", "meta": "Video y redes", "summary": "Pura energía. Cortes rápidos al ritmo de la música mostrando el desorden divertido de la fiesta de espuma. Formato ideal para TikTok e Instagram Reels." },
+    { "title": "Four Wheels Boca Chica", "thumb": "/assets/thumb-fourwheels.webp", "videoHover": "/assets/Four-Wheels-Boca-Chica-hover.mp4", "videoFull": "/assets/Four-Wheels-Boca-Chica-Amigosxsiempretours-full.mp4", "meta": "Video y redes", "summary": "Grabado en primera persona para que se sienta la velocidad y el lodo. Un video sin filtros que conecta directo con el público joven." },
+    { "title": "Fricolandia", "thumb": "/assets/thumb-fricolandia.webp", "videoHover": "/assets/Fricolandia-hover.mp4", "videoFull": "/assets/Fricolandia-full.mp4", "meta": "Video y redes", "summary": "Un recorrido visual que resalta la comodidad y exclusividad del lugar. Movimientos suaves de cámara que transmiten relajación." },
+    { "title": "Giveaway Semana Santa", "thumb": "/assets/thumb-giveaway.webp", "videoHover": "/assets/Giveaway-Semana-Santa-hover.mp4", "videoFull": "/assets/Giveaway-Semana-Santa-full.mp4", "meta": "Video promocional", "summary": "Video promocional directo al grano. Letras grandes y llamativas para que la gente entienda rápido cómo participar y ganar." }
+  ],
+  "vaultTitle": "Más Proyectos",
+  "vault": [
+    { "title": "Encarte de Belleza 2025", "img": "/assets/page14.webp", "meta": "Ofertas de belleza", "summary": "Encarte promocional con un tono refinado para cosméticos y cuidado personal, equilibrando elegancia y claridad comercial.", "reto": "Mostrar ofertas de belleza manteniendo una imagen de lujo y cuidado.", "enfoque": "Diseño limpio, fondos blancos y letras elegantes.", "resultado": "Mejor presentación de la categoría y mayor interés de compra." },
+    { "title": "Artes para Redes Sociales", "img": "/assets/page2.webp", "meta": "Redes sociales", "summary": "Piezas promocionales enfocadas en claridad, contraste y lectura rápida para el celular.", "reto": "Captar la atención rápido en Instagram y Facebook sin perder el mensaje de la oferta.", "enfoque": "Textos grandes, colores llamativos y el producto como protagonista.", "resultado": "Más clics y visitas a la tienda desde los anuncios digitales." },
+    { "title": "Empaque de Comida para Perros", "img": "/assets/page7.webp", "meta": "Diseño de empaque", "summary": "Diseño de empaque creado para resaltar los beneficios y ganar presencia en el pasillo de mascotas.", "reto": "Destacar un nuevo producto entre tantas marcas de comida para perros en el supermercado.", "enfoque": "Colores fuertes y beneficios nutricionales claros a simple vista.", "resultado": "Un diseño sólido que compite fuertemente en el mercado." }
+  ],
+  "processTitle": "Proceso",
+  "process": [
+    { "num": "01", "title": "Diagnóstico", "desc": "Identificación de problemas visuales, de lectura o de desorden en los diseños actuales de la marca." },
+    { "num": "02", "title": "Sistema", "desc": "Definición de reglas claras para los colores, letras y el orden de la información para que todo se vea como una misma familia." },
+    { "num": "03", "title": "Aplicación", "desc": "Creación de los diseños finales para empaques, exhibidores, redes o encartes, asegurando que la marca se vea impecable." },
+    { "num": "04", "title": "Control", "desc": "Revisión de todos los materiales para garantizar que el diseño mantenga su calidad a medida que la marca crece." }
+  ],
+  "profile": {
+    "eyebrow": "Perfil",
+    "title": "Diseño gráfico pensado para que tu negocio crezca.",
+    "p1": "Hola, soy Oscar. Llevo años trabajando como diseñador gráfico, ayudando a marcas a verse profesionales y a conectar mejor con sus clientes.",
+    "p2": "Entiendo cómo funciona el mercado: no basta con hacer un diseño bonito. El cliente necesita entender rápido qué le ofreces, ya sea viendo un producto en el supermercado o un anuncio en su celular.",
+    "p3": "Mi trabajo es quitarte dolores de cabeza. Organizo tus ideas y las convierto en diseños claros, directos y que realmente funcionen para vender.",
+    "focusEyebrow": "Enfoque",
+    "focusList": [
+      { "title": "Campañas y Ofertas", "desc": "Diseño de encartes y promociones. Organizo la información para que los precios destaquen y la gente compre." },
+      { "title": "Diseño de Empaques", "desc": "Etiquetas y empaques que hacen que tu producto llame la atención en la góndola frente a la competencia." },
+      { "title": "Exhibidores y POP", "desc": "Materiales para supermercados y tiendas que frenan al cliente mientras camina por el pasillo." },
+      { "title": "Redes Sociales", "desc": "Llevo la calidad visual de tu marca a Instagram y Facebook para que mantengas una imagen profesional en internet." }
+    ]
+  },
+  "contact": {
+    "eyebrow": "Contacto",
+    "title": "Disponible para proyectos donde el diseño realmente ayude a vender más.",
+    "desc": "Si tu marca necesita verse mejor, destacar frente a la competencia y tener materiales que llamen la atención, hablemos.",
+    "locLabel": "Ubicación",
+    "locVal": "República Dominicana",
+    "specLabel": "Especialidad",
+    "specVal": "Supermercados, Empaques y Exhibidores",
+    "dispLabel": "Disponibilidad",
+    "dispVal": "Proyectos / Remoto y Presencial",
+    "links": [
+      { "label": "WhatsApp", "url": "https://wa.link/wauh28", "solid": true },
+      { "label": "Email", "url": "mailto:oscarpozo072@gmail.com", "solid": false },
+      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/oscar-enrique-g-pozo-187a7b245/", "solid": false }
+    ]
+  },
+  "footer": {
+    "rights": "© 2026 Oscar Pozo Creativo. Todos los derechos reservados.",
+    "backToTop": "Volver arriba",
+    "port": "Portafolio",
+    "proc": "Proceso"
+  }
+}
