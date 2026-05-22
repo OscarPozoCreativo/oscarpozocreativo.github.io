@@ -1,184 +1,28 @@
 ---
+// src/pages/index.astro (Español)
 import Layout from '../layouts/Layout.astro';
 import data from '../data/es.json';
+import HeroStack from '../components/Sections/HeroStack.astro';
+import HorizontalProjects from '../components/Sections/HorizontalProjects.astro';
+import ReelsSection from '../components/Sections/ReelsSection.astro';
+import VaultSection from '../components/Sections/VaultSection.astro';
+import ProcessSection from '../components/Sections/ProcessSection.astro';
+import ProfileSection from '../components/Sections/ProfileSection.astro';
+import ContactSection from '../components/Sections/ContactSection.astro';
 ---
 
-<Layout title="Oscar Pozo | Diseñador Gráfico Senior" description={data.hero.desc} lang="es">
-	
-	<nav id="main-nav">
-        <div class="hud-left">
-            <a href="#" class="hud-logo hover-target magnetic-target" tabindex="0" aria-label="Inicio">
-                <img src="/assets/favicon-light.png" alt="Oscar Pozo Logo" style="width: 35px; height: 35px; transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), filter 0.3s; filter: var(--nav-logo-filter); transform: translateZ(0);">
-            </a>
-            <div class="hud-controls">
-                <a href={data.nav.langUrl} class="ctrl-btn hover-target magnetic-target" tabindex="0">{data.nav.langText}</a>
-                <button class="ctrl-btn hover-target active magnetic-target" id="btn-audio" tabindex="0">SFX: ON</button>
-            </div>
-        </div>
-        <div class="hud-right">
-            <div class="hud-status"><strong>{data.nav.role}</strong><br><span>{data.nav.loc}</span></div>
-            <a href="#contacto" class="btn-cta-nav magnetic-target hover-target">{data.nav.cta}</a>
-        </div>
-    </nav>
-
-	<section class="z-wrapper">
-		<div class="z-layer layer-hero">
-			<h1 class="hero-title">
-                <span class="reveal-wrap"><span class="reveal-text">{data.hero.title1}</span></span><br>
-                <span class="reveal-wrap"><span class="reveal-text glow-text">{data.hero.title2}</span></span>
-            </h1>
-			<p class="hero-desc" style="opacity:0; transform:translateY(20px);">{data.hero.desc}</p>
-            <div class="scroll-indicator"><div class="scroll-line"></div><span>{data.hero.scroll}</span></div>
-		</div>
-
-        {data.zProjects.map((project) => (
-            <div class="z-layer">
-                <article class="monolith hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
-                    <div class="m-img-wrap"><img src={project.img} alt={project.title} class="m-img target-img" loading="lazy" decoding="async"></div>
-                    <div class="m-content">
-                        <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
-                        <h2 class="m-title">{project.title}</h2>
-                        <div class="project-details" style="display:none;">
-                            <p class="m-summary">{project.summary}</p>
-                            <div class="m-item"><strong>Reto</strong><p>{project.reto}</p></div>
-                            <div class="m-item"><strong>Enfoque</strong><p>{project.enfoque}</p></div>
-                            <div class="m-item"><strong>Resultado</strong><p>{project.resultado}</p></div>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        ))}
-	</section>
-
-    <section class="h-wrapper" id="casos">
-        <div class="h-container">
-            {data.hProjects.map((project) => (
-                <div class="h-panel">
-                    <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
-                        <div class="card-glare"></div>
-                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
-                        <div class="h-info">
-                            <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
-                            <h3>{project.title}</h3>
-                            <div class="project-details" style="display:none;">
-                                <p class="m-summary">{project.summary}</p>
-                                <div class="m-item"><strong>Reto</strong><p>{project.reto}</p></div>
-                                <div class="m-item"><strong>Enfoque</strong><p>{project.enfoque}</p></div>
-                                <div class="m-item"><strong>Resultado</strong><p>{project.resultado}</p></div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            ))}
-        </div>
-    </section>
-
-    <section class="reels-wrapper" id="audiovisual">
-        <div class="section-header"><h2 class="has-reveal">{data.reelsTitle}</h2></div>
-        <div class="reels-track">
-            {data.reels.map((reel) => (
-                <article class="reel-item hover-target lb-trigger" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={reel.title} data-video-full={reel.videoFull}>
-                    <img src={reel.thumb} alt={reel.title} class="reel-bg target-img" loading="lazy" decoding="async">
-                    <video class="hover-video" src={reel.videoHover} muted loop playsinline preload="metadata"></video>
-                    <div class="reel-overlay"></div><div class="reel-glare"></div>
-                    <div class="video-badge"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span>Play</span></div>
-                    <div class="reel-info"><span>{reel.meta}</span><h4>{reel.title}</h4></div>
-                    <div class="project-details" style="display:none;"><p class="m-summary">{reel.summary}</p></div>
-                </article>
-            ))}
-        </div>
-    </section>
-
-    <section class="vault-wrapper" id="mas-trabajo">
-        <div class="section-header"><h2 class="has-reveal">{data.vaultTitle}</h2></div>
-        <div class="vault-grid">
-            {data.vault.map((item) => (
-                <article class="v-item hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={item.title}>
-                    <img src={item.img} alt={item.title} class="v-bg target-img" loading="lazy" decoding="async">
-                    <div class="v-info"><span>{item.meta}</span><h4>{item.title}</h4></div>
-                    <div class="project-details" style="display:none;">
-                        <p class="m-summary">{item.summary}</p>
-                        <div class="m-item"><strong>Reto</strong><p>{item.reto}</p></div>
-                        <div class="m-item"><strong>Enfoque</strong><p>{item.enfoque}</p></div>
-                        <div class="m-item"><strong>Resultado</strong><p>{item.resultado}</p></div>
-                    </div>
-                </article>
-            ))}
-        </div>
-    </section>
-
-    <section class="process-wrapper" id="metodo">
-        <div class="section-header"><h2 class="has-reveal">{data.processTitle}</h2></div>
-        <div class="process-grid">
-            {data.process.map((p) => (
-                <div class="p-card hover-target tilt-target skew-target">
-                    <span class="p-num">{p.num}</span>
-                    <h3 class="p-title">{p.title}</h3>
-                    <p class="p-desc">{p.desc}</p>
-                </div>
-            ))}
-        </div>
-    </section>
-
-    <section class="profile-wrapper" id="perfil">
-        <div class="profile-grid">
-            <div class="profile-main">
-                <span class="t-eyebrow">{data.profile.eyebrow}</span>
-                <h2 class="t-title has-reveal">{data.profile.title}</h2>
-                <div class="profile-bio-wrap" style="display: flex; gap: 30px; align-items: flex-start; margin-bottom: 30px; flex-wrap: wrap;">
-                    <div class="profile-avatar tilt-target" style="flex: 0 0 220px; height: 250px; border-radius: 10px; overflow: hidden; position: relative; border: 1px solid var(--border); background: #050505;">
-                        <img src="/assets/oscar-profile.webp" alt="Oscar Pozo" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" decoding="async">
-                        <div style="position: absolute; inset: 0; background: linear-gradient(to top, #020202 0%, transparent 20%); pointer-events: none;"></div>
-                    </div>
-                    <div style="flex: 1; min-width: 250px;">
-                        <p>{data.profile.p1}</p>
-                        <p>{data.profile.p2}</p>
-                    </div>
-                </div>
-                <p>{data.profile.p3}</p>
-            </div>
-            <div class="profile-sidebar tilt-target">
-                <span class="t-eyebrow">{data.profile.focusEyebrow}</span>
-                <div class="t-focus-list">
-                    {data.profile.focusList.map((f) => (
-                        <div class="t-focus-item"><strong>{f.title}</strong><span>{f.desc}</span></div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="terminal-wrapper" id="contacto">
-        <div class="terminal-grid">
-            <div class="t-panel tilt-target">
-                <span class="t-eyebrow">{data.contact.eyebrow}</span>
-                <h2 class="t-title has-reveal">{data.contact.title}</h2>
-                <p class="t-desc">{data.contact.desc}</p>
-            </div>
-            <div class="t-panel tilt-target">
-                <div class="t-meta-grid">
-                    <div class="t-meta-box"><strong>{data.contact.locLabel}</strong><span>{data.contact.locVal}</span></div>
-                    <div class="t-meta-box"><strong>{data.contact.specLabel}</strong><span>{data.contact.specVal}</span></div>
-                    <div class="t-meta-box"><strong>{data.contact.dispLabel}</strong><span>{data.contact.dispVal}</span></div>
-                </div>
-                <div class="t-actions">
-                    {data.contact.links.map((link) => (
-                        <a href={link.url} target="_blank" rel="noreferrer" class={`btn-outline hover-target magnetic-target ${link.solid ? 'btn-solid' : ''}`}>{link.label}</a>
-                    ))}
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="site-footer">
-        <div class="footer-container footer-grid">
-            <div><a href="#" class="footer-logo-wrap hover-target magnetic-target"><img src="/assets/logo.png" alt="Oscar Pozo Creativo" class="footer-logo" loading="lazy" decoding="async"></a></div>
-            <div class="footer-links">
-                <button type="button" id="backToTop" class="hover-target magnetic-target">{data.footer.backToTop}</button>
-                <a href="#casos" class="hover-target nav-link magnetic-target">{data.footer.port}</a>
-                <a href="#metodo" class="hover-target nav-link magnetic-target">{data.footer.proc}</a>
-            </div>
-            <div><span>{data.footer.rights}</span></div>
-        </div>
-    </footer>
+<Layout
+    title="Oscar Pozo | Diseñador Gráfico Senior"
+    description={data.hero.desc}
+    lang="es"
+    nav={data.nav}
+    footer={data.footer}
+>
+    <HeroStack hero={data.hero} projects={data.zProjects} />
+    <HorizontalProjects projects={data.hProjects} />
+    <ReelsSection title={data.reelsTitle} reels={data.reels} />
+    <VaultSection title={data.vaultTitle} items={data.vault} />
+    <ProcessSection title={data.processTitle} steps={data.process} />
+    <ProfileSection profile={data.profile} />
+    <ContactSection contact={data.contact} />
 </Layout>
