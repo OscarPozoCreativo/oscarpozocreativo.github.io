@@ -1,0 +1,2434 @@
+<script>
+			import Lenis from '@studio-freight/lenis';
+			import { gsap } from 'gsap';
+			import { ScrollTrigger } from 'gsap/ScrollTrigger';
+            import * as THREE from 'three';
+
+			gsap.registerPlugin(ScrollTrigger);
+
+            let globalScrollVelocity = 0; 
+            let opProgrammaticTopScrollUntil = 0;
+
+            // --- 1. SCROLL PREMIUM SIN TIRONES EN MÓVIL ---
+            const opPrefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            const opCoarsePointer = window.matchMedia('(pointer: coarse)');
+            const opViewportWidth = () => Math.round(window.visualViewport?.width || window.innerWidth || 0);
+            const opViewportHeight = () => Math.round(window.visualViewport?.height || window.innerHeight || 0);
+            const opIsPhoneLikeViewport = () => opViewportWidth() < 768 || (opCoarsePointer.matches && opViewportHeight() <= 560);
+            const opIsMobilePerf = () => opIsPhoneLikeViewport();
+            const opHasTouchViewport = () => opCoarsePointer.matches || navigator.maxTouchPoints > 0;
+            const opRuntimeSaveData = Boolean((navigator as any).connection?.saveData);
+            const opRuntimeDeviceMemory = Number((navigator as any).deviceMemory || 4);
+            const opRuntimeCpuCores = Number(navigator.hardwareConcurrency || 4);
+            const opRuntimeLowPower = opRuntimeSaveData || opRuntimeDeviceMemory <= 2 || opRuntimeCpuCores <= 4;
+            const opRuntimeTouchDesktopMode = opHasTouchViewport() && opViewportWidth() >= 768 && opViewportWidth() <= 1180;
+            const opRuntimeConstrainedTouch = opHasTouchViewport() && (opRuntimeLowPower || opRuntimeTouchDesktopMode);
+            const opPerfStressSignal = () => {
+                document.documentElement.classList.add('op-perf-stress');
+                document.dispatchEvent(new CustomEvent('op:perf-stress'));
+            };
+            try {
+                if ('PerformanceObserver' in window) {
+                    let opLongTaskBudget = 0;
+                    const opLongTaskObserver = new PerformanceObserver((list) => {
+                        opLongTaskBudget += list.getEntries().filter((entry) => entry.duration > 70).length;
+                        if (opLongTaskBudget >= 3) {
+                            opLongTaskBudget = 0;
+                            opPerfStressSignal();
+                        }
+                    });
+                    opLongTaskObserver.observe({ entryTypes: ['longtask'] });
+                }
+            } catch (_) {}
+            const opIdle = (cb: () => void, timeout = 700) => {
+                if ('requestIdleCallback' in window) return (window as any).requestIdleCallback(cb, { timeout });
+                return window.setTimeout(cb, Math.min(timeout, 160));
+            };
+            const opIsTabletPortraitViewport = () => {
+                const w = opViewportWidth();
+                const h = opViewportHeight();
+                return opHasTouchViewport() && w >= 768 && w <= 1180 && h > w;
+            };
+            const opUseStackedProjectLightbox = () => opViewportWidth() < 768 || opIsTabletPortraitViewport();
+            const opUseSmoothScroll = !(opIsMobilePerf() || opRuntimeConstrainedTouch);
+            let opLastScrollInputAt = 0;
+            const opMarkScrollInput = () => { opLastScrollInputAt = performance.now(); };
+            if (opIsMobilePerf() || opRuntimeConstrainedTouch) {
+                ScrollTrigger.config({ ignoreMobileResize: true, autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load' });
+            }
+
+			const lenis = new Lenis({
+                duration: opUseSmoothScroll ? 0.95 : 0.001,
+                smoothWheel: opUseSmoothScroll,
+                smoothTouch: false,
+                syncTouch: false,
+                touchMultiplier: 1,
+                wheelMultiplier: opRuntimeLowPower ? 0.82 : 0.9
+            });
+
+            function opIsProgrammaticTopScrollActive() {
+                return opUseSmoothScroll && performance.now() < opProgrammaticTopScrollUntil;
+            }
+
+            function opPrimeWebglForTopScroll(durationMs = 1600) {
+                if (!opUseSmoothScroll) return;
+                opProgrammaticTopScrollUntil = Math.max(opProgrammaticTopScrollUntil, performance.now() + durationMs);
+                globalScrollVelocity = 0;
+                document.dispatchEvent(new CustomEvent('op:webgl-home-resync'));
+            }
+
+            function opFinishWebglTopScrollSync() {
+                globalScrollVelocity = 0;
+                document.dispatchEvent(new CustomEvent('op:webgl-home-resync'));
+                requestAnimationFrame(() => {
+                    ScrollTrigger.refresh();
+                    document.dispatchEvent(new CustomEvent('op:webgl-home-resync'));
+                });
+            }
+
+            function opScrollToTopPreservingWebgl(duration = 1.5) {
+                if (!opUseSmoothScroll) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                }
+
+                const durationMs = Math.max(300, Math.round(duration * 1000) + 360);
+                opPrimeWebglForTopScroll(durationMs);
+                lenis.start();
+                lenis.scrollTo(0, { duration, immediate: false });
+                window.setTimeout(opFinishWebglTopScrollSync, 120);
+                window.setTimeout(opFinishWebglTopScrollSync, durationMs);
+            }
+            
+            const skewTargets = Array.from(document.querySelectorAll('.skew-target')) as HTMLElement[];
+            let opSkewRaf = 0;
+            let opLastSkewAt = 0;
+            let opLastAppliedSkew = 999;
+            let opPendingSkew = 0;
+
+            function opScheduleSkewUpdate(velocity = 0) {
+                if (!opUseSmoothScroll || opRuntimeLowPower || window.innerWidth <= 1024 || !skewTargets.length) return;
+                const nextSkew = Math.max(-4, Math.min(4, velocity * 0.16));
+                if (Math.abs(nextSkew - opLastAppliedSkew) < 0.055) return;
+                opPendingSkew = nextSkew;
+                if (opSkewRaf) return;
+
+                opSkewRaf = requestAnimationFrame((now) => {
+                    opSkewRaf = 0;
+                    if (now - opLastSkewAt < 42) {
+                        opSkewRaf = requestAnimationFrame(() => {
+                            opSkewRaf = 0;
+                            opScheduleSkewUpdate(opPendingSkew / 0.16);
+                        });
+                        return;
+                    }
+                    opLastSkewAt = now;
+                    opLastAppliedSkew = opPendingSkew;
+                    const viewportH = window.innerHeight || 1;
+                    skewTargets.forEach((el) => {
+                        const rect = el.getBoundingClientRect();
+                        if (rect.top < viewportH + 80 && rect.bottom > -80) {
+                            gsap.to(el, { skewY: opPendingSkew, duration: 0.34, ease: "power2.out", overwrite: "auto", force3D: true });
+                        }
+                    });
+                });
+            }
+
+            function opUpdateScrollUI(scrollValue = window.scrollY, velocity = 0) {
+                const scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+                const progress = Math.max(0, Math.min(1, scrollValue / scrollable));
+                const pb = document.getElementById('progress-bar');
+                if(pb) pb.style.transform = `scaleX(${progress}) translateZ(0)`;
+                
+                globalScrollVelocity = (opUseSmoothScroll && !opIsProgrammaticTopScrollActive()) ? (velocity || 0) : 0;
+
+                opScheduleSkewUpdate(globalScrollVelocity);
+            }
+
+            if (opUseSmoothScroll) {
+                lenis.on('scroll', (e) => {
+                    opMarkScrollInput();
+                    ScrollTrigger.update();
+                    opUpdateScrollUI(e.animatedScroll, e.velocity || 0);
+                });
+			    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+			    gsap.ticker.lagSmoothing(0, 0);
+            } else {
+                let opNativeScrollRaf = 0;
+                window.addEventListener('scroll', () => {
+                    opMarkScrollInput();
+                    if (opNativeScrollRaf) return;
+                    opNativeScrollRaf = requestAnimationFrame(() => {
+                        opNativeScrollRaf = 0;
+                        opUpdateScrollUI(window.scrollY, 0);
+                        if (typeof opMobileScrollLifeTick === 'function') opMobileScrollLifeTick();
+                    });
+                }, { passive: true });
+            }
+
+            // --- 2. WEBGL ORIGINAL (SOLO PARTÍCULAS) / 10-10 PERFORMANCE ---
+            const canvas = document.getElementById('webgl-canvas');
+            if(canvas) {
+                const opWebglPhone = opViewportWidth() < 768;
+                const opWebglTabletTouch = !opWebglPhone && opCoarsePointer.matches;
+                const opDeviceMemory = Number((navigator as any).deviceMemory || 4);
+                const opCpuCores = Number(navigator.hardwareConcurrency || 4);
+                const opVerySmallPhone = opViewportWidth() <= 420 || opDeviceMemory <= 2 || opCpuCores <= 4;
+                const opSaveData = Boolean((navigator as any).connection?.saveData);
+                const opDisableDecorativeWebgl = false;
+
+                const opCanUseWebgl = (() => {
+                    try {
+                        const testCanvas = document.createElement('canvas');
+                        return !!(window.WebGLRenderingContext && (
+                            testCanvas.getContext('webgl2', { alpha: false, antialias: false }) ||
+                            testCanvas.getContext('webgl', { alpha: false, antialias: false }) ||
+                            testCanvas.getContext('experimental-webgl', { alpha: false, antialias: false })
+                        ));
+                    } catch (_) { return false; }
+                })();
+
+                if (opDisableDecorativeWebgl || !opCanUseWebgl) {
+                    document.documentElement.classList.add('op-webgl-fallback');
+                    (canvas as HTMLCanvasElement).style.display = 'none';
+                } else {
+                try {
+                const renderer = new THREE.WebGLRenderer({
+                    canvas,
+                    alpha: false,
+                    powerPreference: (opWebglPhone || opWebglTabletTouch || opRuntimeLowPower) ? "low-power" : "high-performance",
+                    antialias: false,
+                    depth: false,
+                    stencil: false,
+                    preserveDrawingBuffer: false,
+                    failIfMajorPerformanceCaveat: false
+                });
+
+                const opNativeDpr = window.devicePixelRatio || 1;
+                const opInitialDpr = opWebglPhone
+                    ? (opVerySmallPhone || opSaveData ? Math.min(opNativeDpr, 0.78) : Math.min(opNativeDpr, 1.0))
+                    : (opWebglTabletTouch ? Math.min(opNativeDpr, opRuntimeLowPower ? 0.78 : 0.92) : Math.min(opNativeDpr, opRuntimeLowPower ? 0.88 : 1.12));
+                let opAdaptivePixelRatio = opInitialDpr;
+                renderer.setPixelRatio(opAdaptivePixelRatio);
+                renderer.setSize(opViewportWidth(), opViewportHeight(), false);
+                renderer.setClearColor(0x050505, 1);
+                renderer.autoClear = true;
+                if ('outputColorSpace' in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+                const isMobileInit = opWebglPhone;
+                const sceneDark = new THREE.Scene(); sceneDark.background = new THREE.Color('#050505');
+                const cameraDark = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); cameraDark.position.z = 100;
+
+                // Estética original preservada: mismo color, tamaño, opacidad y movimiento.
+                // Optimización: densidad adaptativa, DPR progresivo, drawRange y pausa invisible.
+                const particleCount = opWebglPhone
+                    ? (opVerySmallPhone || opSaveData ? 280 : 400)
+                    : (opWebglTabletTouch ? (opRuntimeLowPower ? 340 : 440) : (opRuntimeLowPower ? 480 : 660));
+                let opActiveParticleCount = particleCount;
+                const posArray = new Float32Array(particleCount * 3);
+                for(let i=0; i<particleCount*3; i++) { posArray[i] = (Math.random() - 0.5) * 200; }
+                const particlesGeom = new THREE.BufferGeometry();
+                const particlesPosition = new THREE.BufferAttribute(posArray, 3).setUsage(THREE.DynamicDrawUsage);
+                particlesGeom.setAttribute('position', particlesPosition);
+                particlesGeom.setDrawRange(0, opActiveParticleCount);
+                const particlesMat = new THREE.PointsMaterial({ size: 0.8, color: '#ffffff', transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending, depthWrite: false });
+                const particleSystem = new THREE.Points(particlesGeom, particlesMat); sceneDark.add(particleSystem);
+
+                let opWebglResizeRaf = 0;
+                let opLastWebglWidth = 0;
+                let opLastWebglHeight = 0;
+                const opResizeWebgl = () => {
+                    opWebglResizeRaf = 0;
+                    const nextW = Math.max(1, opViewportWidth());
+                    const nextH = Math.max(1, opViewportHeight());
+                    if (Math.abs(nextW - opLastWebglWidth) < 2 && Math.abs(nextH - opLastWebglHeight) < 2) return;
+                    opLastWebglWidth = nextW;
+                    opLastWebglHeight = nextH;
+                    renderer.setSize(nextW, nextH, false);
+                    cameraDark.aspect = nextW / nextH;
+                    cameraDark.updateProjectionMatrix();
+                };
+                const opScheduleWebglResize = () => {
+                    if (opWebglResizeRaf) return;
+                    opWebglResizeRaf = requestAnimationFrame(opResizeWebgl);
+                };
+                window.addEventListener('resize', opScheduleWebglResize, { passive: true });
+                window.visualViewport?.addEventListener('resize', opScheduleWebglResize, { passive: true });
+
+                let targetMouseX = 0; let targetMouseY = 0;
+                let opPointerRaf = 0;
+                let opPendingPointerX = 0;
+                let opPendingPointerY = 0;
+                if (!isMobileInit) {
+                    window.addEventListener('pointermove', (e) => {
+                        if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+                        opPendingPointerX = e.clientX;
+                        opPendingPointerY = e.clientY;
+                        if (opPointerRaf) return;
+                        opPointerRaf = requestAnimationFrame(() => {
+                            opPointerRaf = 0;
+                            const w = Math.max(1, window.innerWidth);
+                            const h = Math.max(1, window.innerHeight);
+                            targetMouseX = (opPendingPointerX / w) * 2 - 1;
+                            targetMouseY = -(opPendingPointerY / h) * 2 + 1;
+                        });
+                    }, {passive: true});
+                }
+
+                let webglRunning = false;
+                let opWebglLastFrame = performance.now();
+                document.addEventListener('op:webgl-home-resync', () => {
+                    globalScrollVelocity = 0;
+                    opWebglLastFrame = performance.now();
+                    targetMouseX = 0;
+                    targetMouseY = 0;
+                    cameraDark.position.x *= 0.86;
+                    cameraDark.position.y *= 0.86;
+                    opScheduleWebglResize();
+                });
+                let opSlowFrameCount = 0;
+                const opWebglBaseFrameInterval = opWebglPhone ? (opVerySmallPhone || opSaveData ? 1000 / 36 : 1000 / 55) : (opWebglTabletTouch || opRuntimeLowPower ? 1000 / 55 : 0);
+                const opApplyAdaptiveQuality = () => {
+                    const minDpr = opWebglPhone ? 0.62 : (opWebglTabletTouch ? 0.74 : 0.78);
+                    if (opAdaptivePixelRatio > minDpr) {
+                        opAdaptivePixelRatio = Math.max(minDpr, opAdaptivePixelRatio - 0.08);
+                        renderer.setPixelRatio(opAdaptivePixelRatio);
+                        renderer.setSize(Math.max(1, opViewportWidth()), Math.max(1, opViewportHeight()), false);
+                    }
+                    const particleFloor = opWebglPhone ? 240 : (opWebglTabletTouch ? 340 : 480);
+                    if (opActiveParticleCount > particleFloor) {
+                        opActiveParticleCount = Math.max(particleFloor, Math.floor(opActiveParticleCount * 0.88));
+                        particlesGeom.setDrawRange(0, opActiveParticleCount);
+                    }
+                };
+
+                document.addEventListener('op:perf-stress', () => {
+                    opApplyAdaptiveQuality();
+                    opApplyAdaptiveQuality();
+                });
+
+                const renderWebGL = (now = performance.now()) => {
+                    if (document.hidden) { webglRunning = false; return; }
+                    webglRunning = true;
+                    const elapsed = now - opWebglLastFrame;
+                    const lightboxOpen = document.documentElement.classList.contains('op-lightbox-open');
+                    const frameInterval = lightboxOpen ? 1000 / 30 : opWebglBaseFrameInterval;
+                    if (frameInterval > 0 && elapsed < frameInterval) {
+                        requestAnimationFrame(renderWebGL);
+                        return;
+                    }
+
+                    if (elapsed > (opWebglPhone ? 42 : opWebglTabletTouch ? 34 : 28)) {
+                        opSlowFrameCount += 1;
+                        if (opSlowFrameCount > 8) { opSlowFrameCount = 0; opApplyAdaptiveQuality(); }
+                    } else if (opSlowFrameCount > 0) {
+                        opSlowFrameCount -= 1;
+                    }
+
+                    opWebglLastFrame = now;
+                    const dtScale = Math.max(0.65, Math.min(2.2, elapsed / 16.6667));
+                    const positions = particlesPosition.array;
+                    const scrollPush = (opUseSmoothScroll && !opIsProgrammaticTopScrollActive()) ? globalScrollVelocity * 0.05 : 0;
+                    const end = opActiveParticleCount * 3;
+                    for(let i=1; i<end; i+=3) {
+                        positions[i] += (scrollPush + 0.05) * dtScale;
+                        if(positions[i] > 100) positions[i] = -100;
+                        else if(positions[i] < -100) positions[i] = 100;
+                    }
+                    particlesPosition.needsUpdate = true;
+                    particleSystem.rotation.y += 0.001 * dtScale;
+
+                    if (!isMobileInit) {
+                        cameraDark.position.x += (targetMouseX * 10 - cameraDark.position.x) * 0.05;
+                        cameraDark.position.y += (targetMouseY * 10 - cameraDark.position.y) * 0.05;
+                        cameraDark.lookAt(sceneDark.position);
+                    }
+
+                    renderer.render(sceneDark, cameraDark);
+                    requestAnimationFrame(renderWebGL);
+                };
+                requestAnimationFrame(renderWebGL);
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden && !webglRunning) {
+                        opWebglLastFrame = performance.now();
+                        requestAnimationFrame(renderWebGL);
+                    }
+                });
+                } catch (_) {
+                    document.documentElement.classList.add('op-webgl-fallback');
+                    (canvas as HTMLCanvasElement).style.display = 'none';
+                }
+                }
+            }
+
+
+            // --- 2.5. LIQUID CURSOR PREMIUM (WEBGL LIGERO / TODAS LAS DIRECCIONES) ---
+            (() => {
+                try {
+                const liquidCanvas = document.getElementById('liquid-refraction-canvas') as HTMLCanvasElement | null;
+                const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+                const finePointer = window.matchMedia('(pointer: fine)');
+                const minWidth = 860;
+
+                if (!liquidCanvas || (window as any).__opLiquidCursorMounted || reduceMotion.matches || !finePointer.matches || window.innerWidth < minWidth) {
+                    if (liquidCanvas) liquidCanvas.style.display = 'none';
+                    return;
+                }
+
+                (window as any).__opLiquidCursorMounted = true;
+
+                const MAX_SPLATS = 24;
+                const OP_ACTIVE_SPLATS = opRuntimeLowPower ? 18 : MAX_SPLATS;
+                const splats = Array.from({ length: MAX_SPLATS }, () => ({
+                    x: 0, y: 0, vx: 1, vy: 0, age: 999, life: 1, radius: 0, force: 0, speed: 0, seed: Math.random() * 10
+                }));
+
+                let splatIndex = 0;
+                let rafId = 0;
+                let lastFrame = performance.now();
+                let lastInputAt = 0;
+                let lastPointer: { x: number; y: number; t: number; vx: number; vy: number } | null = null;
+                let scaleX = 1;
+                let scaleY = 1;
+                let canvasVisible = 0;
+                let quality = opRuntimeLowPower ? 0.46 : 0.54;
+                let slowFrameCount = 0;
+
+                const renderer = new THREE.WebGLRenderer({
+                    canvas: liquidCanvas,
+                    alpha: true,
+                    premultipliedAlpha: true,
+                    antialias: false,
+                    depth: false,
+                    stencil: false,
+                    powerPreference: opRuntimeLowPower ? 'low-power' : 'high-performance'
+                });
+
+                renderer.setClearColor(0x000000, 0);
+                renderer.autoClear = true;
+                if ('outputColorSpace' in renderer && THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+                const scene = new THREE.Scene();
+                const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+                const splatUniforms = Array.from({ length: MAX_SPLATS }, () => new THREE.Vector4(0, 0, 0, 0));
+                const motionUniforms = Array.from({ length: MAX_SPLATS }, () => new THREE.Vector4(1, 0, 0, 0));
+
+                const material = new THREE.ShaderMaterial({
+                    transparent: true,
+                    depthTest: false,
+                    depthWrite: false,
+                    blending: THREE.NormalBlending,
+                    uniforms: {
+                        uResolution: { value: new THREE.Vector2(1, 1) },
+                        uTime: { value: 0 },
+                        uSplat: { value: splatUniforms },
+                        uMotion: { value: motionUniforms }
+                    },
+                    vertexShader: `
+                        varying vec2 vUv;
+                        void main() {
+                            vUv = uv;
+                            gl_Position = vec4(position.xy, 0.0, 1.0);
+                        }
+                    `,
+                    fragmentShader: `
+                        precision mediump float;
+                        #define MAX_SPLATS 24
+
+                        uniform vec2 uResolution;
+                        uniform float uTime;
+                        uniform vec4 uSplat[MAX_SPLATS];
+                        uniform vec4 uMotion[MAX_SPLATS];
+                        varying vec2 vUv;
+
+                        float hash21(vec2 p) {
+                            p = fract(p * vec2(123.34, 456.21));
+                            p += dot(p, p + 34.345);
+                            return fract(p.x * p.y);
+                        }
+
+                        float noise(vec2 p) {
+                            vec2 i = floor(p);
+                            vec2 f = fract(p);
+                            f = f * f * (3.0 - 2.0 * f);
+                            float a = hash21(i);
+                            float b = hash21(i + vec2(1.0, 0.0));
+                            float c = hash21(i + vec2(0.0, 1.0));
+                            float d = hash21(i + vec2(1.0, 1.0));
+                            return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+                        }
+
+                        void main() {
+                            vec2 p = vUv * uResolution;
+                            float field = 0.0;
+                            float rim = 0.0;
+                            float energy = 0.0;
+                            vec2 normal = vec2(0.0);
+
+                            for (int i = 0; i < MAX_SPLATS; i++) {
+                                vec4 s = uSplat[i];
+                                float amp = s.w;
+                                if (amp <= 0.001) { continue; }
+
+                                vec2 center = s.xy;
+                                float radius = max(s.z, 1.0);
+                                vec4 m = uMotion[i];
+                                vec2 dir = normalize(m.xy + vec2(0.00001));
+                                vec2 perp = vec2(-dir.y, dir.x);
+                                float speed = clamp(m.z, 0.0, 1.0);
+                                float seed = m.w;
+
+                                vec2 q = p - center;
+                                float along = dot(q, dir);
+                                float across = dot(q, perp);
+
+                                float organic = noise(p * 0.018 + seed + normal * 0.65 + uTime * 0.16);
+                                float tail = radius * mix(1.45, 4.75, speed);
+                                float front = radius * mix(0.42, 0.86, speed);
+                                float clampedAlong = clamp(along, -tail, front);
+                                float a = (along - clampedAlong) / (radius * mix(0.58, 0.82, speed));
+                                float b = across / (radius * mix(0.46, 0.76, speed));
+                                float capsule = exp(-(a * a + b * b) * 3.15);
+
+                                float headA = along / (radius * mix(0.85, 1.20, speed));
+                                float headB = across / (radius * mix(0.52, 0.78, speed));
+                                float head = exp(-(headA * headA + headB * headB) * 3.5);
+
+                                float wakeA = (along + tail * 0.52) / max(tail * 0.78, 1.0);
+                                float wakeB = across / (radius * mix(0.92, 1.22, speed));
+                                float wake = exp(-(wakeA * wakeA + wakeB * wakeB) * 1.8) * 0.22;
+
+                                float f = (capsule * 0.78 + head * 0.28 + wake) * amp * (0.88 + organic * 0.18);
+                                field += f;
+                                rim += (smoothstep(0.035, 0.18, f) - smoothstep(0.25, 0.55, f)) * amp;
+                                normal += (dir * a + perp * b) * f;
+                                energy += amp * (0.42 + speed * 0.72);
+                            }
+
+                            field = clamp(field, 0.0, 1.65);
+                            rim = clamp(rim, 0.0, 1.0);
+
+                            float n1 = noise(p * 0.022 + normal * 1.15 + uTime * 0.12);
+                            float n2 = noise(p * 0.041 - normal * 0.78 - uTime * 0.07);
+                            float body = smoothstep(0.05, 0.50, field) * (1.0 - smoothstep(0.94, 1.46, field));
+                            float edge = smoothstep(0.045, 0.16, field) - smoothstep(0.29, 0.68, field);
+                            float contour = abs(fract(field * 3.35 + n1 * 0.23 - n2 * 0.12 + uTime * 0.014) - 0.5);
+                            float caustic = (1.0 - smoothstep(0.0, 0.18, contour)) * edge * 0.42;
+
+                            float normalLen = clamp(length(normal) * 0.78, 0.0, 1.0);
+                            float fresnel = pow(normalLen, 0.74) * smoothstep(0.05, 0.72, field);
+                            float angle = atan(normal.y, normal.x);
+                            float film = field * 0.82 + angle * 0.13 + n1 * 0.22 - n2 * 0.12 + uTime * 0.024;
+
+                            vec3 prism = 0.55 + 0.45 * cos(6.2831853 * (film + vec3(0.00, 0.34, 0.67)));
+                            vec3 ice = vec3(0.68, 0.88, 1.00);
+                            vec3 pearl = vec3(0.96, 0.985, 1.00);
+                            vec3 amber = vec3(1.00, 0.70, 0.38);
+                            vec3 violet = vec3(0.82, 0.72, 1.00);
+                            vec3 chroma = mix(mix(ice, amber, smoothstep(-0.2, 0.92, sin(film * 6.2831853))), prism, 0.52);
+                            chroma = mix(chroma, violet, smoothstep(0.74, 1.0, n2) * 0.22);
+
+                            vec3 color = pearl * body * 0.07;
+                            color += chroma * edge * rim * 0.82;
+                            color += vec3(1.0, 0.96, 0.84) * caustic * 0.20;
+                            color += mix(ice, amber, n1) * fresnel * 0.15;
+
+                            float alpha = body * 0.020 + edge * rim * 0.30 + caustic * 0.09 + fresnel * 0.052;
+                            alpha *= clamp(0.30 + energy * 0.42, 0.30, 1.0);
+                            alpha = min(alpha, 0.48);
+
+                            if (alpha < 0.0025) discard;
+                            gl_FragColor = vec4(color, alpha);
+                        }
+                    `
+                });
+
+                const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+                mesh.frustumCulled = false;
+                scene.add(mesh);
+
+                function viewportWidth() {
+                    return Math.round(window.visualViewport?.width || window.innerWidth);
+                }
+
+                function viewportHeight() {
+                    return Math.round(window.visualViewport?.height || window.innerHeight);
+                }
+
+                function resizeLiquid() {
+                    const vw = viewportWidth();
+                    const vh = viewportHeight();
+                    const dpr = Math.min(Math.max((window.devicePixelRatio || 1) * quality, 0.46), opRuntimeLowPower ? 0.60 : 0.72);
+                    renderer.setPixelRatio(dpr);
+                    renderer.setSize(vw, vh, false);
+                    scaleX = liquidCanvas.width / Math.max(1, vw);
+                    scaleY = liquidCanvas.height / Math.max(1, vh);
+                    material.uniforms.uResolution.value.set(liquidCanvas.width, liquidCanvas.height);
+                    liquidCanvas.style.width = `${vw}px`;
+                    liquidCanvas.style.height = `${vh}px`;
+                }
+
+                let liquidResizeRaf = 0;
+                function scheduleLiquidResize() {
+                    if (liquidResizeRaf) return;
+                    liquidResizeRaf = requestAnimationFrame(() => {
+                        liquidResizeRaf = 0;
+                        if (window.innerWidth < minWidth || reduceMotion.matches || !finePointer.matches) {
+                            liquidCanvas.style.display = 'none';
+                            clearLiquid();
+                            resetLiquidPointer();
+                            return;
+                        }
+                        liquidCanvas.style.display = 'block';
+                        resizeLiquid();
+                        clearLiquid();
+                        resetLiquidPointer();
+                    });
+                }
+
+                function clearLiquid() {
+                    renderer.clear();
+                    canvasVisible = 0;
+                    liquidCanvas.style.opacity = '0';
+                }
+
+                function addSplat(x, y, vx, vy, speedNorm, force) {
+                    if (force <= 0.008) return;
+                    const p = splats[splatIndex];
+                    splatIndex = (splatIndex + 1) % OP_ACTIVE_SPLATS;
+                    const screenScale = (scaleX + scaleY) * 0.5;
+                    p.x = x;
+                    p.y = y;
+                    p.vx = vx;
+                    p.vy = vy;
+                    p.age = 0;
+                    p.life = 0.28 + speedNorm * 0.48;
+                    p.radius = (18 + speedNorm * 58) * screenScale;
+                    p.force = force;
+                    p.speed = speedNorm;
+                    p.seed = Math.random() * 20;
+                }
+
+                function scheduleLiquid() {
+                    if (!rafId) {
+                        rafId = requestAnimationFrame(renderLiquid);
+                    }
+                }
+
+                let lastPointerEventAt = 0;
+                function onPointerMove(e: PointerEvent) {
+                    if (document.hidden) return;
+                    if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+                    if (lightbox && lightbox.style.display === 'flex') return;
+
+                    const now = performance.now();
+                    const pointerInterval = opRuntimeLowPower ? 18 : 10;
+                    if (now - lastPointerEventAt < pointerInterval) return;
+                    lastPointerEventAt = now;
+                    const x = e.clientX * scaleX;
+                    const y = (viewportHeight() - e.clientY) * scaleY;
+
+                    if (!lastPointer) {
+                        lastPointer = { x, y, t: now, vx: 1, vy: 0 };
+                        return;
+                    }
+
+                    const dt = Math.max(12, now - lastPointer.t);
+                    const dx = x - lastPointer.x;
+                    const dy = y - lastPointer.y;
+                    const dist = Math.hypot(dx, dy);
+                    const cssDist = dist / Math.max(0.001, (scaleX + scaleY) * 0.5);
+                    if (cssDist < (opRuntimeLowPower ? 1.8 : 1.05)) return;
+
+                    const speed = cssDist / (dt / 1000);
+                    const speedNorm = Math.min(1, Math.max(0, (speed - 42) / 980));
+                    const distanceGain = Math.min(1, cssDist / 18);
+                    const force = Math.pow(speedNorm, 0.98) * (0.24 + distanceGain * 0.76);
+
+                    if (force > 0.012) {
+                        const prevVx = lastPointer.vx || dx / dt;
+                        const prevVy = lastPointer.vy || dy / dt;
+                        const vx = prevVx * 0.62 + (dx / dt) * 0.38;
+                        const vy = prevVy * 0.62 + (dy / dt) * 0.38;
+                        const len = Math.max(Math.hypot(dx, dy), 0.001);
+                        const nx = -dy / len;
+                        const ny = dx / len;
+                        const steps = Math.min(opRuntimeLowPower ? 3 : 5, Math.max(1, Math.ceil(cssDist / 22)));
+
+                        for (let i = 1; i <= steps; i++) {
+                            const t = i / steps;
+                            const eased = t * t * (3 - 2 * t);
+                            const jitter = (Math.random() - 0.5) * 1.45 * (0.18 + speedNorm);
+                            addSplat(
+                                lastPointer.x + dx * eased + nx * jitter,
+                                lastPointer.y + dy * eased + ny * jitter,
+                                vx,
+                                vy,
+                                speedNorm,
+                                force * (0.72 + 0.28 * t)
+                            );
+                        }
+
+                        lastInputAt = now;
+                        scheduleLiquid();
+                    }
+
+                    lastPointer = { x, y, t: now, vx: dx / dt, vy: dy / dt };
+                }
+
+                function renderLiquid(now: number) {
+                    rafId = 0;
+                    const elapsedMs = now - lastFrame;
+                    const liquidFrameInterval = opRuntimeLowPower ? 1000 / 45 : 1000 / 75;
+                    if (elapsedMs < liquidFrameInterval) {
+                        scheduleLiquid();
+                        return;
+                    }
+                    const dt = Math.min(0.034, Math.max(0.001, elapsedMs / 1000));
+                    lastFrame = now;
+
+                    if (dt > 0.029) slowFrameCount += 1;
+                    else slowFrameCount = Math.max(0, slowFrameCount - 1);
+                    if (slowFrameCount > 12 && quality > 0.42) {
+                        quality = Math.max(0.42, quality - 0.04);
+                        slowFrameCount = 0;
+                        resizeLiquid();
+                    }
+
+                    let count = 0;
+                    let energy = 0;
+                    for (let i = 0; i < OP_ACTIVE_SPLATS; i++) {
+                        const p = splats[i];
+                        if (p.age >= p.life) continue;
+                        p.age += dt;
+                        const lifeT = Math.min(1, p.age / p.life);
+                        const fade = Math.pow(1 - lifeT, 2.45) * p.force;
+                        if (fade <= 0.002) {
+                            p.age = p.life + 1;
+                            continue;
+                        }
+                        const drift = (1 - lifeT) * dt * 12.0;
+                        p.x += p.vx * drift;
+                        p.y += p.vy * drift;
+                        const radius = p.radius * (1 + lifeT * (0.18 + p.speed * 0.20));
+                        splatUniforms[count].set(p.x, p.y, radius, fade);
+                        motionUniforms[count].set(p.vx, p.vy, p.speed, p.seed);
+                        energy += fade * (0.50 + p.speed * 0.72);
+                        count++;
+                        if (count >= MAX_SPLATS) break;
+                    }
+
+                    for (let i = count; i < MAX_SPLATS; i++) {
+                        splatUniforms[i].set(0, 0, 0, 0);
+                        motionUniforms[i].set(1, 0, 0, 0);
+                    }
+
+                    if (!count && now - lastInputAt > 90) {
+                        clearLiquid();
+                        return;
+                    }
+
+                    material.uniforms.uTime.value = now * 0.001;
+                    canvasVisible += (Math.min(1, energy * 1.18) - canvasVisible) * 0.22;
+                    liquidCanvas.style.opacity = String(Math.min(1, Math.max(0, canvasVisible)));
+                    renderer.render(scene, camera);
+
+                    if (count || canvasVisible > 0.004) {
+                        scheduleLiquid();
+                    } else {
+                        clearLiquid();
+                    }
+                }
+
+                function resetLiquidPointer() {
+                    lastPointer = null;
+                }
+
+                resizeLiquid();
+                clearLiquid();
+                window.addEventListener('pointermove', onPointerMove, { passive: true });
+                window.addEventListener('pointerleave', resetLiquidPointer, { passive: true });
+                window.addEventListener('blur', () => { resetLiquidPointer(); clearLiquid(); }, { passive: true });
+                window.addEventListener('resize', scheduleLiquidResize, { passive: true });
+                window.visualViewport?.addEventListener('resize', scheduleLiquidResize, { passive: true });
+                document.addEventListener('op:perf-stress', () => {
+                    quality = Math.max(0.40, quality - 0.06);
+                    scheduleLiquidResize();
+                });
+                document.addEventListener('visibilitychange', () => {
+                    resetLiquidPointer();
+                    if (document.hidden) clearLiquid();
+                });
+                } catch (_) {
+                    const liquidCanvas = document.getElementById('liquid-refraction-canvas') as HTMLCanvasElement | null;
+                    if (liquidCanvas) liquidCanvas.style.display = 'none';
+                }
+            })();
+
+            // --- 3. PRELOADER, NAVEGACIÓN LIMPIA Y ANIMACIONES INICIALES ---
+            const OP_SKIP_LOADER_ONCE_KEY = 'op-skip-loader-once';
+            const OP_LEGACY_SESSION_LOADER_KEY = 'op-loader-done';
+            let opAppStarted = false;
+            let opEntranceStarted = false;
+            let opLoaderInterval: number | undefined;
+            let opLoaderFailsafe: number | undefined;
+
+            function opSafeStorageGet(key: string) {
+                try { return sessionStorage.getItem(key); } catch (_) { return null; }
+            }
+
+            function opSafeStorageSet(key: string, value: string) {
+                try { sessionStorage.setItem(key, value); } catch (_) {}
+            }
+
+            function opSafeStorageRemove(key: string) {
+                try { sessionStorage.removeItem(key); } catch (_) {}
+            }
+
+            function opSetSkipLoaderOnce() {
+                opSafeStorageSet(OP_SKIP_LOADER_ONCE_KEY, '1');
+            }
+
+            function opConsumeSkipLoaderOnce() {
+                const shouldSkip = opSafeStorageGet(OP_SKIP_LOADER_ONCE_KEY) === '1';
+                opSafeStorageRemove(OP_SKIP_LOADER_ONCE_KEY);
+                opSafeStorageRemove(OP_LEGACY_SESSION_LOADER_KEY);
+                return shouldSkip;
+            }
+
+            function opMarkLoaderDone() {
+                document.documentElement.classList.add('op-loader-complete', 'op-page-ready');
+            }
+
+            function opHardReleaseLoader() {
+                const sysInit = document.getElementById('system-init');
+                if (opLoaderInterval) window.clearInterval(opLoaderInterval);
+                if (opLoaderFailsafe) window.clearTimeout(opLoaderFailsafe);
+                const pctEl = document.getElementById('loader-pct');
+                if (pctEl) pctEl.textContent = '[100%]';
+                opMarkLoaderDone();
+                if (sysInit) {
+                    gsap.killTweensOf(sysInit);
+                    sysInit.style.transform = 'translate3d(0,-100%,0)';
+                    sysInit.style.opacity = '0';
+                    sysInit.style.visibility = 'hidden';
+                    sysInit.style.pointerEvents = 'none';
+                    sysInit.style.display = 'none';
+                }
+            }
+
+            function opRunEntranceAnimations() {
+                if (opEntranceStarted) return;
+                opEntranceStarted = true;
+
+                if (opIsMobilePerf()) {
+                    // Móvil mantiene el mismo look, pero el hero ya no aparece de golpe:
+                    // solo el hero entra con la coreografía de escritorio; el resto queda ligero para scroll nativo.
+                    gsap.set('.has-reveal:not(.hero-title), .has-reveal:not(.hero-title) .reveal-text, .scroll-indicator, .v-item, .p-card, .profile-main p, .profile-sidebar, .t-focus-item, .t-panel > *, .monolith, .h-card, .reel-item', {
+                        opacity: 1,
+                        x: 0,
+                        y: 0,
+                        yPercent: 0,
+                        xPercent: 0,
+                        filter: 'none',
+                        clearProps: 'transform'
+                    });
+
+                    const heroTitle = document.querySelector('.hero-title');
+                    const heroPieces = gsap.utils.toArray('.hero-title .reveal-text');
+                    if (heroTitle) gsap.set(heroTitle, { opacity: 1 });
+
+                    if (heroPieces.length) {
+                        gsap.set(heroPieces, {
+                            y: '115%',
+                            opacity: 0,
+                            filter: 'blur(8px)',
+                            willChange: 'transform, opacity, filter',
+                            force3D: true
+                        });
+                        gsap.to(heroPieces, {
+                            y: '0%',
+                            opacity: 1,
+                            filter: 'blur(0px)',
+                            duration: 0.9,
+                            ease: 'power3.out',
+                            stagger: 0.085,
+                            delay: 0.04,
+                            force3D: true,
+                            clearProps: 'willChange,filter'
+                        });
+                    } else if (heroTitle) {
+                        gsap.fromTo(heroTitle,
+                            { y: 24, opacity: 0, filter: 'blur(8px)' },
+                            { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.85, ease: 'power3.out', force3D: true, clearProps: 'filter' }
+                        );
+                    }
+
+                    gsap.fromTo('.hero-desc',
+                        { y: 18, opacity: 0, filter: 'blur(7px)' },
+                        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.85, delay: 0.28, ease: 'power3.out', force3D: true, clearProps: 'filter' }
+                    );
+
+                    requestAnimationFrame(() => ScrollTrigger.refresh());
+                    return;
+                }
+
+                gsap.to('.hero-title .reveal-text', { y: '0%', opacity: 1, filter: "blur(0px)", duration: 1, ease: 'power3.out', stagger: 0.1 });
+                gsap.to('.hero-desc', { y: 0, opacity: 1, duration: 1, delay: 0.35 });
+                gsap.to('.scroll-indicator', { opacity: 1, duration: 1, delay: 0.65 });
+                
+                initTypographyChoreography();
+
+                gsap.fromTo('.v-item', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: ".vault-grid", start: "top 85%" } });
+                gsap.fromTo('.p-card', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power3.out", scrollTrigger: { trigger: ".process-grid", start: "top 85%" } });
+                gsap.fromTo('.profile-main p', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: ".profile-main", start: "top 80%" } });
+                gsap.fromTo('.profile-sidebar', { x: 50, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: "power3.out", scrollTrigger: { trigger: ".profile-grid", start: "top 80%" } });
+                gsap.fromTo('.t-focus-item', { x: 20, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: ".t-focus-list", start: "top 85%" } });
+                gsap.fromTo('.t-panel > *', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: ".terminal-grid", start: "top 85%" } });
+
+                if(opIsPhoneLikeViewport()) {
+                    gsap.utils.toArray('.monolith, .h-card, .reel-item').forEach(el => {
+                        gsap.fromTo(el, { y: 42, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 90%" } });
+                    });
+                }
+
+                ScrollTrigger.refresh();
+            }
+
+            function initApp() {
+                if (opAppStarted) return;
+                opAppStarted = true;
+
+                window.scrollTo(0, 0);
+                lenis.scrollTo(0, { immediate: true });
+
+                const sysInit = document.getElementById('system-init');
+                const pctEl = document.getElementById('loader-pct');
+                const shouldSkipLoader = opConsumeSkipLoaderOnce() || document.documentElement.classList.contains('op-loader-complete');
+
+                if (!sysInit || shouldSkipLoader) {
+                    opHardReleaseLoader();
+                    opRunEntranceAnimations();
+                    return;
+                }
+
+                document.documentElement.classList.add('op-loader-active');
+                sysInit.style.display = 'flex';
+                sysInit.style.visibility = 'visible';
+                sysInit.style.opacity = '1';
+                sysInit.style.pointerEvents = 'auto';
+                sysInit.style.transform = 'translate3d(0,0,0)';
+
+                let pct = 0;
+                let completeCalled = false;
+                const updatePct = (value: number) => {
+                    pct = Math.max(pct, Math.min(100, Math.round(value)));
+                    if (pctEl) pctEl.textContent = `[${pct.toString().padStart(3, '0')}%]`;
+                };
+
+                const completeLoader = () => {
+                    if (completeCalled) return;
+                    completeCalled = true;
+                    if (opLoaderInterval) window.clearInterval(opLoaderInterval);
+                    if (opLoaderFailsafe) window.clearTimeout(opLoaderFailsafe);
+
+                    // Mostrar 100% de forma real antes de ocultar el loader.
+                    // Importante: no agregar op-loader-complete aqui, porque esa clase
+                    // tiene display:none !important y ocultaba el loader antes del repaint.
+                    updatePct(100);
+                    document.documentElement.classList.remove('op-loader-active');
+                    document.documentElement.classList.add('op-loader-holding-100');
+
+                    const releaseLoaderVisual = () => {
+                        requestAnimationFrame(() => {
+                            updatePct(100);
+                            window.setTimeout(() => {
+                                updatePct(100);
+                                document.documentElement.classList.remove('op-loader-holding-100');
+
+                                gsap.to(sysInit, { 
+                                    yPercent: -100, 
+                                    autoAlpha: 0,
+                                    duration: 0.95, 
+                                    ease: "power4.inOut", 
+                                    onComplete: () => {
+                                        sysInit.style.display = 'none';
+                                        sysInit.style.pointerEvents = 'none';
+                                        opMarkLoaderDone();
+                                        opRunEntranceAnimations();
+                                    }
+                                });
+                            }, 220);
+                        });
+                    };
+
+                    if (opIsMobilePerf() && typeof opMobilePreEntranceMediaWarmup === 'function') {
+                        opMobilePreEntranceMediaWarmup(opRuntimeLowPower ? 260 : 420).then(releaseLoaderVisual).catch(releaseLoaderVisual);
+                    } else {
+                        releaseLoaderVisual();
+                    }
+                };
+
+                opLoaderInterval = window.setInterval(() => {
+                    const increment = pct < 68 ? 7 : pct < 90 ? 4 : 2;
+                    updatePct(Math.min(96, pct + increment));
+                }, 18);
+
+                if (document.readyState === 'complete') {
+                    window.setTimeout(completeLoader, 260);
+                } else {
+                    window.addEventListener('load', () => window.setTimeout(completeLoader, 180), { once: true });
+                }
+
+                opLoaderFailsafe = window.setTimeout(completeLoader, 1650);
+            }
+
+            function opNormalizePath(pathname: string) {
+                const clean = pathname.replace(/\/+/g, '/').replace(/\/$/, '');
+                return clean === '' ? '/' : clean;
+            }
+
+            function opIsLanguageSwitch(anchor: HTMLAnchorElement) {
+                const url = new URL(anchor.href, window.location.href);
+                if (url.origin !== window.location.origin) return false;
+
+                const current = opNormalizePath(window.location.pathname);
+                const next = opNormalizePath(url.pathname);
+                const label = (anchor.textContent || '').trim().toLowerCase();
+                const looksLikeLanguageControl = anchor.classList.contains('ctrl-btn') || label === 'en' || label === 'es';
+
+                return looksLikeLanguageControl && (
+                    (current !== '/en' && next === '/en') ||
+                    (current === '/en' && next === '/') ||
+                    (next === '/en' || next === '/')
+                );
+            }
+
+            let opLanguageClickFixInstalled = false;
+            function opInstallLanguageNavigationFix() {
+                document.querySelectorAll('a[href]').forEach((anchor) => {
+                    const a = anchor as HTMLAnchorElement;
+                    if (opIsLanguageSwitch(a)) a.setAttribute('data-astro-reload', 'true');
+                });
+
+                if (opLanguageClickFixInstalled) return;
+                opLanguageClickFixInstalled = true;
+                document.addEventListener('click', (event) => {
+                    const target = event.target as HTMLElement | null;
+                    const anchor = target?.closest?.('a[href]') as HTMLAnchorElement | null;
+                    if (!anchor || !opIsLanguageSwitch(anchor)) return;
+
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+
+                    const url = new URL(anchor.href, window.location.href);
+                    opSetSkipLoaderOnce();
+                    opHardReleaseLoader();
+                    document.documentElement.classList.add('op-clean-language-nav');
+                    lenis.stop();
+                    ScrollTrigger.getAll().forEach(st => st.disable(false));
+                    window.location.assign(`${url.pathname}${url.search}${url.hash}`);
+                }, true);
+            }
+
+            function opGetLanguageHomePath() {
+                const path = opNormalizePath(window.location.pathname);
+                return path === '/en' || path.startsWith('/en/') ? '/en/' : '/';
+            }
+
+            function opIsHeaderLogoControl(anchor: HTMLAnchorElement) {
+                const parentNav = anchor.closest('nav, #main-nav, header');
+                if (!parentNav) return false;
+
+                const aria = (anchor.getAttribute('aria-label') || '').toLowerCase();
+                const text = (anchor.textContent || '').trim().toLowerCase();
+                const href = anchor.getAttribute('href') || '';
+                const hasLogoImage = Array.from(anchor.querySelectorAll('img')).some((img) => {
+                    const src = ((img as HTMLImageElement).getAttribute('src') || '').toLowerCase();
+                    const alt = ((img as HTMLImageElement).getAttribute('alt') || '').toLowerCase();
+                    return src.includes('logo') || src.includes('favicon') || alt.includes('logo') || alt.includes('oscar');
+                });
+
+                const hasLogoClass = anchor.classList.contains('hud-logo') || Boolean(anchor.querySelector('.hud-logo'));
+                return hasLogoClass || hasLogoImage || aria.includes('logo') || aria.includes('inicio') || aria.includes('home') || (text === 'op' && (href === '/' || href === '#' || href === ''));
+            }
+
+            let opLogoClickFixInstalled = false;
+            function opInstallLogoHomeFix() {
+                const homePath = opGetLanguageHomePath();
+                document.querySelectorAll('nav a[href], #main-nav a[href], header a[href]').forEach((anchor) => {
+                    const a = anchor as HTMLAnchorElement;
+                    if (!opIsHeaderLogoControl(a)) return;
+                    a.setAttribute('href', homePath);
+                    a.setAttribute('data-astro-reload', 'true');
+                });
+
+                if (opLogoClickFixInstalled) return;
+                opLogoClickFixInstalled = true;
+                document.addEventListener('click', (event) => {
+                    const target = event.target as HTMLElement | null;
+                    const anchor = target?.closest?.('a[href]') as HTMLAnchorElement | null;
+                    if (!anchor || !opIsHeaderLogoControl(anchor)) return;
+
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+
+                    const homePath = opGetLanguageHomePath();
+                    const currentPath = opNormalizePath(window.location.pathname);
+                    const targetPath = opNormalizePath(homePath);
+
+                    opSetSkipLoaderOnce();
+                    opHardReleaseLoader();
+
+                    if (lightbox && lightbox.style.display === 'flex') {
+                        lightbox.style.display = 'none';
+                        lightbox.classList.remove('is-fullscreen');
+                    }
+
+                    if (currentPath === targetPath) {
+                        opSetHeaderChromeHidden(false);
+                        if (window.location.hash) history.replaceState(null, '', homePath);
+                        lenis.start();
+                        if (opUseSmoothScroll) opScrollToTopPreservingWebgl(1.1);
+                        else {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            requestAnimationFrame(() => ScrollTrigger.refresh());
+                        }
+                        return;
+                    }
+
+                    lenis.stop();
+                    ScrollTrigger.getAll().forEach(st => st.disable(false));
+                    window.location.assign(homePath);
+                }, true);
+            }
+
+            function opHeaderChromeTargets() {
+                const selectors = ['#main-nav > *', 'nav > *', 'header > *'];
+                const seen = new Set();
+                const targets: Element[] = [];
+                selectors.forEach((selector) => {
+                    document.querySelectorAll(selector).forEach((el) => {
+                        if (el.id === 'op-nav-blur-shield' || el.matches('nav, #main-nav, header') || seen.has(el)) return;
+                        seen.add(el);
+                        targets.push(el);
+                    });
+                });
+                return targets;
+            }
+
+            function opRestoreHeaderBlur() {
+                document.documentElement.classList.add('op-nav-blur-ready');
+                const blurShield = document.getElementById('op-nav-blur-shield');
+                if (blurShield) {
+                    blurShield.style.display = 'block';
+                    blurShield.style.opacity = '1';
+                    blurShield.style.transform = 'translate3d(0,0,0)';
+                }
+
+                document.querySelectorAll('nav, #main-nav, header').forEach((el) => {
+                    const htmlEl = el as HTMLElement;
+                    htmlEl.style.removeProperty('opacity');
+                    htmlEl.style.removeProperty('filter');
+                    htmlEl.style.removeProperty('visibility');
+                    htmlEl.style.transform = htmlEl.style.transform || 'translate3d(0,0,0)';
+                });
+
+                requestAnimationFrame(() => {
+                    document.documentElement.classList.add('op-nav-blur-refresh');
+                    requestAnimationFrame(() => document.documentElement.classList.remove('op-nav-blur-refresh'));
+                });
+            }
+
+            function opSetHeaderChromeHidden(hidden: boolean) {
+                opRestoreHeaderBlur();
+                const targets = opHeaderChromeTargets();
+                if (!targets.length) return;
+                gsap.to(targets, {
+                    opacity: hidden ? 0 : 1,
+                    duration: hidden ? 0.2 : 0.3,
+                    ease: 'power2.out',
+                    overwrite: 'auto',
+                    pointerEvents: hidden ? 'none' : 'auto'
+                });
+            }
+
+            opInstallLanguageNavigationFix();
+            opInstallLogoHomeFix();
+            opRestoreHeaderBlur();
+            window.addEventListener('pageshow', () => {
+                if (document.documentElement.classList.contains('op-loader-complete') || opConsumeSkipLoaderOnce()) opHardReleaseLoader();
+            }, { passive: true });
+            document.addEventListener('astro:before-preparation', opHardReleaseLoader);
+            document.addEventListener('astro:page-load', () => {
+                opInstallLanguageNavigationFix();
+                opInstallLogoHomeFix();
+                opRestoreHeaderBlur();
+                if (opAppStarted || document.documentElement.classList.contains('op-loader-complete') || opConsumeSkipLoaderOnce()) opHardReleaseLoader();
+            });
+
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                setTimeout(initApp, 50);
+            } else {
+                window.addEventListener('DOMContentLoaded', initApp, { once: true });
+            }
+
+            function splitTextForReveal(selector) {
+                document.querySelectorAll(selector).forEach(el => {
+                    if(!el.innerHTML.includes('<') || el.innerHTML.includes('<br>')) {
+                        const text = el.innerText;
+                        el.innerHTML = text.split(' ').map(word => `<span class="reveal-wrap"><span class="reveal-text">${word}</span></span>`).join(' ');
+                    }
+                });
+            }
+
+            function initTypographyChoreography() {
+                splitTextForReveal('.has-reveal');
+                document.querySelectorAll('.has-reveal').forEach(title => {
+                    gsap.set(title, { opacity: 1 }); 
+                    const chars = title.querySelectorAll('.reveal-text');
+                    if(chars.length > 0) { 
+                        gsap.to(chars, { y: '0%', opacity: 1, filter: "blur(0px)", duration: 0.8, ease: 'power3.out', stagger: 0.05, scrollTrigger: { trigger: title, start: "top 85%", toggleActions: "play none none reverse" } }); 
+                    }
+                });
+            }
+
+            // --- 4. GSAP HORIZONTAL ---
+            let opHorizontalPortfolioTween = null;
+            let opReelsScrollTween = null;
+            let mm = gsap.matchMedia();
+            mm.add("(min-width: 768px)", () => {
+                
+                const zLayers = gsap.utils.toArray('.z-layer'); 
+                if(zLayers.length) {
+                    gsap.set(zLayers.slice(1), { scale: 0.1, autoAlpha: 0, filter: "blur(5px)" });
+                    let zTl = gsap.timeline({ scrollTrigger: { trigger: ".z-wrapper", start: "top top", end: "+=400%", pin: true, scrub: 0.5 } });
+                    zTl.to('.layer-hero', { autoAlpha: 0, scale: 0.8, filter: "blur(5px)", duration: 1 }, 0);
+                    zLayers.forEach((layer, i) => {
+                        if (i !== 0) { 
+                            let start = (i * 3) - 2; 
+                            zTl.fromTo(layer, { scale: 0.1, autoAlpha: 0, filter: "blur(5px)" }, { scale: 1, autoAlpha: 1, filter: "blur(0px)", duration: 1 }, start); 
+                            zTl.to(layer, { scale: 1, duration: 2 }, start + 1);
+                            if (i !== zLayers.length - 1) { zTl.to(layer, { scale: 5, autoAlpha: 0, filter: "blur(5px)", duration: 1 }, start + 3); }
+                        }
+                    });
+                }
+
+                const hPanels = gsap.utils.toArray('.h-panel');
+                if(hPanels.length) {
+                    opHorizontalPortfolioTween = gsap.to(hPanels, { 
+                        xPercent: -100 * (hPanels.length - 1), ease: "none", 
+                        scrollTrigger: { trigger: ".h-wrapper", pin: true, scrub: 1, end: () => "+=" + (document.querySelector(".h-container").offsetWidth) } 
+                    });
+                }
+
+                const reelsTrack = document.querySelector('.reels-track');
+                if(reelsTrack) {
+                    let getScrollAmount = () => reelsTrack.scrollWidth - window.innerWidth + (window.innerWidth * 0.05);
+                    opReelsScrollTween = gsap.to(reelsTrack, { x: () => -getScrollAmount(), ease: "none", scrollTrigger: { trigger: ".reels-wrapper", pin: true, scrub: 1, end: () => "+=" + (reelsTrack.scrollWidth) } });
+                }
+            });
+
+            // --- 5. MAGNETISMO ---
+            if(window.innerWidth > 768) {
+                document.querySelectorAll('.magnetic-target').forEach(btn => {
+                    const xTo = gsap.quickTo(btn, "x", {duration: 0.3, ease: "power2.out"}); 
+                    const yTo = gsap.quickTo(btn, "y", {duration: 0.3, ease: "power2.out"});
+                    
+                    btn.addEventListener('mousemove', (e) => { 
+                        const rect = btn.getBoundingClientRect(); 
+                        const x = (e.clientX - rect.left - rect.width / 2) * 0.3; 
+                        const y = (e.clientY - rect.top - rect.height / 2) * 0.3;
+                        xTo(x); yTo(y); 
+                    });
+                    btn.addEventListener('mouseleave', () => { xTo(0); yTo(0); });
+                });
+            }
+
+            // --- 5.5. SFX PREMIUM SUAVE (WEB AUDIO, SIN ARCHIVOS EXTERNOS) ---
+            const OP_SFX_KEY = 'op-premium-sfx-enabled';
+            const opPremiumSfx = (() => {
+                let ctx: AudioContext | null = null;
+                let master: GainNode | null = null;
+                let compressor: DynamicsCompressorNode | null = null;
+                let enabled = opSafeStorageGet(OP_SFX_KEY) === '1';
+                let lastHover = 0;
+                let lastTap = 0;
+
+                function ensureAudio() {
+                    if (ctx) return ctx;
+                    const AudioCtor = (window as any).AudioContext || (window as any).webkitAudioContext;
+                    if (!AudioCtor) return null;
+                    ctx = new AudioCtor();
+                    master = ctx.createGain();
+                    master.gain.value = 0.16;
+                    compressor = ctx.createDynamicsCompressor();
+                    compressor.threshold.value = -28;
+                    compressor.knee.value = 24;
+                    compressor.ratio.value = 3;
+                    compressor.attack.value = 0.003;
+                    compressor.release.value = 0.18;
+                    master.connect(compressor);
+                    compressor.connect(ctx.destination);
+                    return ctx;
+                }
+
+                function resumeAudio() {
+                    const audio = ensureAudio();
+                    if (!audio) return null;
+                    if (audio.state === 'suspended') audio.resume().catch(() => {});
+                    return audio;
+                }
+
+                function tone(freq: number, duration: number, gainValue: number, type: OscillatorType = 'sine', delay = 0, detune = 0) {
+                    const audio = resumeAudio();
+                    if (!audio || !master) return;
+                    const start = audio.currentTime + delay;
+                    const osc = audio.createOscillator();
+                    const gain = audio.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, start);
+                    osc.detune.setValueAtTime(detune, start);
+                    gain.gain.setValueAtTime(0.0001, start);
+                    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, gainValue), start + 0.012);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+                    osc.connect(gain);
+                    gain.connect(master);
+                    osc.start(start);
+                    osc.stop(start + duration + 0.025);
+                }
+
+                function filteredNoise(duration: number, gainValue: number, frequency: number, delay = 0) {
+                    const audio = resumeAudio();
+                    if (!audio || !master) return;
+                    const start = audio.currentTime + delay;
+                    const bufferSize = Math.max(1, Math.floor(audio.sampleRate * duration));
+                    const buffer = audio.createBuffer(1, bufferSize, audio.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+                    const src = audio.createBufferSource();
+                    const filter = audio.createBiquadFilter();
+                    const gain = audio.createGain();
+                    src.buffer = buffer;
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(frequency, start);
+                    filter.Q.value = 5.8;
+                    gain.gain.setValueAtTime(0.0001, start);
+                    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, gainValue), start + 0.006);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+                    src.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(master);
+                    src.start(start);
+                    src.stop(start + duration + 0.02);
+                }
+
+                function play(kind: 'hover' | 'tap' | 'open' | 'close' | 'next' | 'enable' | 'disable') {
+                    if (!enabled && kind !== 'enable' && kind !== 'disable') return;
+                    if (opPrefersReducedMotion.matches && kind === 'hover') return;
+                    const now = performance.now();
+                    if (kind === 'hover' && now - lastHover < 95) return;
+                    if (kind === 'tap' && now - lastTap < 70) return;
+                    if (kind === 'hover') lastHover = now;
+                    if (kind === 'tap') lastTap = now;
+
+                    if (kind === 'hover') {
+                        tone(1460, 0.045, 0.010, 'sine');
+                        tone(2190, 0.035, 0.004, 'triangle', 0.006);
+                        return;
+                    }
+                    if (kind === 'tap') {
+                        filteredNoise(0.035, 0.018, 3200);
+                        tone(720, 0.07, 0.018, 'triangle', 0.004);
+                        return;
+                    }
+                    if (kind === 'open') {
+                        tone(420, 0.10, 0.018, 'sine');
+                        tone(840, 0.16, 0.014, 'triangle', 0.026);
+                        filteredNoise(0.12, 0.010, 1800, 0.012);
+                        return;
+                    }
+                    if (kind === 'close') {
+                        tone(640, 0.10, 0.014, 'triangle');
+                        tone(320, 0.15, 0.012, 'sine', 0.026);
+                        return;
+                    }
+                    if (kind === 'next') {
+                        tone(980, 0.055, 0.014, 'triangle');
+                        tone(1320, 0.07, 0.010, 'sine', 0.018);
+                        return;
+                    }
+                    if (kind === 'enable') {
+                        enabled = true;
+                        resumeAudio();
+                        tone(520, 0.09, 0.018, 'sine');
+                        tone(1040, 0.16, 0.014, 'triangle', 0.045);
+                        return;
+                    }
+                    if (kind === 'disable') {
+                        tone(780, 0.07, 0.012, 'triangle');
+                        tone(390, 0.12, 0.010, 'sine', 0.024);
+                    }
+                }
+
+                function syncButtons() {
+                    document.querySelectorAll('[data-sfx-toggle], .sfx-toggle, #sfx-toggle, #sfxToggle, button, a').forEach((el) => {
+                        const target = el as HTMLElement;
+                        const label = (target.getAttribute('aria-label') || target.textContent || '').trim().toLowerCase();
+                        const idClass = `${target.id || ''} ${target.className || ''}`.toLowerCase();
+                        const isSfxButton = target.matches('[data-sfx-toggle], .sfx-toggle, #sfx-toggle, #sfxToggle') || label === 'sfx' || label.includes('sfx') || label.includes('sonido') || label.includes('sound') || idClass.includes('sfx') || idClass.includes('sonido') || idClass.includes('sound');
+                        if (!isSfxButton) return;
+                        target.setAttribute('data-sfx-toggle', 'true');
+                        const visibleState = enabled ? 'ON' : 'OFF';
+                        const visibleLabel = `SFX ${visibleState}`;
+                        target.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+                        target.setAttribute('aria-label', enabled ? 'SFX activado' : 'SFX desactivado');
+                        target.setAttribute('title', visibleLabel);
+                        target.classList.toggle('is-sfx-on', enabled);
+                        if (!target.querySelector('svg, img, picture, canvas')) {
+                            const currentText = (target.textContent || '').trim().toLowerCase();
+                            const canReplaceText = !currentText || /^(sfx|sound|sonido)(\s*:?\s*(on|off))?$/i.test(currentText);
+                            if (canReplaceText) target.textContent = visibleLabel;
+                        }
+                    });
+                }
+
+                function setEnabled(next: boolean) {
+                    enabled = next;
+                    opSafeStorageSet(OP_SFX_KEY, next ? '1' : '0');
+                    syncButtons();
+                    play(next ? 'enable' : 'disable');
+                }
+
+                function toggle() {
+                    setEnabled(!enabled);
+                }
+
+                function init() {
+                    syncButtons();
+                    document.addEventListener('click', (event) => {
+                        const target = event.target as HTMLElement | null;
+                        const control = target?.closest?.('[data-sfx-toggle], .sfx-toggle, #sfx-toggle, #sfxToggle') as HTMLElement | null;
+                        if (!control) return;
+                        event.preventDefault();
+                        toggle();
+                    }, true);
+
+                    document.addEventListener('pointerdown', (event) => {
+                        const target = event.target as HTMLElement | null;
+                        if (!target || target.closest('[data-sfx-toggle], .sfx-toggle, #sfx-toggle, #sfxToggle')) return;
+                        if (target.closest('button, a, .hover-target, .magnetic-target, .lb-trigger')) play('tap');
+                    }, { passive: true });
+
+                    document.addEventListener('pointerover', (event) => {
+                        if (!window.matchMedia('(pointer: fine)').matches) return;
+                        const target = event.target as HTMLElement | null;
+                        if (!target || !target.closest('button, a, .hover-target, .magnetic-target, .lb-trigger')) return;
+                        play('hover');
+                    }, { passive: true });
+                }
+
+                return { init, syncButtons, play, setEnabled };
+            })();
+
+            opPremiumSfx.init();
+            document.addEventListener('astro:page-load', () => opPremiumSfx.syncButtons());
+
+            // --- 6. LIGHTBOX CINEMATOGRÁFICO (OPTIMIZADO) ---
+            const lightbox = document.getElementById('lightbox'); 
+            const lbImgWrapper = document.getElementById('lb-img-wrapper');
+            const lbAmbient = document.getElementById('lb-ambient');
+            const lbTitle = document.getElementById('lb-title');
+            const lbDesc = document.getElementById('lb-desc');
+            let currentLbIndex = 0;
+            let isLbFullscreen = false;
+            let isAnimating = false;
+            const allLbTriggers = Array.from(document.querySelectorAll('.lb-trigger'));
+
+            // --- RESPONSIVE REAL DE PROYECTOS ---
+            // La tarjeta toma la proporción natural de cada imagen/video.
+            // Así no hay bordes negros laterales, no se estira el arte y tampoco se deforma en laptop, PC, iMac, tablet o iPad.
+            const opProjectFrameSelector = '.monolith, .h-card, .v-item';
+            let opProjectFrameRaf = 0;
+            let opProjectFrameLastViewportWidth = -1;
+            const opMobileProjectMediaGeometryPrepared = new WeakSet();
+
+            function opPrepareMobileProjectMediaGeometry(scope = document) {
+                if (!opIsMobilePerf()) return;
+                const cards = Array.from(scope.querySelectorAll('.monolith, .h-card, .v-item, .reel-item'));
+                cards.forEach((card) => {
+                    const cardEl = card as HTMLElement;
+                    cardEl.classList.add('op-mobile-standard-project');
+                    cardEl.style.setProperty('transform-origin', '50% 50%');
+                    const img = cardEl.querySelector('img') as HTMLImageElement | null;
+                    const video = cardEl.querySelector('video') as HTMLVideoElement | null;
+                    const media = img || video;
+                    if (!media || opMobileProjectMediaGeometryPrepared.has(media)) return;
+                    opMobileProjectMediaGeometryPrepared.add(media);
+
+                    const isReel = cardEl.classList.contains('reel-item');
+                    const isVertical = isReel || cardEl.classList.contains('v-item');
+                    const fallbackW = isVertical ? 563 : 1000;
+                    const fallbackH = isVertical ? 1000 : 563;
+
+                    // Geometría estable desde el primer layout: evita cambios de alto/ratio justo al entrar en pantalla.
+                    if (!media.hasAttribute('width')) media.setAttribute('width', String(fallbackW));
+                    if (!media.hasAttribute('height')) media.setAttribute('height', String(fallbackH));
+                    media.setAttribute('draggable', 'false');
+                    media.setAttribute('decoding', 'async');
+                    if (img) {
+                        img.setAttribute('loading', 'eager');
+                        if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'auto');
+                    } else if (video) {
+                        video.playsInline = true;
+                        video.setAttribute('playsinline', '');
+                        if (!video.hasAttribute('preload')) video.setAttribute('preload', 'metadata');
+                    }
+                });
+            }
+
+            function opApplyResponsiveProjectFrames(scope = document) {
+                const cards = Array.from(scope.querySelectorAll(opProjectFrameSelector));
+
+                cards.forEach((card) => {
+                    const cardEl = card as HTMLElement;
+                    const media = cardEl.querySelector('img, video') as HTMLImageElement | HTMLVideoElement | null;
+                    if (!media) return;
+
+                    const applyRatio = () => {
+                        let naturalW = 0;
+                        let naturalH = 0;
+
+                        if (media instanceof HTMLImageElement) {
+                            naturalW = media.naturalWidth || Number(media.getAttribute('width')) || 0;
+                            naturalH = media.naturalHeight || Number(media.getAttribute('height')) || 0;
+                        } else if (media instanceof HTMLVideoElement) {
+                            naturalW = media.videoWidth || Number(media.getAttribute('width')) || 0;
+                            naturalH = media.videoHeight || Number(media.getAttribute('height')) || 0;
+                        }
+
+                        if (!naturalW || !naturalH) return;
+
+                        const ratio = Math.max(0.55, Math.min(3.4, naturalW / naturalH));
+                        const viewportH = Math.max(320, opViewportHeight());
+                        const viewportW = Math.max(320, opViewportWidth());
+                        const isSmallViewport = viewportW < 768 || (opCoarsePointer.matches && viewportH <= 560);
+                        const needsPremiumBreath = !isSmallViewport && (
+                            viewportW <= 1680 ||
+                            viewportH <= 980 ||
+                            (opCoarsePointer.matches && viewportW <= 1366)
+                        );
+                        const heightCap = cardEl.matches('.v-item')
+                            ? (isSmallViewport ? 0.42 : needsPremiumBreath ? 0.30 : 0.38)
+                            : (isSmallViewport ? 0.56 : needsPremiumBreath ? 0.58 : 0.76);
+                        const maxWidthByHeight = Math.max(260, Math.floor(viewportH * heightCap * ratio));
+
+                        cardEl.style.setProperty('--op-card-ratio', `${naturalW} / ${naturalH}`);
+                        cardEl.style.setProperty('--op-card-ratio-num', ratio.toFixed(6));
+                        cardEl.style.setProperty('--op-card-max-w', `${maxWidthByHeight}px`);
+                    };
+
+                    const applyRatioWhenSafe = () => {
+                        if (!opIsMobilePerf()) {
+                            applyRatio();
+                            return;
+                        }
+
+                        const run = () => {
+                            const quietFor = performance.now() - opLastScrollInputAt;
+                            if (quietFor < 180) {
+                                window.setTimeout(run, 200 - quietFor);
+                                return;
+                            }
+                            applyRatio();
+                            if (typeof opRefreshMobileScrollLifeMetrics === 'function') opRefreshMobileScrollLifeMetrics();
+                        };
+
+                        if ('requestIdleCallback' in window) {
+                            (window as any).requestIdleCallback(run, { timeout: 1200 });
+                        } else {
+                            window.setTimeout(run, 90);
+                        }
+                    };
+
+                    applyRatio();
+
+                    if (media instanceof HTMLImageElement && !media.complete) {
+                        media.addEventListener('load', applyRatioWhenSafe, { once: true, passive: true });
+                    }
+
+                    if (media instanceof HTMLVideoElement && !media.videoWidth) {
+                        media.addEventListener('loadedmetadata', applyRatioWhenSafe, { once: true, passive: true });
+                    }
+                });
+            }
+
+            function opScheduleResponsiveProjectFrames(scope = document, force = false) {
+                // En móvil, el navegador dispara resize al esconder/mostrar la barra de URL.
+                // Recalcular ratios durante ese gesto produce tirones; solo refrescamos si cambia el ancho real.
+                if (!force && opIsMobilePerf()) {
+                    const widthNow = opViewportWidth();
+                    if (opProjectFrameLastViewportWidth > 0 && Math.abs(widthNow - opProjectFrameLastViewportWidth) <= 8) return;
+                    opProjectFrameLastViewportWidth = widthNow;
+                }
+
+                if (opProjectFrameRaf) cancelAnimationFrame(opProjectFrameRaf);
+                opProjectFrameRaf = requestAnimationFrame(() => {
+                    opProjectFrameRaf = 0;
+                    opApplyResponsiveProjectFrames(scope);
+                });
+            }
+
+            opPrepareMobileProjectMediaGeometry(document);
+            opScheduleResponsiveProjectFrames(document, true);
+            window.addEventListener('resize', () => opScheduleResponsiveProjectFrames(), { passive: true });
+            window.visualViewport?.addEventListener('resize', () => opScheduleResponsiveProjectFrames(), { passive: true });
+            window.addEventListener('orientationchange', () => window.setTimeout(() => opScheduleResponsiveProjectFrames(document, true), 220), { passive: true });
+            document.addEventListener('astro:page-load', () => {
+                opPrepareMobileProjectMediaGeometry(document);
+                opScheduleResponsiveProjectFrames(document, true);
+            });
+
+            // --- EFECTO SCROLL-LIFE TIPO ANTIGRAVITY / 10-10 ---
+            // La pieza empieza realmente más pequeña y llega a su tamaño exacto sin cambiar proporciones.
+            // En móvil aplica a todos los proyectos; en tablet/escritorio protege los 3 primeros y su efecto especial.
+            // En móvil usa un motor ligero propio; en desktop/tablet usa transform directo con ScrollTrigger.
+            const opScrollLifeSelector = '.monolith, .h-card, .v-item, .reel-item';
+            let opScrollLifeTweens = [];
+            let opScrollLifeTargets = [];
+            let opScrollLifeResizeRaf = 0;
+            let opScrollLifeLastViewportWidth = -1;
+            const opMobileScrollLifeProfiles = new WeakMap();
+            const opMobileScrollLifeMetrics = new WeakMap();
+            const opMobileScrollLifeMeasured = new WeakSet();
+            const OP_MOBILE_LIFE_ACTIVE_MARGIN = 80;
+            const opMobileScrollLifeActive = new Set();
+            const opMobileScrollLifeLastProgress = new WeakMap();
+            let opMobileScrollLifeTargets = [];
+            let opMobileScrollLifeObserver = null;
+            let opMobileScrollLifeReadyObserver = null;
+            let opMobileScrollLifeRaf = 0;
+            let opMobileScrollLifeEventsBound = false;
+
+            function opClearMobileScrollLifeProjects() {
+                if (opMobileScrollLifeObserver) opMobileScrollLifeObserver.disconnect();
+                if (opMobileScrollLifeReadyObserver) opMobileScrollLifeReadyObserver.disconnect();
+                opMobileScrollLifeObserver = null;
+                opMobileScrollLifeReadyObserver = null;
+                if (opMobileScrollLifeRaf) cancelAnimationFrame(opMobileScrollLifeRaf);
+                opMobileScrollLifeRaf = 0;
+                opMobileScrollLifeActive.clear();
+                opMobileScrollLifeTargets.forEach((entry) => {
+                    const target = entry?.target || entry;
+                    if (!target) return;
+                    target.classList.remove('op-scroll-life-target', 'op-scroll-life-mobile', 'is-scroll-life-active', 'is-scroll-life-ready');
+                    target.style.removeProperty('transform');
+                    target.style.removeProperty('opacity');
+                    target.style.removeProperty('transform-origin');
+                    target.style.removeProperty('will-change');
+                    target.style.removeProperty('contain');
+                    opMobileScrollLifeLastProgress.delete(target);
+                });
+                opMobileScrollLifeTargets = [];
+            }
+
+            function opClearScrollLifeProjects() {
+                opScrollLifeTweens.forEach((tween) => tween?.kill?.());
+                opScrollLifeTweens = [];
+                opClearMobileScrollLifeProjects();
+                opScrollLifeTargets.forEach((target) => {
+                    target.classList.remove('op-scroll-life-target', 'is-scroll-life-active', 'is-scroll-life-ready');
+                    gsap.set(target, { clearProps: 'scale,y,x,autoAlpha,opacity,transform,transformOrigin,willChange,force3D' });
+                    target.style?.removeProperty?.('--op-scroll-life-scale');
+                    target.style?.removeProperty?.('--op-scroll-life-y');
+                    target.style?.removeProperty?.('--op-scroll-life-opacity');
+                });
+                opScrollLifeTargets = [];
+            }
+
+            function opProjectLifeTargetFromTrigger(trigger) {
+                if (!trigger) return null;
+                if (trigger.matches?.(opScrollLifeSelector)) return trigger;
+
+                // El trigger del lightbox puede estar en la imagen/wrapper interno, no siempre en la tarjeta.
+                // closest() garantiza que desktop, laptop, iPad/tablet y móvil reciban el mismo efecto.
+                const closestTarget = trigger.closest?.(opScrollLifeSelector);
+                if (closestTarget) return closestTarget;
+
+                return trigger.querySelector?.(opScrollLifeSelector) || null;
+            }
+
+            function opGetScrollLifeProfile(target, isMobile, isTouchTablet) {
+                const isReel = target.classList.contains('reel-item');
+                const isVault = target.classList.contains('v-item');
+                if (isMobile) {
+                    return {
+                        startScale: isReel ? 0.86 : isVault ? 0.82 : 0.80,
+                        startY: isReel ? 14 : isVault ? 18 : 22,
+                        start: 'top 112%',
+                        end: isReel ? 'center 70%' : 'center 64%',
+                        scrub: 0.55
+                    };
+                }
+                return {
+                    startScale: isReel ? 0.78 : isVault ? 0.72 : isTouchTablet ? 0.70 : 0.68,
+                    startY: isReel ? 26 : isVault ? 36 : 52,
+                    start: 'top 106%',
+                    end: isReel ? 'center 62%' : 'center 56%',
+                    scrub: 0.95
+                };
+            }
+
+            function opSmoothLifeProgress(t) {
+                const clamped = Math.max(0, Math.min(1, t));
+                return clamped * clamped * (3 - 2 * clamped);
+            }
+
+            function opApplyMobileScrollLifeTransform(target, profile, progress, force = false) {
+                const clampedProgress = Math.max(0, Math.min(1, progress));
+                const previousProgress = opMobileScrollLifeLastProgress.get(target);
+                if (!force && previousProgress !== undefined && Math.abs(previousProgress - clampedProgress) < 0.0035) return;
+                opMobileScrollLifeLastProgress.set(target, clampedProgress);
+
+                const eased = opSmoothLifeProgress(clampedProgress);
+                const scale = profile.startScale + ((1 - profile.startScale) * eased);
+                const y = profile.startY * (1 - eased);
+                target.style.setProperty('transform', `translate3d(0, ${y.toFixed(3)}px, 0) scale(${scale.toFixed(5)})`, 'important');
+                target.style.setProperty('opacity', '1', 'important');
+            }
+
+            function opMeasureMobileScrollLifeTarget(target, profile) {
+                if (!target || !profile || !opIsMobilePerf()) return;
+                const vh = Math.max(360, opViewportHeight());
+                const startPx = vh * (target.classList.contains('reel-item') ? 1.08 : 1.12);
+                const endPx = vh * (target.classList.contains('reel-item') ? 0.70 : target.classList.contains('v-item') ? 0.68 : 0.64);
+                const range = Math.max(1, startPx - endPx);
+                const top = target.getBoundingClientRect().top + (window.scrollY || window.pageYOffset || 0);
+                opMobileScrollLifeMetrics.set(target, { top, startPx, endPx, range });
+                opMobileScrollLifeMeasured.add(target);
+            }
+
+            let opMobileMetricsRefreshRaf = 0;
+            let opMobileMetricsRefreshTimer = 0;
+            let opMobileMetricsLastWidth = -1;
+
+            function opRefreshMobileScrollLifeMetrics(force = false) {
+                if (!opIsMobilePerf() || !opMobileScrollLifeTargets.length) return;
+
+                const widthNow = opViewportWidth();
+                const quietFor = performance.now() - opLastScrollInputAt;
+                const widthStable = opMobileMetricsLastWidth > 0 && Math.abs(widthNow - opMobileMetricsLastWidth) <= 8;
+
+                // En móvil, la barra del navegador dispara resize mientras se hace scroll.
+                // Medir todas las tarjetas en ese momento es una de las causas típicas de microtirones.
+                if (!force && widthStable && quietFor < 280) {
+                    if (!opMobileMetricsRefreshTimer) {
+                        opMobileMetricsRefreshTimer = window.setTimeout(() => {
+                            opMobileMetricsRefreshTimer = 0;
+                            opRefreshMobileScrollLifeMetrics(false);
+                        }, 320);
+                    }
+                    return;
+                }
+
+                if (opMobileMetricsRefreshRaf) cancelAnimationFrame(opMobileMetricsRefreshRaf);
+                opMobileMetricsRefreshRaf = requestAnimationFrame(() => {
+                    opMobileMetricsRefreshRaf = 0;
+                    opMobileMetricsLastWidth = widthNow;
+                    opMobileScrollLifeTargets.forEach(({ target, profile }) => opMeasureMobileScrollLifeTarget(target, profile));
+                    opRequestMobileScrollLifeTick();
+                });
+            }
+
+            function opMobileScrollLifeTick() {
+                opMobileScrollLifeRaf = 0;
+                if (!opIsMobilePerf() || !opMobileScrollLifeActive.size) return;
+
+                const scrollY = window.scrollY || window.pageYOffset || 0;
+                opMobileScrollLifeActive.forEach((target) => {
+                    const profile = opMobileScrollLifeProfiles.get(target);
+                    if (!profile) return;
+                    if (!opMobileScrollLifeMeasured.has(target)) opMeasureMobileScrollLifeTarget(target, profile);
+                    const metrics = opMobileScrollLifeMetrics.get(target);
+                    if (!metrics) return;
+                    const progress = ((scrollY + metrics.startPx) - metrics.top) / metrics.range;
+                    opApplyMobileScrollLifeTransform(target, profile, progress);
+                });
+            }
+
+            function opRequestMobileScrollLifeTick() {
+                if (!opIsMobilePerf() || opMobileScrollLifeRaf) return;
+                opMobileScrollLifeRaf = requestAnimationFrame(opMobileScrollLifeTick);
+            }
+
+            function opInitMobileScrollLifeProjects(entries) {
+                opClearMobileScrollLifeProjects();
+                if (!entries.length || !opIsMobilePerf()) return;
+
+                opMobileScrollLifeTargets = entries;
+                const supportsObserver = 'IntersectionObserver' in window;
+
+                if (supportsObserver) {
+                    opMobileScrollLifeReadyObserver = new IntersectionObserver((observerEntries) => {
+                        observerEntries.forEach((entry) => {
+                            const target = entry.target;
+                            target.classList.toggle('is-scroll-life-ready', entry.isIntersecting);
+                        });
+                    }, { root: null, rootMargin: '1600px 0px 1600px 0px', threshold: 0 });
+
+                    opMobileScrollLifeObserver = new IntersectionObserver((observerEntries) => {
+                        observerEntries.forEach((entry) => {
+                            const target = entry.target;
+                            const profile = opMobileScrollLifeProfiles.get(target);
+                            if (!profile) return;
+
+                            if (entry.isIntersecting) {
+                                opMobileScrollLifeActive.add(target);
+                                target.classList.add('is-scroll-life-active');
+                            } else {
+                                opMobileScrollLifeActive.delete(target);
+                                target.classList.remove('is-scroll-life-active');
+                                const belowViewport = entry.boundingClientRect.top > 0;
+                                opApplyMobileScrollLifeTransform(target, profile, belowViewport ? 0 : 1, true);
+                            }
+                        });
+                        opRequestMobileScrollLifeTick();
+                    }, { root: null, rootMargin: `${OP_MOBILE_LIFE_ACTIVE_MARGIN}px 0px ${OP_MOBILE_LIFE_ACTIVE_MARGIN}px 0px`, threshold: 0 });
+                }
+
+                entries.forEach(({ target, profile }) => {
+                    opMobileScrollLifeProfiles.set(target, profile);
+                    target.classList.add('op-scroll-life-target', 'op-scroll-life-mobile');
+                    target.style.setProperty('transform-origin', '50% 50%', 'important');
+                    target.style.setProperty('contain', 'layout style');
+                    opApplyMobileScrollLifeTransform(target, profile, 0, true);
+                    opMeasureMobileScrollLifeTarget(target, profile);
+
+                    if (supportsObserver) {
+                        opMobileScrollLifeReadyObserver.observe(target);
+                        opMobileScrollLifeObserver.observe(target);
+                    } else {
+                        opMobileScrollLifeActive.add(target);
+                        target.classList.add('is-scroll-life-active', 'is-scroll-life-ready');
+                    }
+                });
+
+                if (!opMobileScrollLifeEventsBound) {
+                    opMobileScrollLifeEventsBound = true;
+                    window.addEventListener('resize', opRefreshMobileScrollLifeMetrics, { passive: true });
+                    window.visualViewport?.addEventListener('resize', opRefreshMobileScrollLifeMetrics, { passive: true });
+                    window.addEventListener('load', () => window.setTimeout(() => opRefreshMobileScrollLifeMetrics(true), 260), { once: true, passive: true });
+                }
+                requestAnimationFrame(() => opRefreshMobileScrollLifeMetrics(true));
+                opRequestMobileScrollLifeTick();
+            }
+
+            function opInitScrollLifeProjects() {
+                opClearScrollLifeProjects();
+
+                const opScrollLifeMobile = opViewportWidth() < 768;
+                const keepDesktopHeroEffects = !opScrollLifeMobile;
+                const orderedProjects = Array.from(document.querySelectorAll(opScrollLifeSelector));
+                const triggerSources = Array.from(new Set([
+                    ...Array.from(document.querySelectorAll('.lb-trigger')),
+                    ...orderedProjects
+                ]));
+                const seen = new Set();
+                const mobileScrollLifeEntries = [];
+
+                triggerSources.forEach((trigger) => {
+                    const target = opProjectLifeTargetFromTrigger(trigger);
+                    if (!target || seen.has(target)) return;
+
+                    const projectIndex = orderedProjects.indexOf(target);
+                    if (keepDesktopHeroEffects && (projectIndex < 3 || target.closest?.('.z-wrapper'))) return;
+                    seen.add(target);
+
+                    const inHorizontalPortfolio = !!target.closest('.h-wrapper');
+                    const inReels = !!target.closest('.reels-wrapper');
+                    const containerAnimation = inHorizontalPortfolio ? opHorizontalPortfolioTween : inReels ? opReelsScrollTween : null;
+                    const isTouchTablet = !opScrollLifeMobile && opCoarsePointer.matches;
+                    const profile = opGetScrollLifeProfile(target, opScrollLifeMobile, isTouchTablet);
+                    if (opScrollLifeMobile) {
+                        mobileScrollLifeEntries.push({ target, profile });
+                        return;
+                    }
+
+                    const activityCallbacks = {
+                        onEnter: () => target.classList.add('is-scroll-life-active'),
+                        onEnterBack: () => target.classList.add('is-scroll-life-active'),
+                        onLeave: () => target.classList.remove('is-scroll-life-active'),
+                        onLeaveBack: () => target.classList.remove('is-scroll-life-active')
+                    };
+                    const triggerConfig = containerAnimation
+                        ? { trigger: target, containerAnimation, start: 'left 102%', end: 'center 58%', scrub: profile.scrub, invalidateOnRefresh: true, ...activityCallbacks }
+                        : { trigger: target, start: profile.start, end: profile.end, scrub: profile.scrub, invalidateOnRefresh: true, ...activityCallbacks };
+
+                    target.classList.add('op-scroll-life-target');
+                    target.style.setProperty('transform-origin', '50% 50%');
+                    opScrollLifeTargets.push(target);
+
+                    const tween = gsap.fromTo(target,
+                        {
+                            scale: profile.startScale,
+                            y: profile.startY,
+                            autoAlpha: 1,
+                            force3D: true,
+                            transformOrigin: '50% 50%'
+                        },
+                        {
+                            scale: 1,
+                            y: 0,
+                            autoAlpha: 1,
+                            force3D: true,
+                            ease: 'none',
+                            overwrite: 'auto',
+                            scrollTrigger: triggerConfig
+                        }
+                    );
+
+                    opScrollLifeTweens.push(tween);
+                });
+
+                if (opScrollLifeMobile) {
+                    opInitMobileScrollLifeProjects(mobileScrollLifeEntries);
+                    return;
+                }
+
+                ScrollTrigger.refresh();
+            }
+
+            function opScheduleScrollLifeProjects(force = false) {
+                // Evita destruir/recrear ScrollTriggers durante el scroll móvil por cambios de altura del navegador.
+                if (!force && opIsMobilePerf()) {
+                    const widthNow = opViewportWidth();
+                    if (opScrollLifeLastViewportWidth > 0 && Math.abs(widthNow - opScrollLifeLastViewportWidth) <= 8) return;
+                    opScrollLifeLastViewportWidth = widthNow;
+                }
+
+                if (opScrollLifeResizeRaf) cancelAnimationFrame(opScrollLifeResizeRaf);
+                opScrollLifeResizeRaf = requestAnimationFrame(() => {
+                    opScrollLifeResizeRaf = 0;
+                    opInitScrollLifeProjects();
+                });
+            }
+
+            requestAnimationFrame(() => opInitScrollLifeProjects());
+            window.addEventListener('resize', () => opScheduleScrollLifeProjects(), { passive: true });
+            window.visualViewport?.addEventListener('resize', () => opScheduleScrollLifeProjects(), { passive: true });
+            window.addEventListener('orientationchange', () => window.setTimeout(() => opScheduleScrollLifeProjects(true), 240), { passive: true });
+            window.addEventListener('load', () => window.setTimeout(() => opScheduleScrollLifeProjects(true), 260), { once: true, passive: true });
+            document.addEventListener('astro:page-load', () => {
+                opPrepareMobileProjectMediaGeometry(document);
+                opScheduleResponsiveProjectFrames(document, true);
+                opScheduleScrollLifeProjects(true);
+            });
+
+            // --- OPTIMIZACIÓN PASIVA DE MEDIOS 10-10 ---
+            // No cambia diseño ni proporciones: solo guía al navegador para cargar, decodificar y pausar mejor.
+            function opApplyMediaPerformanceHints(scope = document) {
+                const mediaNodes = Array.from(scope.querySelectorAll('img, video'));
+                const projectImages = Array.from(scope.querySelectorAll('.monolith img, .h-card img, .v-item img, .reel-item img'));
+                const projectImageIndex = new WeakMap();
+                projectImages.forEach((img, index) => projectImageIndex.set(img, index));
+
+                mediaNodes.forEach((node, index) => {
+                    const inFirstDesktopProjects = index < 3 || Boolean(node.closest?.('.z-wrapper'));
+                    if (node instanceof HTMLImageElement) {
+                        const mobileProjectIndex = projectImageIndex.has(node) ? projectImageIndex.get(node) : -1;
+                        node.setAttribute('decoding', 'async');
+                        node.setAttribute('draggable', 'false');
+
+                        if (opIsMobilePerf() && mobileProjectIndex >= 0) {
+                            // Pipeline móvil único para proyectos normales y videos/reels:
+                            // la imagen queda lista antes de aparecer, pero sin prioridades agresivas que bloqueen el scroll.
+                            const isMobileReelThumb = Boolean(node.closest?.('.reel-item'));
+                            node.setAttribute('loading', mobileProjectIndex < 10 ? 'eager' : 'lazy');
+                            node.setAttribute('fetchpriority', mobileProjectIndex < 4 ? 'high' : isMobileReelThumb ? 'low' : 'auto');
+                            if (isMobileReelThumb) {
+                                if (!node.hasAttribute('width')) node.setAttribute('width', '563');
+                                if (!node.hasAttribute('height')) node.setAttribute('height', '1000');
+                            }
+                        } else {
+                            if (!node.hasAttribute('fetchpriority') && inFirstDesktopProjects) node.setAttribute('fetchpriority', 'high');
+                            if (!node.hasAttribute('loading') && !inFirstDesktopProjects) node.setAttribute('loading', 'lazy');
+                        }
+                    } else if (node instanceof HTMLVideoElement) {
+                        node.playsInline = true;
+                        node.setAttribute('playsinline', '');
+                        if (opIsMobilePerf() && (node.classList.contains('hover-video') || Boolean(node.closest?.('.reel-item')))) {
+                            node.setAttribute('preload', 'none');
+                            node.pause?.();
+                        } else if (!node.hasAttribute('preload') && !inFirstDesktopProjects) {
+                            node.setAttribute('preload', 'metadata');
+                        }
+                    }
+                });
+            }
+
+            const opPrimedScrollMedia = new WeakSet();
+
+            function opPrimeMediaNodeForSmoothScroll(node) {
+                if (!node || opPrimedScrollMedia.has(node)) return;
+                opPrimedScrollMedia.add(node);
+
+                if (node instanceof HTMLImageElement) {
+                    node.setAttribute('decoding', 'async');
+                    node.setAttribute('draggable', 'false');
+                    // En móvil se cambia a eager justo antes de llegar al viewport, no al cargar la página.
+                    // Esto evita el decode justo cuando aparece la tarjeta.
+                    if (opIsMobilePerf()) node.setAttribute('loading', 'eager');
+                    const decodeImage = () => {
+                        if (typeof node.decode !== 'function') return;
+                        const run = () => {
+                            if (opIsMobilePerf()) {
+                                const quietFor = performance.now() - opLastScrollInputAt;
+                                if (quietFor < 700) {
+                                    window.setTimeout(run, 760 - quietFor);
+                                    return;
+                                }
+                                if (!node.complete || !node.naturalWidth) return;
+                            }
+                            node.decode().catch(() => {});
+                        };
+                        if ('requestIdleCallback' in window) {
+                            (window as any).requestIdleCallback(run, { timeout: 1600 });
+                        } else {
+                            window.setTimeout(run, 180);
+                        }
+                    };
+                    if (node.complete && node.naturalWidth) decodeImage();
+                    else node.addEventListener('load', decodeImage, { once: true, passive: true });
+                } else if (node instanceof HTMLVideoElement) {
+                    node.playsInline = true;
+                    node.setAttribute('playsinline', '');
+                    if (opIsMobilePerf()) {
+                        node.setAttribute('preload', 'none');
+                        try { node.pause?.(); } catch (_) {}
+                        return;
+                    }
+                    if (!node.hasAttribute('preload') || node.getAttribute('preload') === 'none') node.setAttribute('preload', 'metadata');
+                    try { node.load(); } catch (_) {}
+                }
+            }
+
+            function opPrimeProjectMediaForSmoothScroll(scope = document) {
+                const mediaSelector = opIsMobilePerf()
+                    ? '.monolith img, .h-card img, .v-item img, .reel-item img'
+                    : '.monolith img, .h-card img, .v-item img, .reel-item img, .monolith video, .h-card video, .v-item video, .reel-item video';
+                const mediaNodes = Array.from(scope.querySelectorAll(mediaSelector));
+                if (!mediaNodes.length) return;
+
+                if (!("IntersectionObserver" in window)) {
+                    mediaNodes.forEach(opPrimeMediaNodeForSmoothScroll);
+                    return;
+                }
+
+                const rootMargin = opIsMobilePerf() ? '1100px 0px 1100px 0px' : '1100px 0px 1100px 0px';
+                const observer = new IntersectionObserver((entries, io) => {
+                    entries.forEach((entry) => {
+                        if (!entry.isIntersecting) return;
+                        opPrimeMediaNodeForSmoothScroll(entry.target);
+                        io.unobserve(entry.target);
+                    });
+                }, { root: null, rootMargin, threshold: 0.01 });
+
+                mediaNodes.forEach((node) => {
+                    if (opPrimedScrollMedia.has(node)) return;
+                    observer.observe(node);
+                });
+            }
+
+            const opMobileWarmDecodedImages = new WeakSet();
+            const opMobilePreloadedImages = new Set();
+
+            function opPreloadImageForMobile(img, priority = 'high') {
+                const src = img.currentSrc || img.getAttribute('src');
+                if (!src || opMobilePreloadedImages.has(src)) return;
+                opMobilePreloadedImages.add(src);
+                const link = document.createElement('link');
+                link.rel = 'preload';
+                link.as = 'image';
+                link.href = src;
+                link.setAttribute('fetchpriority', priority);
+                document.head.appendChild(link);
+            }
+
+            function opWarmMobileProjectImages(scope = document) {
+                if (!opIsMobilePerf()) return;
+                const imgs = Array.from(scope.querySelectorAll('.monolith img, .h-card img, .v-item img, .reel-item img')).filter((img) => img instanceof HTMLImageElement) as HTMLImageElement[];
+                if (!imgs.length) return;
+
+                const reelThumbs = imgs.filter((img) => Boolean(img.closest?.('.reel-item')));
+                const warm = Array.from(new Set([...imgs.slice(0, 16), ...reelThumbs.slice(0, 4)]));
+
+                warm.forEach((img, index) => {
+                    const isReelThumb = Boolean(img.closest?.('.reel-item'));
+                    const isVertical = isReelThumb || Boolean(img.closest?.('.v-item'));
+                    img.setAttribute('loading', 'eager');
+                    img.setAttribute('decoding', 'async');
+                    img.setAttribute('draggable', 'false');
+                    if (!img.hasAttribute('width')) img.setAttribute('width', isVertical ? '563' : '1000');
+                    if (!img.hasAttribute('height')) img.setAttribute('height', isVertical ? '1000' : '563');
+                    img.setAttribute('fetchpriority', index < 4 ? 'high' : 'auto');
+                    if (index < 6 || (isReelThumb && index < 10)) opPreloadImageForMobile(img, index < 3 ? 'high' : 'auto');
+                });
+            }
+
+            async function opMobilePreEntranceMediaWarmup(budgetMs = 520) {
+                if (!opIsMobilePerf()) return;
+                const started = performance.now();
+                const imgs = Array.from(document.querySelectorAll('.monolith img, .h-card img, .v-item img, .reel-item img')).filter((img) => img instanceof HTMLImageElement) as HTMLImageElement[];
+                if (!imgs.length) return;
+
+                const critical = imgs.filter((img, index) => {
+                    const card = img.closest?.('.monolith, .h-card, .v-item, .reel-item') as HTMLElement | null;
+                    return index < 18 || Boolean(card?.closest?.('.h-wrapper')) || Boolean(card?.closest?.('.reels-wrapper'));
+                });
+
+                critical.forEach((img, index) => {
+                    const card = img.closest?.('.monolith, .h-card, .v-item, .reel-item') as HTMLElement | null;
+                    const isReel = Boolean(card?.classList?.contains('reel-item'));
+                    const isVertical = isReel || Boolean(card?.classList?.contains('v-item'));
+                    img.setAttribute('loading', 'eager');
+                    img.setAttribute('decoding', 'async');
+                    img.setAttribute('draggable', 'false');
+                    if (!img.hasAttribute('width')) img.setAttribute('width', isVertical ? '563' : '1000');
+                    if (!img.hasAttribute('height')) img.setAttribute('height', isVertical ? '1000' : '563');
+                    if (index < 4) img.setAttribute('fetchpriority', 'high');
+                    else if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'auto');
+                    if (index < 8 || (isReel && index < 12)) opPreloadImageForMobile(img, index < 3 ? 'high' : 'auto');
+                });
+
+                const loaded = critical.filter((img) => img.complete && img.naturalWidth && !opMobileWarmDecodedImages.has(img));
+                for (const img of loaded) {
+                    if (performance.now() - started > budgetMs) break;
+                    opMobileWarmDecodedImages.add(img);
+                    if (typeof img.decode !== 'function') continue;
+                    await Promise.race([
+                        img.decode().catch(() => {}),
+                        new Promise((resolve) => window.setTimeout(resolve, 72))
+                    ]);
+                }
+            }
+
+            const opMobileVideoThumbOptimized = new WeakSet();
+
+            function opStripMobileHoverVideoSources(video) {
+                if (!video || !opIsMobilePerf()) return;
+                try { video.pause?.(); } catch (_) {}
+                video.setAttribute('preload', 'none');
+                video.setAttribute('playsinline', '');
+                video.muted = true;
+
+                if (video.getAttribute('src')) {
+                    video.setAttribute('data-op-mobile-src', video.getAttribute('src'));
+                    video.removeAttribute('src');
+                }
+
+                video.querySelectorAll?.('source').forEach((source) => {
+                    const src = source.getAttribute('src');
+                    if (!src) return;
+                    source.setAttribute('data-op-mobile-src', src);
+                    source.removeAttribute('src');
+                });
+
+                try { video.load?.(); } catch (_) {}
+            }
+
+            function opOptimizeMobileVideoProjectThumbs(scope = document) {
+                if (!opIsMobilePerf()) return;
+                const reels = Array.from(scope.querySelectorAll('.reel-item'));
+                if (!reels.length) return;
+
+                const reelImages = [] as HTMLImageElement[];
+                reels.forEach((item) => {
+                    const card = item as HTMLElement;
+                    card.classList.add('op-mobile-standard-project', 'op-mobile-video-card');
+                    card.style.setProperty('transform-origin', '50% 50%');
+                    card.style.setProperty('contain', 'layout paint style');
+                    card.style.setProperty('isolation', 'isolate');
+
+                    const img = card.querySelector('img') as HTMLImageElement | null;
+                    if (img) {
+                        img.setAttribute('loading', 'eager');
+                        img.setAttribute('decoding', 'async');
+                        img.setAttribute('fetchpriority', 'auto');
+                        img.setAttribute('draggable', 'false');
+                        if (!img.hasAttribute('width')) img.setAttribute('width', '563');
+                        if (!img.hasAttribute('height')) img.setAttribute('height', '1000');
+                        reelImages.push(img);
+                    }
+
+                    card.querySelectorAll('video.hover-video, video').forEach(opStripMobileHoverVideoSources);
+                });
+
+                reelImages.slice(0, 8).forEach((img, index) => opPreloadImageForMobile(img, index < 2 ? 'high' : 'auto'));
+            }
+
+            function opMountVideoBudget(scope = document) {
+                if (opIsMobilePerf()) return;
+                const videos = Array.from(scope.querySelectorAll('video')).filter((video) => !video.closest?.('.lightbox'));
+                if (!videos.length || !("IntersectionObserver" in window)) return;
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        const video = entry.target as HTMLVideoElement;
+                        if (!entry.isIntersecting && !video.paused) video.pause();
+                    });
+                }, { root: null, rootMargin: '220px 0px', threshold: 0.01 });
+                videos.forEach((video) => observer.observe(video));
+            }
+
+            opApplyMediaPerformanceHints();
+            opOptimizeMobileVideoProjectThumbs();
+            opWarmMobileProjectImages();
+            opIdle(() => {
+                opPrimeProjectMediaForSmoothScroll();
+                opMountVideoBudget();
+            }, 900);
+            document.addEventListener('astro:page-load', () => {
+                opPrepareMobileProjectMediaGeometry(document);
+                opApplyMediaPerformanceHints();
+                opOptimizeMobileVideoProjectThumbs(document);
+                opWarmMobileProjectImages();
+                opPrimeProjectMediaForSmoothScroll();
+                opMountVideoBudget();
+            });
+
+            function populateLightbox(index, direction = 0) {
+                const item = allLbTriggers[index];
+                const title = item.getAttribute('data-title');
+                const videoFullSrc = item.getAttribute('data-video-full');
+                const imgNode = item.querySelector('img');
+                const imgSrc = imgNode ? imgNode.getAttribute('src') : '';
+                
+                const outX = direction === 1 ? -30 : (direction === -1 ? 30 : 0);
+                const inX = direction === 1 ? 30 : (direction === -1 ? -30 : 0);
+
+                const updateContent = () => {
+                    lbTitle.textContent = title;
+                    const projectDetails = item.querySelector('.project-details');
+                    if(projectDetails) { lbDesc.innerHTML = projectDetails.innerHTML; } 
+                    if(imgSrc) { lbAmbient.style.backgroundImage = `url('${imgSrc}')`; } 
+
+                    lbImgWrapper.innerHTML = ''; 
+                    let mediaEl;
+                    
+                    if (videoFullSrc) {
+                        mediaEl = document.createElement('video'); 
+                        mediaEl.src = videoFullSrc; 
+                        mediaEl.className = 'lightbox__video'; 
+                        mediaEl.autoplay = true; 
+                        mediaEl.loop = true; 
+                        mediaEl.controls = true; 
+                        mediaEl.playsInline = true;
+                        mediaEl.preload = 'auto';
+                        mediaEl.setAttribute('playsinline', '');
+                        mediaEl.setAttribute('webkit-playsinline', '');
+                        mediaEl.setAttribute('controlsList', 'nodownload noplaybackrate');
+                        mediaEl.disablePictureInPicture = true;
+                        lbImgWrapper.classList.add('is-video-wrapper');
+                        lightbox.classList.add('has-video-active');
+                    } else {
+                        mediaEl = document.createElement('img'); 
+                        mediaEl.src = imgSrc; 
+                        mediaEl.className = 'lightbox__img'; 
+                        mediaEl.alt = title;
+                        lbImgWrapper.classList.remove('is-video-wrapper');
+                        lightbox.classList.remove('has-video-active');
+                    }
+                    lbImgWrapper.appendChild(mediaEl);
+
+                    const entranceY = direction === 0 ? 18 : 0;
+                    const entranceBlur = direction === 0 ? 'blur(10px)' : 'blur(0px)';
+                    const entranceDelay = direction === 0 ? 0.08 : 0;
+                    gsap.fromTo(mediaEl, { x: inX, y: entranceY, opacity: 0, filter: entranceBlur }, { x: 0, y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.48, delay: entranceDelay, ease: "power3.out", clearProps: 'filter' });
+                    gsap.fromTo('.lb-info-inner', { x: inX, y: entranceY, opacity: 0, filter: entranceBlur }, { x: 0, y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.48, delay: entranceDelay, ease: "power3.out", clearProps: 'filter' });
+                };
+
+                if (direction !== 0) {
+                    gsap.to('.lightbox__img, .lightbox__video', { x: outX, opacity: 0, duration: 0.2, ease: "power2.in" });
+                    gsap.to('.lb-info-inner', { x: outX, opacity: 0, duration: 0.2, ease: "power2.in", onComplete: updateContent });
+                } else {
+                    updateContent();
+                }
+            }
+
+            function openLightbox(index) {
+                currentLbIndex = index; 
+                isLbFullscreen = false;
+                lightbox.classList.remove('is-fullscreen');
+                lightbox.style.display = 'flex';
+                lightbox.style.opacity = '0';
+                lenis.stop();
+                
+                populateLightbox(index, 0);
+                opPremiumSfx.play('open');
+                document.documentElement.classList.add('op-lightbox-open');
+                
+                opSetHeaderChromeHidden(true);
+                gsap.fromTo(lightbox, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" });
+                
+                if (!opUseStackedProjectLightbox()) {
+                    gsap.fromTo('.lightbox__image-wrapper', { width: '100vw', padding: 0 }, { width: '60vw', padding: '40px', duration: 0.6, ease: "power3.inOut" });
+                    gsap.fromTo('.lightbox__info', { xPercent: 100 }, { xPercent: 0, duration: 0.6, ease: "power3.inOut" });
+                } else {
+                    gsap.set('.lightbox__image-wrapper, .lightbox__info', { clearProps: 'width,height,padding,xPercent' });
+                    gsap.set('.lightbox__info', { xPercent: 0 });
+                }
+            }
+
+            function opSyncProjectLightboxLayout() {
+                if (!lightbox || lightbox.style.display !== 'flex') return;
+                gsap.set('.lightbox__image-wrapper, .lightbox__info', { clearProps: 'width,height,padding,xPercent' });
+                gsap.set('.lightbox__info', { xPercent: 0 });
+            }
+
+            window.addEventListener('resize', () => window.setTimeout(opSyncProjectLightboxLayout, 120), { passive: true });
+            window.addEventListener('orientationchange', () => window.setTimeout(opSyncProjectLightboxLayout, 180), { passive: true });
+
+            function changeLightboxItem(direction) {
+                if(isAnimating) return;
+                isAnimating = true;
+                currentLbIndex = (currentLbIndex + direction + allLbTriggers.length) % allLbTriggers.length;
+                opPremiumSfx.play('next');
+                populateLightbox(currentLbIndex, direction);
+                setTimeout(() => { isAnimating = false; }, 400);
+            }
+
+            lbImgWrapper.addEventListener('click', (e) => {
+                // Fullscreen falso desactivado: evita que desaparezca el texto al hacer click
+                // sobre la imagen, manteniendo intacto el lightbox y la navegación.
+                const target = e.target as HTMLElement;
+                if(target && target.tagName === 'VIDEO') return;
+                e.stopPropagation();
+                isLbFullscreen = false;
+                lightbox.classList.remove('is-fullscreen');
+            });
+
+            const closeLightbox = () => {
+                isLbFullscreen = false;
+                lightbox.classList.remove('is-fullscreen');
+                const videoEl = lbImgWrapper.querySelector('video');
+                if (videoEl) {
+                    videoEl.pause();
+                    videoEl.removeAttribute('src'); 
+                    videoEl.load();
+                }
+
+                opPremiumSfx.play('close');
+                document.documentElement.classList.remove('op-lightbox-open');
+                lightbox.classList.remove('has-video-active');
+                opSetHeaderChromeHidden(false);
+                gsap.to(lightbox, { opacity: 0, duration: 0.4, ease: "power2.inOut", onComplete: () => { lightbox.style.display = 'none'; lenis.start(); opRestoreHeaderBlur(); }});
+            };
+
+            allLbTriggers.forEach((item, index) => { item.addEventListener('click', () => openLightbox(index)); });
+            document.getElementById('lb-prev').addEventListener('click', (e) => { e.stopPropagation(); changeLightboxItem(-1); });
+            document.getElementById('lb-next').addEventListener('click', (e) => { e.stopPropagation(); changeLightboxItem(1); });
+            document.getElementById('lb-close').addEventListener('click', closeLightbox);
+
+            document.addEventListener('keydown', (e) => {
+                if (lightbox.style.display === 'flex') {
+                    if (e.key === 'Escape') closeLightbox();
+                    if (e.key === 'ArrowRight') changeLightboxItem(1);
+                    if (e.key === 'ArrowLeft') changeLightboxItem(-1);
+                }
+            });
+
+            let touchStartX = 0;
+            let touchEndX = 0;
+            lightbox.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+            lightbox.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchEndX < touchStartX - 50) changeLightboxItem(1); 
+                if (touchEndX > touchStartX + 50) changeLightboxItem(-1); 
+            }, {passive: true});
+
+            // CORRECCIÓN: Scroll más sensible en el Lightbox
+            let scrollTimeout;
+            lightbox.addEventListener('wheel', (e) => {
+                if (lightbox.style.display === 'flex') e.preventDefault();
+                if (lightbox.style.display === 'flex' && !isAnimating) {
+                    if (scrollTimeout) return; 
+                    if (e.deltaY > 15) { // Umbral bajado de 50 a 15 para que reaccione rápido
+                        changeLightboxItem(1); 
+                        scrollTimeout = setTimeout(() => { scrollTimeout = null; }, 800); 
+                    } else if (e.deltaY < -15) {
+                        changeLightboxItem(-1); 
+                        scrollTimeout = setTimeout(() => { scrollTimeout = null; }, 800); 
+                    }
+                }
+            }, {passive: false});
+
+            // --- 7. BLOQUEO DE CLICK DERECHO Y ARRASTRE ---
+            document.addEventListener('contextmenu', (e) => {
+                const target = e.target as HTMLElement;
+                if (target.tagName === 'IMG' || target.tagName === 'VIDEO' || target.classList.contains('v-bg') || target.classList.contains('target-img') || target.classList.contains('reel-bg')) {
+                    e.preventDefault();
+                }
+            });
+
+            document.addEventListener('dragstart', (e) => {
+                const target = e.target as HTMLElement;
+                if (target.tagName === 'IMG' || target.tagName === 'VIDEO') {
+                    e.preventDefault();
+                }
+            });
+
+            if (!opIsMobilePerf()) {
+                ScrollTrigger.create({
+                    trigger: ".site-footer", start: "top 90%",
+                    onEnter: () => { gsap.to('.btn-cta-nav', { scale: 1.1, boxShadow: "0 0 20px rgba(255,255,255,0.4)", duration: 0.4, yoyo: true, repeat: 1, ease: "power2.out" }); }
+                });
+            }
+
+            const backToTop = document.getElementById('backToTop');
+            function opScrollToElement(targetEl, duration = 1.5) {
+                if (!targetEl) return;
+                if (opUseSmoothScroll) {
+                    lenis.scrollTo(targetEl, { offset: 0, duration });
+                } else {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            if(backToTop) {
+                backToTop.addEventListener('click', () => {
+                    opScrollToTopPreservingWebgl(1.5);
+                });
+            }
+
+            function opDisableFooterLogoRedirect(scope = document) {
+                const footerLogoTargets = Array.from(scope.querySelectorAll('.site-footer .footer-logo-wrap, .site-footer .footer-logo'));
+                footerLogoTargets.forEach((target) => {
+                    const link = target.matches?.('a') ? target : (target.closest?.('a') || target.querySelector?.('a'));
+                    if (!link || !link.closest?.('.site-footer')) return;
+                    link.removeAttribute('href');
+                    link.removeAttribute('data-astro-prefetch');
+                    link.classList.remove('nav-link');
+                    link.setAttribute('tabindex', '-1');
+                    link.setAttribute('aria-disabled', 'true');
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }, { capture: true });
+                });
+            }
+            opDisableFooterLogoRedirect(document);
+            document.addEventListener('astro:page-load', () => opDisableFooterLogoRedirect(document));
+
+            document.querySelectorAll('.nav-link').forEach(anchor => { anchor.addEventListener('click', function(e) { e.preventDefault(); const href = this.getAttribute('href'); if(!href) return; const targetEl = document.querySelector(href); opScrollToElement(targetEl, 1.5); }); });
+
+            if(window.innerWidth > 768) {
+                if (!opIsMobilePerf()) {
+                    document.querySelectorAll('.reel-item').forEach(item => {
+                        const hoverVid = item.querySelector('.hover-video'); 
+                        item.addEventListener('mouseenter', () => { if(hoverVid) { hoverVid.currentTime = 0; hoverVid.play(); gsap.to(hoverVid, {opacity: 1, duration: 0.4}); } });
+                        item.addEventListener('mouseleave', () => { if(hoverVid) { gsap.to(hoverVid, {opacity: 0, duration: 0.3, onComplete: () => hoverVid.pause()}); } });
+                    });
+                }
+            }
+		</script>

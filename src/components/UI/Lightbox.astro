@@ -1,0 +1,33 @@
+---
+interface Props {
+	lbCloseLabel: string;
+	lbPrevLabel: string;
+	lbNextLabel: string;
+	lbViewTitle: string;
+}
+
+const { lbCloseLabel, lbPrevLabel, lbNextLabel, lbViewTitle } = Astro.props;
+---
+
+<!-- LIGHTBOX CINEMATOGRÁFICO -->
+        <div class="lightbox" id="lightbox">
+            <div class="lightbox__ambient" id="lb-ambient"></div>
+            
+            <div class="lightbox__ui">
+                <button class="lb-close hover-target" id="lb-close">{lbCloseLabel}</button>
+                <div class="lb-controls">
+                    <button class="lb-nav lb-prev hover-target" id="lb-prev">{lbPrevLabel}</button>
+                    <button class="lb-nav lb-next hover-target" id="lb-next">{lbNextLabel}</button>
+                </div>
+            </div>
+
+            <div class="lightbox__content">
+                <div class="lightbox__image-wrapper hover-target" id="lb-img-wrapper" title={lbViewTitle}></div>
+                <div class="lightbox__info" id="lb-info">
+                    <div class="lb-info-inner">
+                        <h3 id="lb-title"></h3>
+                        <div id="lb-desc"></div>
+                    </div>
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,180 @@
+---
+import { ClientRouter } from 'astro:transitions';
+
+interface Props {
+	title: string;
+	description: string;
+	lang: string;
+}
+
+const { title, description, lang } = Astro.props;
+const currentPath = Astro.url?.pathname || '/';
+const isEnglish = String(lang || '').toLowerCase().startsWith('en') || currentPath.startsWith('/en');
+const effectiveLang = isEnglish ? 'en' : 'es';
+const loaderLabel = isEnglish ? 'ESTABLISHING CONNECTION...' : 'ESTABLECIENDO CONEXIÓN...';
+const lbCloseLabel = isEnglish ? 'CLOSE' : 'CERRAR';
+const lbPrevLabel = isEnglish ? 'PREVIOUS' : 'ANTERIOR';
+const lbNextLabel = isEnglish ? 'NEXT' : 'SIGUIENTE';
+const lbViewTitle = isEnglish ? 'Project view' : 'Vista del proyecto';
+
+const siteUrl = 'https://oscarpozocreativo.github.io';
+const siteName = 'Oscar Pozo Creativo';
+const canonicalUrl = isEnglish ? `${siteUrl}/en/` : `${siteUrl}/`;
+const alternateEsUrl = `${siteUrl}/`;
+const alternateEnUrl = `${siteUrl}/en/`;
+const seoTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+const ogLocale = isEnglish ? 'en_US' : 'es_ES';
+const ogImageUrl = `${siteUrl}/og-image.jpg`;
+const ogImageAlt = isEnglish ? `${siteName} - Graphic design portfolio` : `${siteName} - Portafolio de diseño gráfico`;
+const seoKeywords = isEnglish
+    ? 'Oscar Pozo, Oscar Pozo Creativo, senior graphic designer, packaging design, branding, retail design, campaign design, supermarket design, visual identity'
+    : 'Oscar Pozo, Oscar Pozo Creativo, diseñador gráfico senior, diseño de empaques, branding, diseño para retail, campañas comerciales, diseño para supermercados, identidad visual';
+const seoServiceTypes = isEnglish
+    ? ['Graphic design', 'Packaging design', 'Branding', 'Retail campaign design', 'Social media design', 'Point of sale design']
+    : ['Diseño gráfico', 'Diseño de empaques', 'Branding', 'Diseño para retail', 'Campañas comerciales', 'Diseño para punto de venta'];
+const seoJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+        {
+            '@type': 'WebSite',
+            '@id': `${siteUrl}/#website`,
+            name: siteName,
+            alternateName: 'Oscar Pozo',
+            url: siteUrl,
+            inLanguage: isEnglish ? 'en' : 'es',
+            description
+        },
+        {
+            '@type': 'Person',
+            '@id': `${siteUrl}/#person`,
+            name: 'Oscar Pozo',
+            url: siteUrl,
+            jobTitle: isEnglish ? 'Senior Graphic Designer' : 'Diseñador Gráfico Senior',
+            description,
+            image: `${siteUrl}/assets/favicon-light.png`,
+            worksFor: { '@id': `${siteUrl}/#business` }
+        },
+        {
+            '@type': 'ProfessionalService',
+            '@id': `${siteUrl}/#business`,
+            name: siteName,
+            url: siteUrl,
+            logo: `${siteUrl}/assets/favicon-light.png`,
+            image: `${siteUrl}/assets/favicon-light.png`,
+            description,
+            founder: { '@id': `${siteUrl}/#person` },
+            areaServed: 'Worldwide',
+            serviceType: seoServiceTypes
+        }
+    ]
+};
+---
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>{seoTitle}</title>
+<meta name="description" content={description} />
+        <meta name="robots" content="index, follow, noimageindex" />
+        <meta name="author" content="Oscar Pozo" />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={canonicalUrl} />
+        <link rel="alternate" hreflang="es" href={alternateEsUrl} />
+        <link rel="alternate" hreflang="en" href={alternateEnUrl} />
+        <link rel="alternate" hreflang="x-default" href={alternateEsUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content={siteName} />
+        <meta property="og:locale" content={ogLocale} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:image:secure_url" content={ogImageUrl} />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={ogImageAlt} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImageUrl} />
+        <meta name="twitter:image:alt" content={ogImageAlt} />
+        <meta name="theme-color" content="#020202" />
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-light.png" />
+<link rel="apple-touch-icon" href="/favicon-light.png" />
+
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+        <script type="application/ld+json" set:html={JSON.stringify(seoJsonLd)}></script>
+        <ClientRouter />
+        
+        <script is:inline>
+            (() => {
+                const root = document.documentElement;
+                const coarsePointer = window.matchMedia?.('(pointer: coarse)')?.matches;
+                const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+                const viewportWidth = Math.round(window.visualViewport?.width || window.innerWidth || 0);
+                const viewportHeight = Math.round(window.visualViewport?.height || window.innerHeight || 0);
+                const phoneLikeViewport = viewportWidth < 768 || (coarsePointer && viewportHeight <= 560);
+                const mobilePerf = phoneLikeViewport;
+                const saveData = Boolean(navigator.connection?.saveData);
+                const deviceMemory = Number(navigator.deviceMemory || 4);
+                const cpuCores = Number(navigator.hardwareConcurrency || 4);
+                const lowPowerDevice = saveData || deviceMemory <= 2 || cpuCores <= 4;
+                let viewportRaf = 0;
+                let lastViewportHeight = 0;
+
+                if (mobilePerf) root.classList.add('op-mobile-perf');
+                if (coarsePointer) root.classList.add('op-touch-device');
+                if (lowPowerDevice) root.classList.add('op-low-power');
+                if (reducedMotion) root.classList.add('op-reduced-motion');
+
+                const setViewportUnit = () => {
+                    viewportRaf = 0;
+                    const h = Math.round(window.visualViewport?.height || window.innerHeight || 0);
+                    if (!h || Math.abs(h - lastViewportHeight) < 2) return;
+                    lastViewportHeight = h;
+                    root.style.setProperty('--op-vh', `${h * 0.01}px`);
+                };
+
+                const scheduleViewportUnit = () => {
+                    if (viewportRaf) cancelAnimationFrame(viewportRaf);
+                    viewportRaf = requestAnimationFrame(setViewportUnit);
+                };
+
+                setViewportUnit();
+                window.addEventListener('resize', scheduleViewportUnit, { passive: true });
+                window.addEventListener('orientationchange', () => window.setTimeout(scheduleViewportUnit, 220), { passive: true });
+                window.visualViewport?.addEventListener('resize', scheduleViewportUnit, { passive: true });
+
+                try {
+                    const skipLoaderOnce = sessionStorage.getItem('op-skip-loader-once') === '1';
+                    sessionStorage.removeItem('op-loader-done');
+                    if (skipLoaderOnce) {
+                        sessionStorage.removeItem('op-skip-loader-once');
+                        root.classList.add('op-loader-complete', 'op-clean-language-nav');
+                    }
+                } catch (_) {}
+
+                const emergencyReleaseLoader = () => {
+                    root.classList.add('op-loader-complete', 'op-page-ready', 'op-loader-emergency-released');
+                    const loader = document.getElementById('system-init');
+                    const pct = document.getElementById('loader-pct');
+                    if (pct) pct.textContent = '[100%]';
+                    if (loader) {
+                        loader.style.display = 'none';
+                        loader.style.visibility = 'hidden';
+                        loader.style.opacity = '0';
+                        loader.style.pointerEvents = 'none';
+                        loader.style.transform = 'translate3d(0,-100%,0)';
+                    }
+                };
+
+                window.setTimeout(() => {
+                    if (!root.classList.contains('op-page-ready')) emergencyReleaseLoader();
+                }, 2600);
+
+                if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+                if (!root.classList.contains('op-loader-complete')) window.scrollTo(0, 0);
+            })();
+        </script>
