@@ -7,29 +7,72 @@
     gsap.registerPlugin(ScrollTrigger);
 
     function initUI() {
-        // 1. ANIMACIONES DE ENTRADA
+        // 1. COREOGRAFÍA DE TIPOGRAFÍA (Restaurada)
+        function splitTextForReveal(selector) {
+            document.querySelectorAll(selector).forEach(el => {
+                if(!el.innerHTML.includes('<') || el.innerHTML.includes('<br>')) {
+                    const text = el.innerText;
+                    el.innerHTML = text.split(' ').map(word => `<span class="reveal-wrap"><span class="reveal-text">${word}</span></span>`).join(' ');
+                }
+            });
+        }
+
+        function initTypographyChoreography() {
+            splitTextForReveal('.has-reveal');
+            document.querySelectorAll('.has-reveal').forEach(title => {
+                gsap.set(title, { opacity: 1 }); 
+                const chars = title.querySelectorAll('.reveal-text');
+                if(chars.length > 0) { 
+                    gsap.to(chars, { y: '0%', opacity: 1, filter: "blur(0px)", duration: 0.8, ease: 'power3.out', stagger: 0.05, scrollTrigger: { trigger: title, start: "top 85%", toggleActions: "play none none reverse" } }); 
+                }
+            });
+        }
+
+        // 2. ANIMACIONES DE ENTRADA Y SECCIONES (Restauradas)
         gsap.to('.hero-title .reveal-text', { y: '0%', opacity: 1, filter: "blur(0px)", duration: 1, ease: 'power3.out', stagger: 0.1 });
         gsap.to('.hero-desc', { y: 0, opacity: 1, duration: 1, delay: 0.35 });
         gsap.to('.scroll-indicator', { opacity: 1, duration: 1, delay: 0.65 });
-
-        // 2. SCROLL LIFE (Anti-gravedad) - EXCLUYENDO LOS 3 PRIMEROS PROYECTOS
-        // Filtramos los elementos que están dentro de .z-wrapper para que no haya conflicto de animaciones
-        const scrollLifeTargets = gsap.utils.toArray('.monolith, .h-card, .v-item, .reel-item').filter(el => !el.closest('.z-wrapper'));
         
-        const isMobile = window.OP_STATE?.isMobile || window.innerWidth < 768;
+        initTypographyChoreography();
+
+        gsap.fromTo('.v-item', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: ".vault-grid", start: "top 85%" } });
+        gsap.fromTo('.p-card', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power3.out", scrollTrigger: { trigger: ".process-grid", start: "top 85%" } });
+        gsap.fromTo('.profile-main p', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: ".profile-main", start: "top 80%" } });
+        gsap.fromTo('.profile-sidebar', { x: 50, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: "power3.out", scrollTrigger: { trigger: ".profile-grid", start: "top 80%" } });
+        gsap.fromTo('.t-focus-item', { x: 20, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: ".t-focus-list", start: "top 85%" } });
+        gsap.fromTo('.t-panel > *', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: ".terminal-grid", start: "top 85%" } });
+
+        // 3. EFECTO SCROLL-LIFE / GRAVITY (Restaurado a tu lógica original)
+        const scrollLifeTargets = gsap.utils.toArray('.monolith, .h-card, .v-item, .reel-item').filter(el => !el.closest('.z-wrapper'));
+        const isMobile = window.innerWidth < 768;
 
         scrollLifeTargets.forEach((target) => {
+            const isReel = target.classList.contains('reel-item');
+            const isVault = target.classList.contains('v-item');
+            
+            let startScale = isReel ? 0.78 : isVault ? 0.72 : 0.68;
+            let startY = isReel ? 26 : isVault ? 36 : 52;
+            
+            if (isMobile) {
+                startScale = isReel ? 0.86 : isVault ? 0.82 : 0.80;
+                startY = isReel ? 14 : isVault ? 18 : 22;
+            }
+
             gsap.fromTo(target,
-                { scale: isMobile ? 0.85 : 0.75, y: 30, autoAlpha: 0 },
-                { scale: 1, y: 0, autoAlpha: 1, duration: 1, ease: "power3.out", scrollTrigger: { trigger: target, start: "top 95%", end: "center 60%", scrub: 0.5 } }
+                { scale: startScale, y: startY, autoAlpha: 1, transformOrigin: '50% 50%' },
+                { 
+                    scale: 1, y: 0, autoAlpha: 1, ease: 'none',
+                    scrollTrigger: {
+                        trigger: target,
+                        start: isMobile ? 'top 112%' : 'top 106%',
+                        end: isReel ? 'center 62%' : 'center 56%',
+                        scrub: isMobile ? 0.55 : 0.95
+                    }
+                }
             );
         });
 
-        // 3. ANIMACIONES DE SECCIONES
-        gsap.fromTo('.v-item', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: ".vault-grid", start: "top 85%" } });
-        gsap.fromTo('.p-card', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power3.out", scrollTrigger: { trigger: ".process-grid", start: "top 85%" } });
-
-        // 4. HOVER DE VIDEOS
+        // 4. HOVER DE VIDEOS (Restaurado)
         if (window.innerWidth > 768) {
             document.querySelectorAll('.reel-item').forEach(item => {
                 const hoverVid = item.querySelector('.hover-video') as HTMLVideoElement; 
@@ -38,20 +81,134 @@
             });
         }
 
-        // 5. LIGHTBOX
-        const lightbox = document.getElementById('lightbox');
+        // 5. LIGHTBOX CINEMATOGRÁFICO COMPLETO (Restaurado)
+        const lightbox = document.getElementById('lightbox'); 
+        const lbImgWrapper = document.getElementById('lb-img-wrapper');
+        const lbAmbient = document.getElementById('lb-ambient');
+        const lbTitle = document.getElementById('lb-title');
+        const lbDesc = document.getElementById('lb-desc');
+        let currentLbIndex = 0;
+        let isAnimating = false;
         const allLbTriggers = Array.from(document.querySelectorAll('.lb-trigger'));
-        allLbTriggers.forEach((item) => {
-            item.addEventListener('click', () => {
-                if(lightbox) {
-                    lightbox.style.display = 'flex';
-                    gsap.fromTo(lightbox, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+
+        function populateLightbox(index, direction = 0) {
+            if(!allLbTriggers[index]) return;
+            const item = allLbTriggers[index];
+            const title = item.getAttribute('data-title');
+            const videoFullSrc = item.getAttribute('data-video-full');
+            const imgNode = item.querySelector('img');
+            const imgSrc = imgNode ? imgNode.getAttribute('src') : '';
+            
+            const outX = direction === 1 ? -30 : (direction === -1 ? 30 : 0);
+            const inX = direction === 1 ? 30 : (direction === -1 ? -30 : 0);
+
+            const updateContent = () => {
+                if(lbTitle) lbTitle.textContent = title;
+                const projectDetails = item.querySelector('.project-details');
+                if(projectDetails && lbDesc) { lbDesc.innerHTML = projectDetails.innerHTML; } 
+                if(imgSrc && lbAmbient) { lbAmbient.style.backgroundImage = `url('${imgSrc}')`; } 
+
+                if(lbImgWrapper) {
+                    lbImgWrapper.innerHTML = ''; 
+                    let mediaEl;
+                    
+                    if (videoFullSrc) {
+                        mediaEl = document.createElement('video'); 
+                        mediaEl.src = videoFullSrc; 
+                        mediaEl.className = 'lightbox__video'; 
+                        mediaEl.autoplay = true; 
+                        mediaEl.loop = true; 
+                        mediaEl.controls = true; 
+                        mediaEl.playsInline = true;
+                        lbImgWrapper.classList.add('is-video-wrapper');
+                        lightbox.classList.add('has-video-active');
+                    } else {
+                        mediaEl = document.createElement('img'); 
+                        mediaEl.src = imgSrc; 
+                        mediaEl.className = 'lightbox__img'; 
+                        mediaEl.alt = title;
+                        lbImgWrapper.classList.remove('is-video-wrapper');
+                        lightbox.classList.remove('has-video-active');
+                    }
+                    lbImgWrapper.appendChild(mediaEl);
+
+                    const entranceY = direction === 0 ? 18 : 0;
+                    const entranceBlur = direction === 0 ? 'blur(10px)' : 'blur(0px)';
+                    const entranceDelay = direction === 0 ? 0.08 : 0;
+                    gsap.fromTo(mediaEl, { x: inX, y: entranceY, opacity: 0, filter: entranceBlur }, { x: 0, y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.48, delay: entranceDelay, ease: "power3.out", clearProps: 'filter' });
+                    gsap.fromTo('.lb-info-inner', { x: inX, y: entranceY, opacity: 0, filter: entranceBlur }, { x: 0, y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.48, delay: entranceDelay, ease: "power3.out", clearProps: 'filter' });
                 }
+            };
+
+            if (direction !== 0) {
+                gsap.to('.lightbox__img, .lightbox__video', { x: outX, opacity: 0, duration: 0.2, ease: "power2.in" });
+                gsap.to('.lb-info-inner', { x: outX, opacity: 0, duration: 0.2, ease: "power2.in", onComplete: updateContent });
+            } else {
+                updateContent();
+            }
+        }
+
+        function openLightbox(index) {
+            currentLbIndex = index; 
+            if(lightbox) {
+                lightbox.style.display = 'flex';
+                lightbox.style.opacity = '0';
+                document.documentElement.classList.add('op-lightbox-open');
+                populateLightbox(index, 0);
+                gsap.fromTo(lightbox, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" });
+            }
+        }
+
+        function changeLightboxItem(direction) {
+            if(isAnimating) return;
+            isAnimating = true;
+            currentLbIndex = (currentLbIndex + direction + allLbTriggers.length) % allLbTriggers.length;
+            populateLightbox(currentLbIndex, direction);
+            setTimeout(() => { isAnimating = false; }, 400);
+        }
+
+        const closeLightbox = () => {
+            if(lightbox) {
+                const videoEl = lbImgWrapper?.querySelector('video');
+                if (videoEl) { videoEl.pause(); videoEl.removeAttribute('src'); videoEl.load(); }
+                document.documentElement.classList.remove('op-lightbox-open');
+                lightbox.classList.remove('has-video-active');
+                gsap.to(lightbox, { opacity: 0, duration: 0.4, ease: "power2.inOut", onComplete: () => { lightbox.style.display = 'none'; }});
+            }
+        };
+
+        allLbTriggers.forEach((item, index) => { item.addEventListener('click', () => openLightbox(index)); });
+        document.getElementById('lb-prev')?.addEventListener('click', (e) => { e.stopPropagation(); changeLightboxItem(-1); });
+        document.getElementById('lb-next')?.addEventListener('click', (e) => { e.stopPropagation(); changeLightboxItem(1); });
+        document.getElementById('lb-close')?.addEventListener('click', closeLightbox);
+
+        document.addEventListener('keydown', (e) => {
+            if (lightbox && lightbox.style.display === 'flex') {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowRight') changeLightboxItem(1);
+                if (e.key === 'ArrowLeft') changeLightboxItem(-1);
+            }
+        });
+
+        // 6. UTILIDADES (Click derecho, Drag, Back to Top)
+        document.addEventListener('contextmenu', (e) => {
+            const target = e.target as HTMLElement;
+            if (target.tagName === 'IMG' || target.tagName === 'VIDEO' || target.classList.contains('v-bg') || target.classList.contains('target-img') || target.classList.contains('reel-bg')) {
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('dragstart', (e) => {
+            const target = e.target as HTMLElement;
+            if (target.tagName === 'IMG' || target.tagName === 'VIDEO') e.preventDefault();
+        });
+
+        const backToTop = document.getElementById('backToTop');
+        if(backToTop) {
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
-        });
-        document.getElementById('lb-close')?.addEventListener('click', () => {
-            if(lightbox) gsap.to(lightbox, { opacity: 0, duration: 0.3, onComplete: () => lightbox.style.display = 'none' });
-        });
+        }
     }
 
     document.addEventListener('astro:page-load', initUI);
