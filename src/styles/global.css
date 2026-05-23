@@ -625,17 +625,7 @@
         .footer-links { justify-content: center !important; }
         .tilt-target, .skew-target { transform: none !important; }
     }
-.hero-desc {
-    /* Elimina el opacity: 0 inicial de tu CSS actual si lo tienes */
-    animation: heroFadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.5s; /* Ajusta este tiempo según lo que tarde tu Preloader */
-    opacity: 0; /* Estado inicial para la animación CSS */
-}
 
-@keyframes heroFadeUp {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
     /* Blindaje móvil: elimina costes de composición durante scroll real en touch/iPad */
     @media (max-width: 1024px), (pointer: coarse) {
         html.op-mobile-perf body { -webkit-overflow-scrolling: touch; overscroll-behavior-y: auto; }
