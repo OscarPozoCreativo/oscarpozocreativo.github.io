@@ -1028,11 +1028,11 @@
         html { scroll-behavior: auto !important; }
     }
 /* ==========================================
-   CDO OVERRIDE: PREMIUM TYPOGRAPHY & PERFORMANCE
+   CDO OVERRIDE: PREMIUM TYPOGRAPHY, PERFORMANCE & 9:16 REELS
    ========================================== */
 
 @media (min-width: 768px) {
-    /* 1. TIPOGRAFÍA PREMIUM PARA TODAS LAS TARJETAS (Proyectos, Videos/Reels, Más Proyectos) */
+    /* 1. TIPOGRAFÍA PREMIUM PARA TODAS LAS TARJETAS */
     .monolith .m-title,
     .h-card .m-title,
     .h-info h3,
@@ -1043,14 +1043,14 @@
         font-size: clamp(0.85rem, 1.1vw, 1.1rem) !important;
         line-height: 1.25 !important;
         letter-spacing: 0.5px !important;
-        word-break: normal !important; /* ESTO PROHÍBE QUE LAS PALABRAS SE ROMPAN */
+        word-break: normal !important; /* PROHÍBE QUE LAS PALABRAS SE ROMPAN */
         overflow-wrap: normal !important;
         white-space: normal !important;
         hyphens: none !important;
         max-width: 95% !important;
     }
 
-    /* 2. SUBTÍTULOS ELEGANTES Y PEQUEÑOS */
+    /* 2. SUBTÍTULOS ELEGANTES */
     .m-meta span,
     .h-info .m-meta span,
     .reel-item .m-meta span,
@@ -1061,10 +1061,23 @@
         margin-bottom: 12px !important;
     }
 
-    /* 3. PROPORCIONES DE LOS VIDEOS PARA QUE NO SE APLASTEN */
-    .reel-item {
-        min-width: 280px !important;
+    /* 3. PROPORCIÓN EXACTA TIKTOK/REELS (9:16) */
+    .reel-item,
+    .v-item {
+        aspect-ratio: 9 / 16 !important; /* Fuerza el formato vertical de smartphone */
+        min-width: 260px !important;
         max-width: 320px !important;
+        height: auto !important;
+    }
+
+    /* Asegura que la imagen/video llene el contenedor 9:16 sin deformarse */
+    .reel-item img,
+    .reel-item video,
+    .v-item img,
+    .v-item video {
+        object-fit: cover !important;
+        width: 100% !important;
+        height: 100% !important;
     }
     
     /* 4. PADDING INTERNO PREMIUM (Look de galería) */
@@ -1076,7 +1089,7 @@
     }
 }
 
-/* 5. ANIQUILADOR DE LAG GLOBAL (Mata el blur en la sección de Proceso a la fuerza) */
+/* 5. ANIQUILADOR DE LAG GLOBAL (Mata el blur en la sección de Proceso) */
 .p-card {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
