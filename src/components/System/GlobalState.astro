@@ -2,12 +2,41 @@
 // src/components/System/GlobalState.astro
 ---
 <script>
-    window.OP_STATE = {
-        scrollVelocity: 0,
-        isMobile: window.innerWidth < 768 || (window.matchMedia('(pointer: coarse)').matches && window.innerHeight <= 560),
-        isLowPower: Number(navigator.hardwareConcurrency || 4) <= 4 || Boolean((navigator as any).connection?.saveData)
+    window.globalScrollVelocity = 0; 
+    window.opProgrammaticTopScrollUntil = 0;
+    window.opLastScrollInputAt = 0;
+
+    window.opPrefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    window.opCoarsePointer = window.matchMedia('(pointer: coarse)');
+    window.opViewportWidth = () => Math.round(window.visualViewport?.width || window.innerWidth || 0);
+    window.opViewportHeight = () => Math.round(window.visualViewport?.height || window.innerHeight || 0);
+    window.opIsPhoneLikeViewport = () => window.opViewportWidth() < 768 || (window.opCoarsePointer.matches && window.opViewportHeight() <= 560);
+    window.opIsMobilePerf = () => window.opIsPhoneLikeViewport();
+    window.opHasTouchViewport = () => window.opCoarsePointer.matches || navigator.maxTouchPoints > 0;
+    window.opRuntimeSaveData = Boolean((navigator as any).connection?.saveData);
+    window.opRuntimeDeviceMemory = Number((navigator as any).deviceMemory || 4);
+    window.opRuntimeCpuCores = Number(navigator.hardwareConcurrency || 4);
+    window.opRuntimeLowPower = window.opRuntimeSaveData || window.opRuntimeDeviceMemory <= 2 || window.opRuntimeCpuCores <= 4;
+    window.opRuntimeTouchDesktopMode = window.opHasTouchViewport() && window.opViewportWidth() >= 768 && window.opViewportWidth() <= 1180;
+    window.opRuntimeConstrainedTouch = window.opHasTouchViewport() && (window.opRuntimeLowPower || window.opRuntimeTouchDesktopMode);
+    
+    window.opPerfStressSignal = () => {
+        document.documentElement.classList.add('op-perf-stress');
+        document.dispatchEvent(new CustomEvent('op:perf-stress'));
     };
-    window.addEventListener('resize', () => {
-        window.OP_STATE.isMobile = window.innerWidth < 768 || (window.matchMedia('(pointer: coarse)').matches && window.innerHeight <= 560);
-    }, { passive: true });
+
+    window.opIdle = (cb: () => void, timeout = 700) => {
+        if ('requestIdleCallback' in window) return (window as any).requestIdleCallback(cb, { timeout });
+        return window.setTimeout(cb, Math.min(timeout, 160));
+    };
+
+    window.opIsTabletPortraitViewport = () => {
+        const w = window.opViewportWidth();
+        const h = window.opViewportHeight();
+        return window.opHasTouchViewport() && w >= 768 && w <= 1180 && h > w;
+    };
+
+    window.opUseStackedProjectLightbox = () => window.opViewportWidth() < 768 || window.opIsTabletPortraitViewport();
+    window.opUseSmoothScroll = !(window.opIsMobilePerf() || window.opRuntimeConstrainedTouch);
+    window.opMarkScrollInput = () => { window.opLastScrollInputAt = performance.now(); };
 </script>

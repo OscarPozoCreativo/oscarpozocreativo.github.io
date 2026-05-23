@@ -5,83 +5,136 @@
     import Lenis from '@studio-freight/lenis';
     import { gsap } from 'gsap';
     import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
     gsap.registerPlugin(ScrollTrigger);
 
-    let lenis;
-
-    function initScroll() {
-        const useSmoothScroll = !window.OP_STATE?.isMobile;
-
-        lenis = new Lenis({
-            duration: useSmoothScroll ? 0.95 : 0.001,
-            smoothWheel: useSmoothScroll,
-            smoothTouch: false,
-            wheelMultiplier: window.OP_STATE?.isLowPower ? 0.82 : 0.9
-        });
-
-        lenis.on('scroll', (e) => {
-            ScrollTrigger.update();
-            if(window.OP_STATE) window.OP_STATE.scrollVelocity = e.velocity || 0;
-        });
-
-        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
-        gsap.ticker.lagSmoothing(0, 0);
-
-        let mm = gsap.matchMedia();
-        mm.add("(min-width: 768px)", () => {
-            
-            // 1. RESTAURADO: Animación Z-Layer (Los 3 primeros proyectos)
-            const zLayers = gsap.utils.toArray('.z-layer'); 
-            if(zLayers.length) {
-                gsap.set(zLayers.slice(1), { scale: 0.1, autoAlpha: 0, filter: "blur(5px)" });
-                let zTl = gsap.timeline({ scrollTrigger: { trigger: ".z-wrapper", start: "top top", end: "+=400%", pin: true, scrub: 0.5 } });
-                zTl.to('.layer-hero', { autoAlpha: 0, scale: 0.8, filter: "blur(5px)", duration: 1 }, 0);
-                zLayers.forEach((layer, i) => {
-                    if (i !== 0) { 
-                        let start = (i * 3) - 2; 
-                        zTl.fromTo(layer, { scale: 0.1, autoAlpha: 0, filter: "blur(5px)" }, { scale: 1, autoAlpha: 1, filter: "blur(0px)", duration: 1 }, start); 
-                        zTl.to(layer, { scale: 1, duration: 2 }, start + 1);
-                        if (i !== zLayers.length - 1) { zTl.to(layer, { scale: 5, autoAlpha: 0, filter: "blur(5px)", duration: 1 }, start + 3); }
-                    }
-                });
-            }
-
-            // 2. Animación Horizontal
-            const hPanels = gsap.utils.toArray('.h-panel');
-            if(hPanels.length) {
-                gsap.to(hPanels, { 
-                    xPercent: -100 * (hPanels.length - 1), ease: "none", 
-                    scrollTrigger: { trigger: ".h-wrapper", pin: true, scrub: 1, end: () => "+=" + (document.querySelector(".h-container").offsetWidth) } 
-                });
-            }
-
-            // 3. Animación Reels
-            const reelsTrack = document.querySelector('.reels-track');
-            if(reelsTrack) {
-                let getScrollAmount = () => reelsTrack.scrollWidth - window.innerWidth + (window.innerWidth * 0.05);
-                gsap.to(reelsTrack, { x: () => -getScrollAmount(), ease: "none", scrollTrigger: { trigger: ".reels-wrapper", pin: true, scrub: 1, end: () => "+=" + (reelsTrack.scrollWidth) } });
-            }
-        });
-
-        // Magnetismo
-        if(window.innerWidth > 768) {
-            document.querySelectorAll('.magnetic-target').forEach(btn => {
-                const xTo = gsap.quickTo(btn, "x", {duration: 0.3, ease: "power2.out"}); 
-                const yTo = gsap.quickTo(btn, "y", {duration: 0.3, ease: "power2.out"});
-                btn.addEventListener('mousemove', (e) => { 
-                    const rect = btn.getBoundingClientRect(); 
-                    xTo((e.clientX - rect.left - rect.width / 2) * 0.3); 
-                    yTo((e.clientY - rect.top - rect.height / 2) * 0.3); 
-                });
-                btn.addEventListener('mouseleave', () => { xTo(0); yTo(0); });
-            });
-        }
+    if (window.opIsMobilePerf() || window.opRuntimeConstrainedTouch) {
+        ScrollTrigger.config({ ignoreMobileResize: true, autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load' });
     }
 
-    document.addEventListener('astro:page-load', initScroll);
+    window.lenis = new Lenis({
+        duration: window.opUseSmoothScroll ? 0.95 : 0.001,
+        smoothWheel: window.opUseSmoothScroll,
+        smoothTouch: false,
+        syncTouch: false,
+        touchMultiplier: 1,
+        wheelMultiplier: window.opRuntimeLowPower ? 0.82 : 0.9
+    });
+
+    function opIsProgrammaticTopScrollActive() { return window.opUseSmoothScroll && performance.now() < window.opProgrammaticTopScrollUntil; }
+
+    function opPrimeWebglForTopScroll(durationMs = 1600) {
+        if (!window.opUseSmoothScroll) return;
+        window.opProgrammaticTopScrollUntil = Math.max(window.opProgrammaticTopScrollUntil, performance.now() + durationMs);
+        window.globalScrollVelocity = 0;
+        document.dispatchEvent(new CustomEvent('op:webgl-home-resync'));
+    }
+
+    function opFinishWebglTopScrollSync() {
+        window.globalScrollVelocity = 0;
+        document.dispatchEvent(new CustomEvent('op:webgl-home-resync'));
+        requestAnimationFrame(() => { ScrollTrigger.refresh(); document.dispatchEvent(new CustomEvent('op:webgl-home-resync')); });
+    }
+
+    window.opScrollToTopPreservingWebgl = function(duration = 1.5) {
+        if (!window.opUseSmoothScroll) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+        const durationMs = Math.max(300, Math.round(duration * 1000) + 360);
+        opPrimeWebglForTopScroll(durationMs);
+        window.lenis.start();
+        window.lenis.scrollTo(0, { duration, immediate: false });
+        window.setTimeout(opFinishWebglTopScrollSync, 120);
+        window.setTimeout(opFinishWebglTopScrollSync, durationMs);
+    };
+    
+    const skewTargets = Array.from(document.querySelectorAll('.skew-target')) as HTMLElement[];
+    let opSkewRaf = 0; let opLastSkewAt = 0; let opLastAppliedSkew = 999; let opPendingSkew = 0;
+
+    function opScheduleSkewUpdate(velocity = 0) {
+        if (!window.opUseSmoothScroll || window.opRuntimeLowPower || window.innerWidth <= 1024 || !skewTargets.length) return;
+        const nextSkew = Math.max(-4, Math.min(4, velocity * 0.16));
+        if (Math.abs(nextSkew - opLastAppliedSkew) < 0.055) return;
+        opPendingSkew = nextSkew;
+        if (opSkewRaf) return;
+
+        opSkewRaf = requestAnimationFrame((now) => {
+            opSkewRaf = 0;
+            if (now - opLastSkewAt < 42) { opSkewRaf = requestAnimationFrame(() => { opSkewRaf = 0; opScheduleSkewUpdate(opPendingSkew / 0.16); }); return; }
+            opLastSkewAt = now; opLastAppliedSkew = opPendingSkew;
+            const viewportH = window.innerHeight || 1;
+            skewTargets.forEach((el) => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < viewportH + 80 && rect.bottom > -80) gsap.to(el, { skewY: opPendingSkew, duration: 0.34, ease: "power2.out", overwrite: "auto", force3D: true });
+            });
+        });
+    }
+
+    function opUpdateScrollUI(scrollValue = window.scrollY, velocity = 0) {
+        const scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const progress = Math.max(0, Math.min(1, scrollValue / scrollable));
+        const pb = document.getElementById('progress-bar');
+        if(pb) pb.style.transform = `scaleX(${progress}) translateZ(0)`;
+        window.globalScrollVelocity = (window.opUseSmoothScroll && !opIsProgrammaticTopScrollActive()) ? (velocity || 0) : 0;
+        opScheduleSkewUpdate(window.globalScrollVelocity);
+    }
+
+    if (window.opUseSmoothScroll) {
+        window.lenis.on('scroll', (e) => { window.opMarkScrollInput(); ScrollTrigger.update(); opUpdateScrollUI(e.animatedScroll, e.velocity || 0); });
+        gsap.ticker.add((time) => { window.lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0, 0);
+    } else {
+        let opNativeScrollRaf = 0;
+        window.addEventListener('scroll', () => {
+            window.opMarkScrollInput();
+            if (opNativeScrollRaf) return;
+            opNativeScrollRaf = requestAnimationFrame(() => {
+                opNativeScrollRaf = 0; opUpdateScrollUI(window.scrollY, 0);
+                if (typeof window.opMobileScrollLifeTick === 'function') window.opMobileScrollLifeTick();
+            });
+        }, { passive: true });
+    }
+
+    window.opHorizontalPortfolioTween = null;
+    window.opReelsScrollTween = null;
+    let mm = gsap.matchMedia();
+    mm.add("(min-width: 768px)", () => {
+        const zLayers = gsap.utils.toArray('.z-layer'); 
+        if(zLayers.length) {
+            gsap.set(zLayers.slice(1), { scale: 0.1, autoAlpha: 0, filter: "blur(5px)" });
+            let zTl = gsap.timeline({ scrollTrigger: { trigger: ".z-wrapper", start: "top top", end: "+=400%", pin: true, scrub: 0.5 } });
+            zTl.to('.layer-hero', { autoAlpha: 0, scale: 0.8, filter: "blur(5px)", duration: 1 }, 0);
+            zLayers.forEach((layer, i) => {
+                if (i !== 0) { 
+                    let start = (i * 3) - 2; 
+                    zTl.fromTo(layer, { scale: 0.1, autoAlpha: 0, filter: "blur(5px)" }, { scale: 1, autoAlpha: 1, filter: "blur(0px)", duration: 1 }, start); 
+                    zTl.to(layer, { scale: 1, duration: 2 }, start + 1);
+                    if (i !== zLayers.length - 1) { zTl.to(layer, { scale: 5, autoAlpha: 0, filter: "blur(5px)", duration: 1 }, start + 3); }
+                }
+            });
+        }
+        const hPanels = gsap.utils.toArray('.h-panel');
+        if(hPanels.length) {
+            window.opHorizontalPortfolioTween = gsap.to(hPanels, { xPercent: -100 * (hPanels.length - 1), ease: "none", scrollTrigger: { trigger: ".h-wrapper", pin: true, scrub: 1, end: () => "+=" + (document.querySelector(".h-container").offsetWidth) } });
+        }
+        const reelsTrack = document.querySelector('.reels-track');
+        if(reelsTrack) {
+            let getScrollAmount = () => reelsTrack.scrollWidth - window.innerWidth + (window.innerWidth * 0.05);
+            window.opReelsScrollTween = gsap.to(reelsTrack, { x: () => -getScrollAmount(), ease: "none", scrollTrigger: { trigger: ".reels-wrapper", pin: true, scrub: 1, end: () => "+=" + (reelsTrack.scrollWidth) } });
+        }
+    });
+
+    if(window.innerWidth > 768) {
+        document.querySelectorAll('.magnetic-target').forEach(btn => {
+            const xTo = gsap.quickTo(btn, "x", {duration: 0.3, ease: "power2.out"}); 
+            const yTo = gsap.quickTo(btn, "y", {duration: 0.3, ease: "power2.out"});
+            btn.addEventListener('mousemove', (e) => { 
+                const rect = btn.getBoundingClientRect(); 
+                xTo((e.clientX - rect.left - rect.width / 2) * 0.3); yTo((e.clientY - rect.top - rect.height / 2) * 0.3); 
+            });
+            btn.addEventListener('mouseleave', () => { xTo(0); yTo(0); });
+        });
+    }
+
     document.addEventListener('astro:before-swap', () => {
-        if (lenis) lenis.destroy();
+        if (window.lenis) window.lenis.destroy();
         ScrollTrigger.getAll().forEach(t => t.kill());
     });
 </script>

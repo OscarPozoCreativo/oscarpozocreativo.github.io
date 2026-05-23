@@ -1,0 +1,151 @@
+---
+// src/components/System/NavigationLogic.astro
+---
+<script>
+    import { gsap } from 'gsap';
+
+    function opNormalizePath(pathname: string) {
+        const clean = pathname.replace(/\/+/g, '/').replace(/\/$/, '');
+        return clean === '' ? '/' : clean;
+    }
+
+    function opIsLanguageSwitch(anchor: HTMLAnchorElement) {
+        const url = new URL(anchor.href, window.location.href);
+        if (url.origin !== window.location.origin) return false;
+        const current = opNormalizePath(window.location.pathname);
+        const next = opNormalizePath(url.pathname);
+        const label = (anchor.textContent || '').trim().toLowerCase();
+        const looksLikeLanguageControl = anchor.classList.contains('ctrl-btn') || label === 'en' || label === 'es';
+        return looksLikeLanguageControl && ((current !== '/en' && next === '/en') || (current === '/en' && next === '/') || (next === '/en' || next === '/'));
+    }
+
+    let opLanguageClickFixInstalled = false;
+    function opInstallLanguageNavigationFix() {
+        document.querySelectorAll('a[href]').forEach((anchor) => {
+            const a = anchor as HTMLAnchorElement;
+            if (opIsLanguageSwitch(a)) a.setAttribute('data-astro-reload', 'true');
+        });
+
+        if (opLanguageClickFixInstalled) return;
+        opLanguageClickFixInstalled = true;
+        document.addEventListener('click', (event) => {
+            const target = event.target as HTMLElement | null;
+            const anchor = target?.closest?.('a[href]') as HTMLAnchorElement | null;
+            if (!anchor || !opIsLanguageSwitch(anchor)) return;
+
+            event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
+            const url = new URL(anchor.href, window.location.href);
+            if(window.opSetSkipLoaderOnce) window.opSetSkipLoaderOnce();
+            if(window.opHardReleaseLoader) window.opHardReleaseLoader();
+            document.documentElement.classList.add('op-clean-language-nav');
+            if(window.lenis) window.lenis.stop();
+            window.location.assign(`${url.pathname}${url.search}${url.hash}`);
+        }, true);
+    }
+
+    function opGetLanguageHomePath() {
+        const path = opNormalizePath(window.location.pathname);
+        return path === '/en' || path.startsWith('/en/') ? '/en/' : '/';
+    }
+
+    function opIsHeaderLogoControl(anchor: HTMLAnchorElement) {
+        const parentNav = anchor.closest('nav, #main-nav, header');
+        if (!parentNav) return false;
+        const aria = (anchor.getAttribute('aria-label') || '').toLowerCase();
+        const text = (anchor.textContent || '').trim().toLowerCase();
+        const href = anchor.getAttribute('href') || '';
+        const hasLogoImage = Array.from(anchor.querySelectorAll('img')).some((img) => {
+            const src = ((img as HTMLImageElement).getAttribute('src') || '').toLowerCase();
+            const alt = ((img as HTMLImageElement).getAttribute('alt') || '').toLowerCase();
+            return src.includes('logo') || src.includes('favicon') || alt.includes('logo') || alt.includes('oscar');
+        });
+        const hasLogoClass = anchor.classList.contains('hud-logo') || Boolean(anchor.querySelector('.hud-logo'));
+        return hasLogoClass || hasLogoImage || aria.includes('logo') || aria.includes('inicio') || aria.includes('home') || (text === 'op' && (href === '/' || href === '#' || href === ''));
+    }
+
+    let opLogoClickFixInstalled = false;
+    function opInstallLogoHomeFix() {
+        const homePath = opGetLanguageHomePath();
+        document.querySelectorAll('nav a[href], #main-nav a[href], header a[href]').forEach((anchor) => {
+            const a = anchor as HTMLAnchorElement;
+            if (!opIsHeaderLogoControl(a)) return;
+            a.setAttribute('href', homePath);
+            a.setAttribute('data-astro-reload', 'true');
+        });
+
+        if (opLogoClickFixInstalled) return;
+        opLogoClickFixInstalled = true;
+        document.addEventListener('click', (event) => {
+            const target = event.target as HTMLElement | null;
+            const anchor = target?.closest?.('a[href]') as HTMLAnchorElement | null;
+            if (!anchor || !opIsHeaderLogoControl(anchor)) return;
+
+            event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
+            const homePath = opGetLanguageHomePath();
+            const currentPath = opNormalizePath(window.location.pathname);
+            const targetPath = opNormalizePath(homePath);
+
+            if(window.opSetSkipLoaderOnce) window.opSetSkipLoaderOnce();
+            if(window.opHardReleaseLoader) window.opHardReleaseLoader();
+
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox && lightbox.style.display === 'flex') {
+                lightbox.style.display = 'none';
+                lightbox.classList.remove('is-fullscreen');
+            }
+
+            if (currentPath === targetPath) {
+                window.opSetHeaderChromeHidden(false);
+                if (window.location.hash) history.replaceState(null, '', homePath);
+                if(window.lenis) window.lenis.start();
+                if (window.opUseSmoothScroll && window.opScrollToTopPreservingWebgl) window.opScrollToTopPreservingWebgl(1.1);
+                else { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                return;
+            }
+
+            if(window.lenis) window.lenis.stop();
+            window.location.assign(homePath);
+        }, true);
+    }
+
+    function opHeaderChromeTargets() {
+        const selectors = ['#main-nav > *', 'nav > *', 'header > *'];
+        const seen = new Set();
+        const targets: Element[] = [];
+        selectors.forEach((selector) => {
+            document.querySelectorAll(selector).forEach((el) => {
+                if (el.id === 'op-nav-blur-shield' || el.matches('nav, #main-nav, header') || seen.has(el)) return;
+                seen.add(el); targets.push(el);
+            });
+        });
+        return targets;
+    }
+
+    window.opRestoreHeaderBlur = function() {
+        document.documentElement.classList.add('op-nav-blur-ready');
+        const blurShield = document.getElementById('op-nav-blur-shield');
+        if (blurShield) { blurShield.style.display = 'block'; blurShield.style.opacity = '1'; blurShield.style.transform = 'translate3d(0,0,0)'; }
+        document.querySelectorAll('nav, #main-nav, header').forEach((el) => {
+            const htmlEl = el as HTMLElement;
+            htmlEl.style.removeProperty('opacity'); htmlEl.style.removeProperty('filter'); htmlEl.style.removeProperty('visibility');
+            htmlEl.style.transform = htmlEl.style.transform || 'translate3d(0,0,0)';
+        });
+        requestAnimationFrame(() => {
+            document.documentElement.classList.add('op-nav-blur-refresh');
+            requestAnimationFrame(() => document.documentElement.classList.remove('op-nav-blur-refresh'));
+        });
+    };
+
+    window.opSetHeaderChromeHidden = function(hidden: boolean) {
+        window.opRestoreHeaderBlur();
+        const targets = opHeaderChromeTargets();
+        if (!targets.length) return;
+        gsap.to(targets, { opacity: hidden ? 0 : 1, duration: hidden ? 0.2 : 0.3, ease: 'power2.out', overwrite: 'auto', pointerEvents: hidden ? 'none' : 'auto' });
+    };
+
+    document.addEventListener('astro:page-load', () => {
+        opInstallLanguageNavigationFix();
+        opInstallLogoHomeFix();
+        window.opRestoreHeaderBlur();
+    });
+</script>

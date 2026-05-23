@@ -1,0 +1,256 @@
+---
+// src/components/System/ScrollGravity.astro
+---
+<script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    gsap.registerPlugin(ScrollTrigger);
+
+    const opScrollLifeSelector = '.monolith, .h-card, .v-item, .reel-item';
+    let opScrollLifeTweens = [];
+    let opScrollLifeTargets = [];
+    let opScrollLifeResizeRaf = 0;
+    let opScrollLifeLastViewportWidth = -1;
+    const opMobileScrollLifeProfiles = new WeakMap();
+    const opMobileScrollLifeMetrics = new WeakMap();
+    const opMobileScrollLifeMeasured = new WeakSet();
+    const OP_MOBILE_LIFE_ACTIVE_MARGIN = 80;
+    const opMobileScrollLifeActive = new Set();
+    const opMobileScrollLifeLastProgress = new WeakMap();
+    let opMobileScrollLifeTargets = [];
+    let opMobileScrollLifeObserver = null;
+    let opMobileScrollLifeReadyObserver = null;
+    let opMobileScrollLifeRaf = 0;
+    let opMobileScrollLifeEventsBound = false;
+
+    function opClearMobileScrollLifeProjects() {
+        if (opMobileScrollLifeObserver) opMobileScrollLifeObserver.disconnect();
+        if (opMobileScrollLifeReadyObserver) opMobileScrollLifeReadyObserver.disconnect();
+        opMobileScrollLifeObserver = null; opMobileScrollLifeReadyObserver = null;
+        if (opMobileScrollLifeRaf) cancelAnimationFrame(opMobileScrollLifeRaf);
+        opMobileScrollLifeRaf = 0; opMobileScrollLifeActive.clear();
+        opMobileScrollLifeTargets.forEach((entry) => {
+            const target = entry?.target || entry;
+            if (!target) return;
+            target.classList.remove('op-scroll-life-target', 'op-scroll-life-mobile', 'is-scroll-life-active', 'is-scroll-life-ready');
+            target.style.removeProperty('transform'); target.style.removeProperty('opacity'); target.style.removeProperty('transform-origin'); target.style.removeProperty('will-change'); target.style.removeProperty('contain');
+            opMobileScrollLifeLastProgress.delete(target);
+        });
+        opMobileScrollLifeTargets = [];
+    }
+
+    function opClearScrollLifeProjects() {
+        opScrollLifeTweens.forEach((tween) => tween?.kill?.());
+        opScrollLifeTweens = [];
+        opClearMobileScrollLifeProjects();
+        opScrollLifeTargets.forEach((target) => {
+            target.classList.remove('op-scroll-life-target', 'is-scroll-life-active', 'is-scroll-life-ready');
+            gsap.set(target, { clearProps: 'scale,y,x,autoAlpha,opacity,transform,transformOrigin,willChange,force3D' });
+            target.style?.removeProperty?.('--op-scroll-life-scale'); target.style?.removeProperty?.('--op-scroll-life-y'); target.style?.removeProperty?.('--op-scroll-life-opacity');
+        });
+        opScrollLifeTargets = [];
+    }
+
+    function opProjectLifeTargetFromTrigger(trigger) {
+        if (!trigger) return null;
+        if (trigger.matches?.(opScrollLifeSelector)) return trigger;
+        const closestTarget = trigger.closest?.(opScrollLifeSelector);
+        if (closestTarget) return closestTarget;
+        return trigger.querySelector?.(opScrollLifeSelector) || null;
+    }
+
+    function opGetScrollLifeProfile(target, isMobile, isTouchTablet) {
+        const isReel = target.classList.contains('reel-item');
+        const isVault = target.classList.contains('v-item');
+        if (isMobile) {
+            return { startScale: isReel ? 0.86 : isVault ? 0.82 : 0.80, startY: isReel ? 14 : isVault ? 18 : 22, start: 'top 112%', end: isReel ? 'center 70%' : 'center 64%', scrub: 0.55 };
+        }
+        return { startScale: isReel ? 0.78 : isVault ? 0.72 : isTouchTablet ? 0.70 : 0.68, startY: isReel ? 26 : isVault ? 36 : 52, start: 'top 106%', end: isReel ? 'center 62%' : 'center 56%', scrub: 0.95 };
+    }
+
+    function opSmoothLifeProgress(t) { const clamped = Math.max(0, Math.min(1, t)); return clamped * clamped * (3 - 2 * clamped); }
+
+    function opApplyMobileScrollLifeTransform(target, profile, progress, force = false) {
+        const clampedProgress = Math.max(0, Math.min(1, progress));
+        const previousProgress = opMobileScrollLifeLastProgress.get(target);
+        if (!force && previousProgress !== undefined && Math.abs(previousProgress - clampedProgress) < 0.0035) return;
+        opMobileScrollLifeLastProgress.set(target, clampedProgress);
+        const eased = opSmoothLifeProgress(clampedProgress);
+        const scale = profile.startScale + ((1 - profile.startScale) * eased);
+        const y = profile.startY * (1 - eased);
+        target.style.setProperty('transform', `translate3d(0, ${y.toFixed(3)}px, 0) scale(${scale.toFixed(5)})`, 'important');
+        target.style.setProperty('opacity', '1', 'important');
+    }
+
+    function opMeasureMobileScrollLifeTarget(target, profile) {
+        if (!target || !profile || !window.opIsMobilePerf()) return;
+        const vh = Math.max(360, window.opViewportHeight());
+        const startPx = vh * (target.classList.contains('reel-item') ? 1.08 : 1.12);
+        const endPx = vh * (target.classList.contains('reel-item') ? 0.70 : target.classList.contains('v-item') ? 0.68 : 0.64);
+        const range = Math.max(1, startPx - endPx);
+        const top = target.getBoundingClientRect().top + (window.scrollY || window.pageYOffset || 0);
+        opMobileScrollLifeMetrics.set(target, { top, startPx, endPx, range });
+        opMobileScrollLifeMeasured.add(target);
+    }
+
+    let opMobileMetricsRefreshRaf = 0;
+    let opMobileMetricsRefreshTimer = 0;
+    let opMobileMetricsLastWidth = -1;
+
+    window.opRefreshMobileScrollLifeMetrics = function(force = false) {
+        if (!window.opIsMobilePerf() || !opMobileScrollLifeTargets.length) return;
+        const widthNow = window.opViewportWidth();
+        const quietFor = performance.now() - window.opLastScrollInputAt;
+        const widthStable = opMobileMetricsLastWidth > 0 && Math.abs(widthNow - opMobileMetricsLastWidth) <= 8;
+
+        if (!force && widthStable && quietFor < 280) {
+            if (!opMobileMetricsRefreshTimer) {
+                opMobileMetricsRefreshTimer = window.setTimeout(() => { opMobileMetricsRefreshTimer = 0; window.opRefreshMobileScrollLifeMetrics(false); }, 320);
+            }
+            return;
+        }
+
+        if (opMobileMetricsRefreshRaf) cancelAnimationFrame(opMobileMetricsRefreshRaf);
+        opMobileMetricsRefreshRaf = requestAnimationFrame(() => {
+            opMobileMetricsRefreshRaf = 0; opMobileMetricsLastWidth = widthNow;
+            opMobileScrollLifeTargets.forEach(({ target, profile }) => opMeasureMobileScrollLifeTarget(target, profile));
+            opRequestMobileScrollLifeTick();
+        });
+    };
+
+    window.opMobileScrollLifeTick = function() {
+        opMobileScrollLifeRaf = 0;
+        if (!window.opIsMobilePerf() || !opMobileScrollLifeActive.size) return;
+        const scrollY = window.scrollY || window.pageYOffset || 0;
+        opMobileScrollLifeActive.forEach((target) => {
+            const profile = opMobileScrollLifeProfiles.get(target);
+            if (!profile) return;
+            if (!opMobileScrollLifeMeasured.has(target)) opMeasureMobileScrollLifeTarget(target, profile);
+            const metrics = opMobileScrollLifeMetrics.get(target);
+            if (!metrics) return;
+            const progress = ((scrollY + metrics.startPx) - metrics.top) / metrics.range;
+            opApplyMobileScrollLifeTransform(target, profile, progress);
+        });
+    };
+
+    function opRequestMobileScrollLifeTick() {
+        if (!window.opIsMobilePerf() || opMobileScrollLifeRaf) return;
+        opMobileScrollLifeRaf = requestAnimationFrame(window.opMobileScrollLifeTick);
+    }
+
+    function opInitMobileScrollLifeProjects(entries) {
+        opClearMobileScrollLifeProjects();
+        if (!entries.length || !window.opIsMobilePerf()) return;
+        opMobileScrollLifeTargets = entries;
+        const supportsObserver = 'IntersectionObserver' in window;
+
+        if (supportsObserver) {
+            opMobileScrollLifeReadyObserver = new IntersectionObserver((observerEntries) => {
+                observerEntries.forEach((entry) => { entry.target.classList.toggle('is-scroll-life-ready', entry.isIntersecting); });
+            }, { root: null, rootMargin: '1600px 0px 1600px 0px', threshold: 0 });
+
+            opMobileScrollLifeObserver = new IntersectionObserver((observerEntries) => {
+                observerEntries.forEach((entry) => {
+                    const target = entry.target;
+                    const profile = opMobileScrollLifeProfiles.get(target);
+                    if (!profile) return;
+                    if (entry.isIntersecting) {
+                        opMobileScrollLifeActive.add(target); target.classList.add('is-scroll-life-active');
+                    } else {
+                        opMobileScrollLifeActive.delete(target); target.classList.remove('is-scroll-life-active');
+                        const belowViewport = entry.boundingClientRect.top > 0;
+                        opApplyMobileScrollLifeTransform(target, profile, belowViewport ? 0 : 1, true);
+                    }
+                });
+                opRequestMobileScrollLifeTick();
+            }, { root: null, rootMargin: `${OP_MOBILE_LIFE_ACTIVE_MARGIN}px 0px ${OP_MOBILE_LIFE_ACTIVE_MARGIN}px 0px`, threshold: 0 });
+        }
+
+        entries.forEach(({ target, profile }) => {
+            opMobileScrollLifeProfiles.set(target, profile);
+            target.classList.add('op-scroll-life-target', 'op-scroll-life-mobile');
+            target.style.setProperty('transform-origin', '50% 50%', 'important');
+            target.style.setProperty('contain', 'layout style');
+            opApplyMobileScrollLifeTransform(target, profile, 0, true);
+            opMeasureMobileScrollLifeTarget(target, profile);
+            if (supportsObserver) { opMobileScrollLifeReadyObserver.observe(target); opMobileScrollLifeObserver.observe(target); } 
+            else { opMobileScrollLifeActive.add(target); target.classList.add('is-scroll-life-active', 'is-scroll-life-ready'); }
+        });
+
+        if (!opMobileScrollLifeEventsBound) {
+            opMobileScrollLifeEventsBound = true;
+            window.addEventListener('resize', window.opRefreshMobileScrollLifeMetrics, { passive: true });
+            window.visualViewport?.addEventListener('resize', window.opRefreshMobileScrollLifeMetrics, { passive: true });
+            window.addEventListener('load', () => window.setTimeout(() => window.opRefreshMobileScrollLifeMetrics(true), 260), { once: true, passive: true });
+        }
+        requestAnimationFrame(() => window.opRefreshMobileScrollLifeMetrics(true));
+        opRequestMobileScrollLifeTick();
+    }
+
+    window.opInitScrollLifeProjects = function() {
+        opClearScrollLifeProjects();
+        const opScrollLifeMobile = window.opViewportWidth() < 768;
+        const keepDesktopHeroEffects = !opScrollLifeMobile;
+        const orderedProjects = Array.from(document.querySelectorAll(opScrollLifeSelector));
+        const triggerSources = Array.from(new Set([...Array.from(document.querySelectorAll('.lb-trigger')), ...orderedProjects]));
+        const seen = new Set();
+        const mobileScrollLifeEntries = [];
+
+        triggerSources.forEach((trigger) => {
+            const target = opProjectLifeTargetFromTrigger(trigger);
+            if (!target || seen.has(target)) return;
+            const projectIndex = orderedProjects.indexOf(target);
+            if (keepDesktopHeroEffects && (projectIndex < 3 || target.closest?.('.z-wrapper'))) return;
+            seen.add(target);
+
+            const inHorizontalPortfolio = !!target.closest('.h-wrapper');
+            const inReels = !!target.closest('.reels-wrapper');
+            const containerAnimation = inHorizontalPortfolio ? window.opHorizontalPortfolioTween : inReels ? window.opReelsScrollTween : null;
+            const isTouchTablet = !opScrollLifeMobile && window.opCoarsePointer.matches;
+            const profile = opGetScrollLifeProfile(target, opScrollLifeMobile, isTouchTablet);
+            
+            if (opScrollLifeMobile) { mobileScrollLifeEntries.push({ target, profile }); return; }
+
+            const activityCallbacks = {
+                onEnter: () => target.classList.add('is-scroll-life-active'),
+                onEnterBack: () => target.classList.add('is-scroll-life-active'),
+                onLeave: () => target.classList.remove('is-scroll-life-active'),
+                onLeaveBack: () => target.classList.remove('is-scroll-life-active')
+            };
+            const triggerConfig = containerAnimation
+                ? { trigger: target, containerAnimation, start: 'left 102%', end: 'center 58%', scrub: profile.scrub, invalidateOnRefresh: true, ...activityCallbacks }
+                : { trigger: target, start: profile.start, end: profile.end, scrub: profile.scrub, invalidateOnRefresh: true, ...activityCallbacks };
+
+            target.classList.add('op-scroll-life-target');
+            target.style.setProperty('transform-origin', '50% 50%');
+            opScrollLifeTargets.push(target);
+
+            const tween = gsap.fromTo(target,
+                { scale: profile.startScale, y: profile.startY, autoAlpha: 1, force3D: true, transformOrigin: '50% 50%' },
+                { scale: 1, y: 0, autoAlpha: 1, force3D: true, ease: 'none', overwrite: 'auto', scrollTrigger: triggerConfig }
+            );
+            opScrollLifeTweens.push(tween);
+        });
+
+        if (opScrollLifeMobile) { opInitMobileScrollLifeProjects(mobileScrollLifeEntries); return; }
+        ScrollTrigger.refresh();
+    };
+
+    window.opScheduleScrollLifeProjects = function(force = false) {
+        if (!force && window.opIsMobilePerf()) {
+            const widthNow = window.opViewportWidth();
+            if (opScrollLifeLastViewportWidth > 0 && Math.abs(widthNow - opScrollLifeLastViewportWidth) <= 8) return;
+            opScrollLifeLastViewportWidth = widthNow;
+        }
+        if (opScrollLifeResizeRaf) cancelAnimationFrame(opScrollLifeResizeRaf);
+        opScrollLifeResizeRaf = requestAnimationFrame(() => { opScrollLifeResizeRaf = 0; window.opInitScrollLifeProjects(); });
+    };
+
+    document.addEventListener('astro:page-load', () => {
+        requestAnimationFrame(() => window.opInitScrollLifeProjects());
+        window.addEventListener('resize', () => window.opScheduleScrollLifeProjects(), { passive: true });
+        window.visualViewport?.addEventListener('resize', () => window.opScheduleScrollLifeProjects(), { passive: true });
+        window.addEventListener('orientationchange', () => window.setTimeout(() => window.opScheduleScrollLifeProjects(true), 240), { passive: true });
+        window.addEventListener('load', () => window.setTimeout(() => window.opScheduleScrollLifeProjects(true), 260), { once: true, passive: true });
+    });
+</script>

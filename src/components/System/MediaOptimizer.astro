@@ -1,0 +1,287 @@
+---
+// src/components/System/MediaOptimizer.astro
+---
+<script>
+    const opProjectFrameSelector = '.monolith, .h-card, .v-item';
+    let opProjectFrameRaf = 0;
+    let opProjectFrameLastViewportWidth = -1;
+    const opMobileProjectMediaGeometryPrepared = new WeakSet();
+
+    window.opPrepareMobileProjectMediaGeometry = function(scope = document) {
+        if (!window.opIsMobilePerf()) return;
+        const cards = Array.from(scope.querySelectorAll('.monolith, .h-card, .v-item, .reel-item'));
+        cards.forEach((card) => {
+            const cardEl = card as HTMLElement;
+            cardEl.classList.add('op-mobile-standard-project');
+            cardEl.style.setProperty('transform-origin', '50% 50%');
+            const img = cardEl.querySelector('img') as HTMLImageElement | null;
+            const video = cardEl.querySelector('video') as HTMLVideoElement | null;
+            const media = img || video;
+            if (!media || opMobileProjectMediaGeometryPrepared.has(media)) return;
+            opMobileProjectMediaGeometryPrepared.add(media);
+
+            const isReel = cardEl.classList.contains('reel-item');
+            const isVertical = isReel || cardEl.classList.contains('v-item');
+            const fallbackW = isVertical ? 563 : 1000;
+            const fallbackH = isVertical ? 1000 : 563;
+
+            if (!media.hasAttribute('width')) media.setAttribute('width', String(fallbackW));
+            if (!media.hasAttribute('height')) media.setAttribute('height', String(fallbackH));
+            media.setAttribute('draggable', 'false');
+            media.setAttribute('decoding', 'async');
+            if (img) {
+                img.setAttribute('loading', 'eager');
+                if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'auto');
+            } else if (video) {
+                video.playsInline = true; video.setAttribute('playsinline', '');
+                if (!video.hasAttribute('preload')) video.setAttribute('preload', 'metadata');
+            }
+        });
+    };
+
+    function opApplyResponsiveProjectFrames(scope = document) {
+        const cards = Array.from(scope.querySelectorAll(opProjectFrameSelector));
+        cards.forEach((card) => {
+            const cardEl = card as HTMLElement;
+            const media = cardEl.querySelector('img, video') as HTMLImageElement | HTMLVideoElement | null;
+            if (!media) return;
+
+            const applyRatio = () => {
+                let naturalW = 0; let naturalH = 0;
+                if (media instanceof HTMLImageElement) {
+                    naturalW = media.naturalWidth || Number(media.getAttribute('width')) || 0;
+                    naturalH = media.naturalHeight || Number(media.getAttribute('height')) || 0;
+                } else if (media instanceof HTMLVideoElement) {
+                    naturalW = media.videoWidth || Number(media.getAttribute('width')) || 0;
+                    naturalH = media.videoHeight || Number(media.getAttribute('height')) || 0;
+                }
+                if (!naturalW || !naturalH) return;
+
+                const ratio = Math.max(0.55, Math.min(3.4, naturalW / naturalH));
+                const viewportH = Math.max(320, window.opViewportHeight());
+                const viewportW = Math.max(320, window.opViewportWidth());
+                const isSmallViewport = viewportW < 768 || (window.opCoarsePointer.matches && viewportH <= 560);
+                const needsPremiumBreath = !isSmallViewport && (viewportW <= 1680 || viewportH <= 980 || (window.opCoarsePointer.matches && viewportW <= 1366));
+                const heightCap = cardEl.matches('.v-item') ? (isSmallViewport ? 0.42 : needsPremiumBreath ? 0.30 : 0.38) : (isSmallViewport ? 0.56 : needsPremiumBreath ? 0.58 : 0.76);
+                const maxWidthByHeight = Math.max(260, Math.floor(viewportH * heightCap * ratio));
+
+                cardEl.style.setProperty('--op-card-ratio', `${naturalW} / ${naturalH}`);
+                cardEl.style.setProperty('--op-card-ratio-num', ratio.toFixed(6));
+                cardEl.style.setProperty('--op-card-max-w', `${maxWidthByHeight}px`);
+            };
+
+            const applyRatioWhenSafe = () => {
+                if (!window.opIsMobilePerf()) { applyRatio(); return; }
+                const run = () => {
+                    const quietFor = performance.now() - window.opLastScrollInputAt;
+                    if (quietFor < 180) { window.setTimeout(run, 200 - quietFor); return; }
+                    applyRatio();
+                    if (typeof window.opRefreshMobileScrollLifeMetrics === 'function') window.opRefreshMobileScrollLifeMetrics();
+                };
+                if ('requestIdleCallback' in window) { (window as any).requestIdleCallback(run, { timeout: 1200 }); } else { window.setTimeout(run, 90); }
+            };
+
+            applyRatio();
+            if (media instanceof HTMLImageElement && !media.complete) media.addEventListener('load', applyRatioWhenSafe, { once: true, passive: true });
+            if (media instanceof HTMLVideoElement && !media.videoWidth) media.addEventListener('loadedmetadata', applyRatioWhenSafe, { once: true, passive: true });
+        });
+    }
+
+    window.opScheduleResponsiveProjectFrames = function(scope = document, force = false) {
+        if (!force && window.opIsMobilePerf()) {
+            const widthNow = window.opViewportWidth();
+            if (opProjectFrameLastViewportWidth > 0 && Math.abs(widthNow - opProjectFrameLastViewportWidth) <= 8) return;
+            opProjectFrameLastViewportWidth = widthNow;
+        }
+        if (opProjectFrameRaf) cancelAnimationFrame(opProjectFrameRaf);
+        opProjectFrameRaf = requestAnimationFrame(() => {
+            opProjectFrameRaf = 0;
+            opApplyResponsiveProjectFrames(scope);
+        });
+    };
+
+    function opApplyMediaPerformanceHints(scope = document) {
+        const mediaNodes = Array.from(scope.querySelectorAll('img, video'));
+        const projectImages = Array.from(scope.querySelectorAll('.monolith img, .h-card img, .v-item img, .reel-item img'));
+        const projectImageIndex = new WeakMap();
+        projectImages.forEach((img, index) => projectImageIndex.set(img, index));
+
+        mediaNodes.forEach((node, index) => {
+            const inFirstDesktopProjects = index < 3 || Boolean(node.closest?.('.z-wrapper'));
+            if (node instanceof HTMLImageElement) {
+                const mobileProjectIndex = projectImageIndex.has(node) ? projectImageIndex.get(node) : -1;
+                node.setAttribute('decoding', 'async'); node.setAttribute('draggable', 'false');
+                if (window.opIsMobilePerf() && mobileProjectIndex >= 0) {
+                    const isMobileReelThumb = Boolean(node.closest?.('.reel-item'));
+                    node.setAttribute('loading', mobileProjectIndex < 10 ? 'eager' : 'lazy');
+                    node.setAttribute('fetchpriority', mobileProjectIndex < 4 ? 'high' : isMobileReelThumb ? 'low' : 'auto');
+                    if (isMobileReelThumb) {
+                        if (!node.hasAttribute('width')) node.setAttribute('width', '563');
+                        if (!node.hasAttribute('height')) node.setAttribute('height', '1000');
+                    }
+                } else {
+                    if (!node.hasAttribute('fetchpriority') && inFirstDesktopProjects) node.setAttribute('fetchpriority', 'high');
+                    if (!node.hasAttribute('loading') && !inFirstDesktopProjects) node.setAttribute('loading', 'lazy');
+                }
+            } else if (node instanceof HTMLVideoElement) {
+                node.playsInline = true; node.setAttribute('playsinline', '');
+                if (window.opIsMobilePerf() && (node.classList.contains('hover-video') || Boolean(node.closest?.('.reel-item')))) {
+                    node.setAttribute('preload', 'none'); node.pause?.();
+                } else if (!node.hasAttribute('preload') && !inFirstDesktopProjects) {
+                    node.setAttribute('preload', 'metadata');
+                }
+            }
+        });
+    }
+
+    const opPrimedScrollMedia = new WeakSet();
+    function opPrimeMediaNodeForSmoothScroll(node) {
+        if (!node || opPrimedScrollMedia.has(node)) return;
+        opPrimedScrollMedia.add(node);
+        if (node instanceof HTMLImageElement) {
+            node.setAttribute('decoding', 'async'); node.setAttribute('draggable', 'false');
+            if (window.opIsMobilePerf()) node.setAttribute('loading', 'eager');
+            const decodeImage = () => {
+                if (typeof node.decode !== 'function') return;
+                const run = () => {
+                    if (window.opIsMobilePerf()) {
+                        const quietFor = performance.now() - window.opLastScrollInputAt;
+                        if (quietFor < 700) { window.setTimeout(run, 760 - quietFor); return; }
+                        if (!node.complete || !node.naturalWidth) return;
+                    }
+                    node.decode().catch(() => {});
+                };
+                if ('requestIdleCallback' in window) { (window as any).requestIdleCallback(run, { timeout: 1600 }); } else { window.setTimeout(run, 180); }
+            };
+            if (node.complete && node.naturalWidth) decodeImage(); else node.addEventListener('load', decodeImage, { once: true, passive: true });
+        } else if (node instanceof HTMLVideoElement) {
+            node.playsInline = true; node.setAttribute('playsinline', '');
+            if (window.opIsMobilePerf()) { node.setAttribute('preload', 'none'); try { node.pause?.(); } catch (_) {} return; }
+            if (!node.hasAttribute('preload') || node.getAttribute('preload') === 'none') node.setAttribute('preload', 'metadata');
+            try { node.load(); } catch (_) {}
+        }
+    }
+
+    function opPrimeProjectMediaForSmoothScroll(scope = document) {
+        const mediaSelector = window.opIsMobilePerf() ? '.monolith img, .h-card img, .v-item img, .reel-item img' : '.monolith img, .h-card img, .v-item img, .reel-item img, .monolith video, .h-card video, .v-item video, .reel-item video';
+        const mediaNodes = Array.from(scope.querySelectorAll(mediaSelector));
+        if (!mediaNodes.length) return;
+        if (!("IntersectionObserver" in window)) { mediaNodes.forEach(opPrimeMediaNodeForSmoothScroll); return; }
+        const rootMargin = window.opIsMobilePerf() ? '1100px 0px 1100px 0px' : '1100px 0px 1100px 0px';
+        const observer = new IntersectionObserver((entries, io) => {
+            entries.forEach((entry) => { if (!entry.isIntersecting) return; opPrimeMediaNodeForSmoothScroll(entry.target); io.unobserve(entry.target); });
+        }, { root: null, rootMargin, threshold: 0.01 });
+        mediaNodes.forEach((node) => { if (opPrimedScrollMedia.has(node)) return; observer.observe(node); });
+    }
+
+    const opMobileWarmDecodedImages = new WeakSet();
+    const opMobilePreloadedImages = new Set();
+    function opPreloadImageForMobile(img, priority = 'high') {
+        const src = img.currentSrc || img.getAttribute('src');
+        if (!src || opMobilePreloadedImages.has(src)) return;
+        opMobilePreloadedImages.add(src);
+        const link = document.createElement('link');
+        link.rel = 'preload'; link.as = 'image'; link.href = src; link.setAttribute('fetchpriority', priority);
+        document.head.appendChild(link);
+    }
+
+    function opWarmMobileProjectImages(scope = document) {
+        if (!window.opIsMobilePerf()) return;
+        const imgs = Array.from(scope.querySelectorAll('.monolith img, .h-card img, .v-item img, .reel-item img')).filter((img) => img instanceof HTMLImageElement) as HTMLImageElement[];
+        if (!imgs.length) return;
+        const reelThumbs = imgs.filter((img) => Boolean(img.closest?.('.reel-item')));
+        const warm = Array.from(new Set([...imgs.slice(0, 16), ...reelThumbs.slice(0, 4)]));
+        warm.forEach((img, index) => {
+            const isReelThumb = Boolean(img.closest?.('.reel-item'));
+            const isVertical = isReelThumb || Boolean(img.closest?.('.v-item'));
+            img.setAttribute('loading', 'eager'); img.setAttribute('decoding', 'async'); img.setAttribute('draggable', 'false');
+            if (!img.hasAttribute('width')) img.setAttribute('width', isVertical ? '563' : '1000');
+            if (!img.hasAttribute('height')) img.setAttribute('height', isVertical ? '1000' : '563');
+            img.setAttribute('fetchpriority', index < 4 ? 'high' : 'auto');
+            if (index < 6 || (isReelThumb && index < 10)) opPreloadImageForMobile(img, index < 3 ? 'high' : 'auto');
+        });
+    }
+
+    window.opMobilePreEntranceMediaWarmup = async function(budgetMs = 520) {
+        if (!window.opIsMobilePerf()) return;
+        const started = performance.now();
+        const imgs = Array.from(document.querySelectorAll('.monolith img, .h-card img, .v-item img, .reel-item img')).filter((img) => img instanceof HTMLImageElement) as HTMLImageElement[];
+        if (!imgs.length) return;
+        const critical = imgs.filter((img, index) => {
+            const card = img.closest?.('.monolith, .h-card, .v-item, .reel-item') as HTMLElement | null;
+            return index < 18 || Boolean(card?.closest?.('.h-wrapper')) || Boolean(card?.closest?.('.reels-wrapper'));
+        });
+        critical.forEach((img, index) => {
+            const card = img.closest?.('.monolith, .h-card, .v-item, .reel-item') as HTMLElement | null;
+            const isReel = Boolean(card?.classList?.contains('reel-item'));
+            const isVertical = isReel || Boolean(card?.classList?.contains('v-item'));
+            img.setAttribute('loading', 'eager'); img.setAttribute('decoding', 'async'); img.setAttribute('draggable', 'false');
+            if (!img.hasAttribute('width')) img.setAttribute('width', isVertical ? '563' : '1000');
+            if (!img.hasAttribute('height')) img.setAttribute('height', isVertical ? '1000' : '563');
+            if (index < 4) img.setAttribute('fetchpriority', 'high'); else if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'auto');
+            if (index < 8 || (isReel && index < 12)) opPreloadImageForMobile(img, index < 3 ? 'high' : 'auto');
+        });
+        const loaded = critical.filter((img) => img.complete && img.naturalWidth && !opMobileWarmDecodedImages.has(img));
+        for (const img of loaded) {
+            if (performance.now() - started > budgetMs) break;
+            opMobileWarmDecodedImages.add(img);
+            if (typeof img.decode !== 'function') continue;
+            await Promise.race([img.decode().catch(() => {}), new Promise((resolve) => window.setTimeout(resolve, 72))]);
+        }
+    };
+
+    function opStripMobileHoverVideoSources(video) {
+        if (!video || !window.opIsMobilePerf()) return;
+        try { video.pause?.(); } catch (_) {}
+        video.setAttribute('preload', 'none'); video.setAttribute('playsinline', ''); video.muted = true;
+        if (video.getAttribute('src')) { video.setAttribute('data-op-mobile-src', video.getAttribute('src')); video.removeAttribute('src'); }
+        video.querySelectorAll?.('source').forEach((source) => {
+            const src = source.getAttribute('src');
+            if (!src) return;
+            source.setAttribute('data-op-mobile-src', src); source.removeAttribute('src');
+        });
+        try { video.load?.(); } catch (_) {}
+    }
+
+    function opOptimizeMobileVideoProjectThumbs(scope = document) {
+        if (!window.opIsMobilePerf()) return;
+        const reels = Array.from(scope.querySelectorAll('.reel-item'));
+        if (!reels.length) return;
+        const reelImages = [] as HTMLImageElement[];
+        reels.forEach((item) => {
+            const card = item as HTMLElement;
+            card.classList.add('op-mobile-standard-project', 'op-mobile-video-card');
+            card.style.setProperty('transform-origin', '50% 50%'); card.style.setProperty('contain', 'layout paint style'); card.style.setProperty('isolation', 'isolate');
+            const img = card.querySelector('img') as HTMLImageElement | null;
+            if (img) {
+                img.setAttribute('loading', 'eager'); img.setAttribute('decoding', 'async'); img.setAttribute('fetchpriority', 'auto'); img.setAttribute('draggable', 'false');
+                if (!img.hasAttribute('width')) img.setAttribute('width', '563');
+                if (!img.hasAttribute('height')) img.setAttribute('height', '1000');
+                reelImages.push(img);
+            }
+            card.querySelectorAll('video.hover-video, video').forEach(opStripMobileHoverVideoSources);
+        });
+        reelImages.slice(0, 8).forEach((img, index) => opPreloadImageForMobile(img, index < 2 ? 'high' : 'auto'));
+    }
+
+    function opMountVideoBudget(scope = document) {
+        if (window.opIsMobilePerf()) return;
+        const videos = Array.from(scope.querySelectorAll('video')).filter((video) => !video.closest?.('.lightbox'));
+        if (!videos.length || !("IntersectionObserver" in window)) return;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => { const video = entry.target as HTMLVideoElement; if (!entry.isIntersecting && !video.paused) video.pause(); });
+        }, { root: null, rootMargin: '220px 0px', threshold: 0.01 });
+        videos.forEach((video) => observer.observe(video));
+    }
+
+    document.addEventListener('astro:page-load', () => {
+        window.opPrepareMobileProjectMediaGeometry(document);
+        opApplyMediaPerformanceHints();
+        opOptimizeMobileVideoProjectThumbs(document);
+        opWarmMobileProjectImages();
+        window.opIdle(() => { opPrimeProjectMediaForSmoothScroll(); opMountVideoBudget(); }, 900);
+        window.addEventListener('resize', () => window.opScheduleResponsiveProjectFrames(), { passive: true });
+        window.visualViewport?.addEventListener('resize', () => window.opScheduleResponsiveProjectFrames(), { passive: true });
+        window.addEventListener('orientationchange', () => window.setTimeout(() => window.opScheduleResponsiveProjectFrames(document, true), 220), { passive: true });
+    });
+</script>
