@@ -1,0 +1,63 @@
+---
+import HeadSEO from '../components/Core/HeadSEO.astro';
+import Preloader from '../components/UI/Preloader.astro';
+import Navigation from '../components/UI/Navigation.astro';
+import Footer from '../components/UI/Footer.astro';
+import Lightbox from '../components/UI/Lightbox.astro';
+
+import ParticlesBackground from '../components/WebGL/ParticlesBackground.astro';
+import LiquidCursor from '../components/WebGL/LiquidCursor.astro';
+
+import SmoothScroll from '../components/System/SmoothScroll.astro';
+import AudioEngine from '../components/System/AudioEngine.astro';
+
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description: string;
+	lang: string;
+}
+
+const { title, description, lang } = Astro.props;
+const currentPath = Astro.url?.pathname || '/';
+const isEnglish = String(lang || '').toLowerCase().startsWith('en') || currentPath.startsWith('/en');
+const effectiveLang = isEnglish ? 'en' : 'es';
+const loaderLabel = isEnglish ? 'ESTABLISHING CONNECTION...' : 'ESTABLECIENDO CONEXIÓN...';
+const lbCloseLabel = isEnglish ? 'CLOSE' : 'CERRAR';
+const lbPrevLabel = isEnglish ? 'PREVIOUS' : 'ANTERIOR';
+const lbNextLabel = isEnglish ? 'NEXT' : 'SIGUIENTE';
+const lbViewTitle = isEnglish ? 'Project view' : 'Vista del proyecto';
+---
+
+<!doctype html>
+<html lang={effectiveLang} data-theme="dark">
+	<head>
+		<HeadSEO title={title} description={description} lang={effectiveLang} />
+	</head>
+	<body>
+		<Preloader loaderLabel={loaderLabel} />
+		<Navigation />
+
+		<!-- Motores Gráficos aislados -->
+		<ParticlesBackground />
+		<LiquidCursor />
+
+		<!-- Contenido de la página -->
+		<main>
+			<slot />
+		</main>
+
+		<Footer />
+		<Lightbox
+			lbCloseLabel={lbCloseLabel}
+			lbPrevLabel={lbPrevLabel}
+			lbNextLabel={lbNextLabel}
+			lbViewTitle={lbViewTitle}
+		/>
+
+		<!-- Motores Lógicos -->
+		<SmoothScroll />
+		<AudioEngine />
+	</body>
+</html>
