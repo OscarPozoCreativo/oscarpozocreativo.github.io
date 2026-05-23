@@ -1027,3 +1027,59 @@
     @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto !important; }
     }
+/* ==========================================
+   CDO OVERRIDE: PREMIUM TYPOGRAPHY & PERFORMANCE
+   ========================================== */
+
+@media (min-width: 768px) {
+    /* 1. TIPOGRAFÍA PREMIUM PARA TODAS LAS TARJETAS (Proyectos, Videos/Reels, Más Proyectos) */
+    .monolith .m-title,
+    .h-card .m-title,
+    .h-info h3,
+    .reel-item .m-title,
+    .reel-item h3,
+    .v-item .m-title,
+    .v-item h3 {
+        font-size: clamp(0.85rem, 1.1vw, 1.1rem) !important;
+        line-height: 1.25 !important;
+        letter-spacing: 0.5px !important;
+        word-break: normal !important; /* ESTO PROHÍBE QUE LAS PALABRAS SE ROMPAN */
+        overflow-wrap: normal !important;
+        white-space: normal !important;
+        hyphens: none !important;
+        max-width: 95% !important;
+    }
+
+    /* 2. SUBTÍTULOS ELEGANTES Y PEQUEÑOS */
+    .m-meta span,
+    .h-info .m-meta span,
+    .reel-item .m-meta span,
+    .v-item .m-meta span {
+        font-size: 8px !important;
+        letter-spacing: 2px !important;
+        opacity: 0.7 !important;
+        margin-bottom: 12px !important;
+    }
+
+    /* 3. PROPORCIONES DE LOS VIDEOS PARA QUE NO SE APLASTEN */
+    .reel-item {
+        min-width: 280px !important;
+        max-width: 320px !important;
+    }
+    
+    /* 4. PADDING INTERNO PREMIUM (Look de galería) */
+    .m-content,
+    .h-info {
+        bottom: 25px !important;
+        left: 25px !important;
+        width: calc(100% - 50px) !important;
+    }
+}
+
+/* 5. ANIQUILADOR DE LAG GLOBAL (Mata el blur en la sección de Proceso a la fuerza) */
+.p-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: linear-gradient(145deg, rgba(18,18,18,1) 0%, rgba(8,8,8,1) 100%) !important;
+    transform: translateZ(0) !important;
+}
