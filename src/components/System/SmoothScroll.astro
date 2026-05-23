@@ -895,7 +895,7 @@
                 ScrollTrigger.refresh();
             }
 
-            function initApp() {
+function initApp() {
                 if (opAppStarted) return;
                 opAppStarted = true;
 
@@ -921,7 +921,7 @@
 
                 let pct = 0;
                 let completeCalled = false;
-                const updatePct = (value: number) => {
+                const updatePct = (value) => {
                     pct = Math.max(pct, Math.min(100, Math.round(value)));
                     if (pctEl) pctEl.textContent = `[${pct.toString().padStart(3, '0')}%]`;
                 };
@@ -932,9 +932,7 @@
                     if (opLoaderInterval) window.clearInterval(opLoaderInterval);
                     if (opLoaderFailsafe) window.clearTimeout(opLoaderFailsafe);
 
-                    // Mostrar 100% de forma real antes de ocultar el loader.
-                    // Importante: no agregar op-loader-complete aqui, porque esa clase
-                    // tiene display:none !important y ocultaba el loader antes del repaint.
+                    // Forzamos el 100% visualmente sin retrasos extraños
                     updatePct(100);
                     document.documentElement.classList.remove('op-loader-active');
                     document.documentElement.classList.add('op-loader-holding-100');
@@ -943,22 +941,21 @@
                         requestAnimationFrame(() => {
                             updatePct(100);
                             window.setTimeout(() => {
-                                updatePct(100);
                                 document.documentElement.classList.remove('op-loader-holding-100');
 
                                 gsap.to(sysInit, { 
                                     yPercent: -100, 
                                     autoAlpha: 0,
-                                    duration: 0.95, 
+                                    duration: 0.8, // Ligeramente más rápido para mayor fluidez
                                     ease: "power4.inOut", 
                                     onComplete: () => {
                                         sysInit.style.display = 'none';
                                         sysInit.style.pointerEvents = 'none';
                                         opMarkLoaderDone();
-                                        opRunEntranceAnimations();
+                                        opRunEntranceAnimations(); // GSAP dispara el Hero aquí, sin fallos.
                                     }
                                 });
-                            }, 220);
+                            }, 150); // Pausa justa para que el cerebro registre el 100%
                         });
                     };
 
@@ -969,18 +966,19 @@
                     }
                 };
 
+                // EL BUG ESTABA AQUÍ: Estaba limitado a 96. Ahora sube a 99 orgánicamente.
                 opLoaderInterval = window.setInterval(() => {
-                    const increment = pct < 68 ? 7 : pct < 90 ? 4 : 2;
-                    updatePct(Math.min(96, pct + increment));
+                    const increment = pct < 60 ? 6 : pct < 90 ? 3 : 1;
+                    updatePct(Math.min(99, pct + increment));
                 }, 18);
 
                 if (document.readyState === 'complete') {
-                    window.setTimeout(completeLoader, 260);
+                    window.setTimeout(completeLoader, 100);
                 } else {
-                    window.addEventListener('load', () => window.setTimeout(completeLoader, 180), { once: true });
+                    window.addEventListener('load', () => window.setTimeout(completeLoader, 100), { once: true });
                 }
 
-                opLoaderFailsafe = window.setTimeout(completeLoader, 1650);
+                opLoaderFailsafe = window.setTimeout(completeLoader, 2000);
             }
 
             function opNormalizePath(pathname: string) {

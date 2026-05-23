@@ -10,45 +10,8 @@ const { loaderLabel } = Astro.props;
 <div id="progress-bar"></div>
 <div id="op-nav-blur-shield" aria-hidden="true"></div>
 
+<!-- Early mobile media guard original -->
 <script is:inline>
-    // Motor del Preloader - Ejecución estricta y control de estado
-    document.addEventListener('DOMContentLoaded', () => {
-        const pctElement = document.getElementById('loader-pct');
-        const systemInit = document.getElementById('system-init');
-        let progress = 0;
-        
-        // Si ya cargó antes en esta sesión, lo saltamos para no frustrar al usuario
-        if (sessionStorage.getItem('siteLoaded')) {
-            if(systemInit) systemInit.style.display = 'none';
-            window.dispatchEvent(new CustomEvent('preloaderComplete'));
-            return;
-        }
-
-        const interval = setInterval(() => {
-            progress += Math.floor(Math.random() * 15) + 5;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(interval);
-                if(pctElement) pctElement.innerText = `[100%]`;
-                
-                if(systemInit) {
-                    systemInit.style.opacity = '0';
-                    systemInit.style.pointerEvents = 'none';
-                    systemInit.style.transition = 'opacity 0.4s ease-out';
-                    
-                    setTimeout(() => {
-                        systemInit.remove();
-                        sessionStorage.setItem('siteLoaded', 'true');
-                        window.dispatchEvent(new CustomEvent('preloaderComplete'));
-                    }, 400);
-                }
-            } else {
-                if(pctElement) pctElement.innerText = `[${progress.toString().padStart(3, '0')}%]`;
-            }
-        }, 80);
-    });
-
-    // Early mobile media guard original (Intacto)
     (() => {
         const root = document.documentElement;
         const coarse = window.matchMedia?.('(pointer: coarse)')?.matches || false;
