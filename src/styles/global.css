@@ -1063,8 +1063,8 @@
 
     /* 3. PROPORCIONES DE LOS VIDEOS PARA QUE NO SE APLASTEN */
     .reel-item {
-        min-width: 280px !important;
-        max-width: 320px !important;
+        min-width: 608px !important;
+        max-width:1080px !important;
     }
     
     /* 4. PADDING INTERNO PREMIUM (Look de galería) */
