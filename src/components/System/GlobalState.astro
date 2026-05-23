@@ -1,0 +1,13 @@
+---
+// src/components/System/GlobalState.astro
+---
+<script>
+    window.OP_STATE = {
+        scrollVelocity: 0,
+        isMobile: window.innerWidth < 768 || (window.matchMedia('(pointer: coarse)').matches && window.innerHeight <= 560),
+        isLowPower: Number(navigator.hardwareConcurrency || 4) <= 4 || Boolean((navigator as any).connection?.saveData)
+    };
+    window.addEventListener('resize', () => {
+        window.OP_STATE.isMobile = window.innerWidth < 768 || (window.matchMedia('(pointer: coarse)').matches && window.innerHeight <= 560);
+    }, { passive: true });
+</script>

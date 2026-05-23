@@ -1,0 +1,68 @@
+---
+// src/components/System/ScrollEngine.astro
+---
+<script>
+    import Lenis from '@studio-freight/lenis';
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    let lenis;
+
+    function initScroll() {
+        const useSmoothScroll = !window.OP_STATE.isMobile;
+
+        lenis = new Lenis({
+            duration: useSmoothScroll ? 0.95 : 0.001,
+            smoothWheel: useSmoothScroll,
+            smoothTouch: false,
+            wheelMultiplier: window.OP_STATE.isLowPower ? 0.82 : 0.9
+        });
+
+        lenis.on('scroll', (e) => {
+            ScrollTrigger.update();
+            window.OP_STATE.scrollVelocity = e.velocity || 0;
+        });
+
+        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0, 0);
+
+        // GSAP Horizontal
+        let mm = gsap.matchMedia();
+        mm.add("(min-width: 768px)", () => {
+            const hPanels = gsap.utils.toArray('.h-panel');
+            if(hPanels.length) {
+                gsap.to(hPanels, { 
+                    xPercent: -100 * (hPanels.length - 1), ease: "none", 
+                    scrollTrigger: { trigger: ".h-wrapper", pin: true, scrub: 1, end: () => "+=" + (document.querySelector(".h-container").offsetWidth) } 
+                });
+            }
+            const reelsTrack = document.querySelector('.reels-track');
+            if(reelsTrack) {
+                let getScrollAmount = () => reelsTrack.scrollWidth - window.innerWidth + (window.innerWidth * 0.05);
+                gsap.to(reelsTrack, { x: () => -getScrollAmount(), ease: "none", scrollTrigger: { trigger: ".reels-wrapper", pin: true, scrub: 1, end: () => "+=" + (reelsTrack.scrollWidth) } });
+            }
+        });
+
+        // Magnetismo
+        if(window.innerWidth > 768) {
+            document.querySelectorAll('.magnetic-target').forEach(btn => {
+                const xTo = gsap.quickTo(btn, "x", {duration: 0.3, ease: "power2.out"}); 
+                const yTo = gsap.quickTo(btn, "y", {duration: 0.3, ease: "power2.out"});
+                btn.addEventListener('mousemove', (e) => { 
+                    const rect = btn.getBoundingClientRect(); 
+                    xTo((e.clientX - rect.left - rect.width / 2) * 0.3); 
+                    yTo((e.clientY - rect.top - rect.height / 2) * 0.3); 
+                });
+                btn.addEventListener('mouseleave', () => { xTo(0); yTo(0); });
+            });
+        }
+    }
+
+    document.addEventListener('astro:page-load', initScroll);
+    document.addEventListener('astro:before-swap', () => {
+        if (lenis) lenis.destroy();
+        ScrollTrigger.getAll().forEach(t => t.kill());
+    });
+</script>
