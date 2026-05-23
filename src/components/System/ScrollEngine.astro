@@ -11,26 +11,43 @@
     let lenis;
 
     function initScroll() {
-        const useSmoothScroll = !window.OP_STATE.isMobile;
+        const useSmoothScroll = !window.OP_STATE?.isMobile;
 
         lenis = new Lenis({
             duration: useSmoothScroll ? 0.95 : 0.001,
             smoothWheel: useSmoothScroll,
             smoothTouch: false,
-            wheelMultiplier: window.OP_STATE.isLowPower ? 0.82 : 0.9
+            wheelMultiplier: window.OP_STATE?.isLowPower ? 0.82 : 0.9
         });
 
         lenis.on('scroll', (e) => {
             ScrollTrigger.update();
-            window.OP_STATE.scrollVelocity = e.velocity || 0;
+            if(window.OP_STATE) window.OP_STATE.scrollVelocity = e.velocity || 0;
         });
 
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0, 0);
 
-        // GSAP Horizontal
         let mm = gsap.matchMedia();
         mm.add("(min-width: 768px)", () => {
+            
+            // 1. RESTAURADO: Animación Z-Layer (Los 3 primeros proyectos)
+            const zLayers = gsap.utils.toArray('.z-layer'); 
+            if(zLayers.length) {
+                gsap.set(zLayers.slice(1), { scale: 0.1, autoAlpha: 0, filter: "blur(5px)" });
+                let zTl = gsap.timeline({ scrollTrigger: { trigger: ".z-wrapper", start: "top top", end: "+=400%", pin: true, scrub: 0.5 } });
+                zTl.to('.layer-hero', { autoAlpha: 0, scale: 0.8, filter: "blur(5px)", duration: 1 }, 0);
+                zLayers.forEach((layer, i) => {
+                    if (i !== 0) { 
+                        let start = (i * 3) - 2; 
+                        zTl.fromTo(layer, { scale: 0.1, autoAlpha: 0, filter: "blur(5px)" }, { scale: 1, autoAlpha: 1, filter: "blur(0px)", duration: 1 }, start); 
+                        zTl.to(layer, { scale: 1, duration: 2 }, start + 1);
+                        if (i !== zLayers.length - 1) { zTl.to(layer, { scale: 5, autoAlpha: 0, filter: "blur(5px)", duration: 1 }, start + 3); }
+                    }
+                });
+            }
+
+            // 2. Animación Horizontal
             const hPanels = gsap.utils.toArray('.h-panel');
             if(hPanels.length) {
                 gsap.to(hPanels, { 
@@ -38,6 +55,8 @@
                     scrollTrigger: { trigger: ".h-wrapper", pin: true, scrub: 1, end: () => "+=" + (document.querySelector(".h-container").offsetWidth) } 
                 });
             }
+
+            // 3. Animación Reels
             const reelsTrack = document.querySelector('.reels-track');
             if(reelsTrack) {
                 let getScrollAmount = () => reelsTrack.scrollWidth - window.innerWidth + (window.innerWidth * 0.05);

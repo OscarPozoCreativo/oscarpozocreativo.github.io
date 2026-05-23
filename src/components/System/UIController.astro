@@ -12,16 +12,33 @@
         gsap.to('.hero-desc', { y: 0, opacity: 1, duration: 1, delay: 0.35 });
         gsap.to('.scroll-indicator', { opacity: 1, duration: 1, delay: 0.65 });
 
-        // 2. SCROLL LIFE (Anti-gravedad)
-        const scrollLifeTargets = gsap.utils.toArray('.monolith, .h-card, .v-item, .reel-item');
+        // 2. SCROLL LIFE (Anti-gravedad) - EXCLUYENDO LOS 3 PRIMEROS PROYECTOS
+        // Filtramos los elementos que están dentro de .z-wrapper para que no haya conflicto de animaciones
+        const scrollLifeTargets = gsap.utils.toArray('.monolith, .h-card, .v-item, .reel-item').filter(el => !el.closest('.z-wrapper'));
+        
+        const isMobile = window.OP_STATE?.isMobile || window.innerWidth < 768;
+
         scrollLifeTargets.forEach((target) => {
             gsap.fromTo(target,
-                { scale: window.OP_STATE.isMobile ? 0.85 : 0.75, y: 30, autoAlpha: 0 },
+                { scale: isMobile ? 0.85 : 0.75, y: 30, autoAlpha: 0 },
                 { scale: 1, y: 0, autoAlpha: 1, duration: 1, ease: "power3.out", scrollTrigger: { trigger: target, start: "top 95%", end: "center 60%", scrub: 0.5 } }
             );
         });
 
-        // 3. LIGHTBOX
+        // 3. ANIMACIONES DE SECCIONES
+        gsap.fromTo('.v-item', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", scrollTrigger: { trigger: ".vault-grid", start: "top 85%" } });
+        gsap.fromTo('.p-card', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power3.out", scrollTrigger: { trigger: ".process-grid", start: "top 85%" } });
+
+        // 4. HOVER DE VIDEOS
+        if (window.innerWidth > 768) {
+            document.querySelectorAll('.reel-item').forEach(item => {
+                const hoverVid = item.querySelector('.hover-video') as HTMLVideoElement; 
+                item.addEventListener('mouseenter', () => { if(hoverVid) { hoverVid.currentTime = 0; hoverVid.play(); gsap.to(hoverVid, {opacity: 1, duration: 0.4}); } });
+                item.addEventListener('mouseleave', () => { if(hoverVid) { gsap.to(hoverVid, {opacity: 0, duration: 0.3, onComplete: () => hoverVid.pause()}); } });
+            });
+        }
+
+        // 5. LIGHTBOX
         const lightbox = document.getElementById('lightbox');
         const allLbTriggers = Array.from(document.querySelectorAll('.lb-trigger'));
         allLbTriggers.forEach((item) => {
@@ -35,12 +52,6 @@
         document.getElementById('lb-close')?.addEventListener('click', () => {
             if(lightbox) gsap.to(lightbox, { opacity: 0, duration: 0.3, onComplete: () => lightbox.style.display = 'none' });
         });
-
-        // 4. PRELOADER (Ocultar)
-        const sysInit = document.getElementById('system-init');
-        if (sysInit) {
-            gsap.to(sysInit, { yPercent: -100, autoAlpha: 0, duration: 0.95, ease: "power4.inOut", onComplete: () => sysInit.style.display = 'none' });
-        }
     }
 
     document.addEventListener('astro:page-load', initUI);

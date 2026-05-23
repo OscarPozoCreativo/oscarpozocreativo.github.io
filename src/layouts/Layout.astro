@@ -27,7 +27,6 @@ const currentPath = Astro.url?.pathname || '/';
 const isEnglish = String(lang || '').toLowerCase().startsWith('en') || currentPath.startsWith('/en');
 const effectiveLang = isEnglish ? 'en' : 'es';
 
-// Diccionario UI
 const lbCloseLabel = isEnglish ? 'CLOSE' : 'CERRAR';
 const lbPrevLabel = isEnglish ? 'PREVIOUS' : 'ANTERIOR';
 const lbNextLabel = isEnglish ? 'NEXT' : 'SIGUIENTE';
@@ -38,29 +37,16 @@ const lbViewTitle = isEnglish ? 'Project view' : 'Vista del proyecto';
 <html lang={effectiveLang} data-theme="dark">
 	<head>
 		<HeadSEO title={title} description={description} lang={effectiveLang} />
-		<!-- ClientRouter (Astro 5.0) gestiona la navegación SPA y la limpieza de memoria -->
 		<ClientRouter fallback="swap" />
 	</head>
 	<body>
 		<Navigation />
-
-		<!-- Contenido de la página -->
 		<main>
 			<slot />
 		</main>
-
 		<Footer />
-		<Lightbox
-			lbCloseLabel={lbCloseLabel}
-			lbPrevLabel={lbPrevLabel}
-			lbNextLabel={lbNextLabel}
-			lbViewTitle={lbViewTitle}
-		/>
+		<Lightbox lbCloseLabel={lbCloseLabel} lbPrevLabel={lbPrevLabel} lbNextLabel={lbNextLabel} lbViewTitle={lbViewTitle} />
 
-		<!-- 
-		  MOTORES LÓGICOS Y GRÁFICOS
-		  Orden estricto: El estado global primero, luego las físicas, luego la UI, y al final el WebGL pesado.
-		-->
 		<GlobalState />
 		<ScrollEngine />
 		<UIController />
