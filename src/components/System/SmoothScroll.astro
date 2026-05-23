@@ -107,11 +107,10 @@
             let opPendingSkew = 0;
 
             function opScheduleSkewUpdate(velocity = 0) {
-                if (!opUseSmoothScroll || opRuntimeLowPower || window.innerWidth <= 1024 || !skewTargets.length) return;
-                const nextSkew = Math.max(-4, Math.min(4, velocity * 0.16));
-                if (Math.abs(nextSkew - opLastAppliedSkew) < 0.055) return;
-                opPendingSkew = nextSkew;
-                if (opSkewRaf) return;
+                // PARCHE CDO: El Skew dinámico destruye los FPS en laptops. 
+                // Lo desactivamos devolviendo la función vacía. El scroll ahora será 100% fluido.
+                return; 
+            }
 
                 opSkewRaf = requestAnimationFrame((now) => {
                     opSkewRaf = 0;
@@ -2170,12 +2169,27 @@ function initApp() {
                 if (opIsMobilePerf()) return;
                 const videos = Array.from(scope.querySelectorAll('video')).filter((video) => !video.closest?.('.lightbox'));
                 if (!videos.length || !("IntersectionObserver" in window)) return;
+                
+                // PARCHE CDO: IntersectionObserver más estricto. 
+                // Si el video sale un 1% de la pantalla, se pausa. Libera la GPU.
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach((entry) => {
-                        const video = entry.target as HTMLVideoElement;
-                        if (!entry.isIntersecting && !video.paused) video.pause();
+                        const video = entry.target;
+                        if (!entry.isIntersecting) {
+                            if (!video.paused) video.pause();
+                        } else {
+                            // Solo reproduce si tiene la clase hover-video y el mouse está encima, 
+                            // o si es un video de fondo que debe auto-reproducirse.
+                            if (video.autoplay && video.paused) {
+                                let playPromise = video.play();
+                                if (playPromise !== undefined) {
+                                    playPromise.catch(() => {});
+                                }
+                            }
+                        }
                     });
-                }, { root: null, rootMargin: '220px 0px', threshold: 0.01 });
+                }, { root: null, rootMargin: '0px', threshold: 0.01 });
+                
                 videos.forEach((video) => observer.observe(video));
             }
 

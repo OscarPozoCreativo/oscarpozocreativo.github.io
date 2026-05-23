@@ -424,4 +424,44 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
         aspect-ratio: 16 / 9 !important;
     }
 }
+/* ==========================================
+   PARCHE CDO: TIPOGRAFÍA Y PROPORCIONES PREMIUM 
+   (Estrictamente Desktop/Tablet. Móvil intacto)
+   ========================================== */
+@media (min-width: 768px) {
+    /* 1. Tipografía Premium: Más pequeña, más elegante, sin palabras rotas */
+    .m-title,
+    .h-info h3 {
+        font-size: clamp(0.9rem, 1.2vw, 1.25rem) !important; /* Reducción del tamaño */
+        line-height: 1.15 !important;
+        letter-spacing: -0.01em !important;
+        text-wrap: balance !important; /* Equilibra las líneas de texto */
+        word-break: keep-all !important; /* PROHÍBE romper palabras a la mitad */
+        overflow-wrap: normal !important;
+        hyphens: none !important;
+        max-width: 90%; /* Deja respirar el texto respecto al borde */
+    }
+
+    /* 2. Metadatos (Subtítulos) más refinados */
+    .m-meta span,
+    .h-info .m-meta span {
+        font-size: 9px !important;
+        letter-spacing: 1.5px !important;
+        opacity: 0.8;
+        margin-bottom: 10px !important;
+    }
+
+    /* 3. Ajuste de las tarjetas de Video (Reels) para que no sean tan estrechas */
+    :global(.reel-item) {
+        min-width: 280px !important; /* Evita que se aplasten al encoger el navegador */
+    }
+    
+    /* 4. Ajuste del padding interno para dar look de galería de arte */
+    .m-content,
+    .h-info {
+        bottom: 25px !important;
+        left: 25px !important;
+        width: calc(100% - 50px) !important;
+    }
+}
 </style>
