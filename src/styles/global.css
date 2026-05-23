@@ -1062,8 +1062,7 @@
     }
 
     /* 3. PROPORCIÓN EXACTA TIKTOK/REELS (9:16) */
-    .reel-item,
-    .v-item {
+    .reel-item, {
         aspect-ratio: 9 / 16 !important; /* Fuerza el formato vertical de smartphone */
         min-width: 260px !important;
         max-width: 320px !important;
@@ -1073,7 +1072,6 @@
     /* Asegura que la imagen/video llene el contenedor 9:16 sin deformarse */
     .reel-item img,
     .reel-item video,
-    .v-item img thumb,
     .v-item video {
         object-fit: cover !important;
         width: 100% !important;
