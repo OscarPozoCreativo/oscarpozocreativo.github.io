@@ -77,34 +77,30 @@ const { title, reels } = Astro.props;
 
 .reels-track {
     display: flex;
-    gap: clamp(20px, 3vw, 40px);
-    padding: 0 5vw 40px 0;
+    gap: 1.5vw; /* Tensión visual: acercamos los videos */
+    padding: 0 5vw 40px 5vw; /* Simetría en los bordes */
     pointer-events: auto;
     width: max-content;
-    will-change: transform;
     align-items: center;
 }
 
 .reel-item {
     flex: 0 0 auto;
-    height: clamp(350px, 60vh, 550px);
-    width: auto;
+    height: 75vh; /* Tamaño masivo y premium. Inmersión total. */
     aspect-ratio: 9/16;
-    border-radius: 24px;
+    border-radius: 8px; /* Bordes más afilados = percepción más premium/cinemática */
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.05); /* Borde más sutil */
     background: #050505;
     cursor: pointer;
-    transform-style: preserve-3d;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-    transition: border-color 0.4s, box-shadow 0.4s;
-    will-change: transform, opacity;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s;
 }
 
 .reel-item:hover {
     border-color: var(--accent);
-    box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 40px rgba(64,181,229,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+    transform: scale(1.02); /* Efecto de elevación sutil, no exagerado */
     z-index: 20;
 }
 

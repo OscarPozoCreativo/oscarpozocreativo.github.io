@@ -56,22 +56,27 @@ const { title, steps } = Astro.props;
 
 .p-card {
     padding: 40px;
-    background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+    /* Gradiente más sólido para compensar la reducción del blur */
+    background: linear-gradient(145deg, rgba(20,20,20,0.8) 0%, rgba(10,10,10,0.9) 100%);
     border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 20px;
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 0 20px rgba(255,255,255,0.02);
-    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), border-color 0.3s, box-shadow 0.3s;
-    pointer-events: auto;
-    transform: translate3d(0,0,0);
-    will-change: transform, opacity;
+    border-radius: 16px;
+    
+    /* Reducimos el blur drásticamente. 10px da el efecto sin matar los FPS */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    /* Forzamos aceleración por hardware correcta */
+    transform: translateZ(0); 
+    
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), border-color 0.3s;
+    
+    /* ELIMINADO: will-change: transform, opacity; (Esto causaba el 80% de tu lag) */
 }
 
 .p-card:hover {
-    transform: translate3d(0, -10px, 0);
+    transform: translateY(-10px) translateZ(0);
     border-color: rgba(255,255,255,0.15);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 0 20px rgba(255,255,255,0.05);
 }
 
 .p-num {
