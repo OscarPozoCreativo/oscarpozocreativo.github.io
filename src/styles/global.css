@@ -1072,6 +1072,7 @@
     /* Asegura que la imagen/video llene el contenedor 9:16 sin deformarse */
     .reel-item img,
     .reel-item video,
+    .v-item img,
     .v-item video {
         object-fit: cover !important;
         width: 100% !important;
