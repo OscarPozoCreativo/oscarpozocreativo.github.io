@@ -1031,37 +1031,28 @@
    CDO OVERRIDE: PREMIUM TYPOGRAPHY, PERFORMANCE & 9:16 REELS
    ========================================== */
 
+/* --- 1. DESKTOP & TABLET (Look Premium) --- */
 @media (min-width: 768px) {
-    /* 1. TIPOGRAFÍA PREMIUM PARA TODAS LAS TARJETAS */
-    .monolith .m-title,
-    .h-card .m-title,
-    .h-info h3,
-    .reel-item .m-title,
-    .reel-item h3,
-    .v-item .m-title,
-    .v-item h3 {
+    .monolith .m-title, .h-card .m-title, .h-info h3,
+    .reel-item .m-title, .reel-item h3, .v-item .m-title, .v-item h3 {
         font-size: clamp(0.85rem, 1.1vw, 1.1rem) !important;
         line-height: 1.25 !important;
         letter-spacing: 0.5px !important;
-        word-break: normal !important; /* PROHÍBE QUE LAS PALABRAS SE ROMPAN */
+        word-break: normal !important;
         overflow-wrap: normal !important;
         white-space: normal !important;
         hyphens: none !important;
         max-width: 95% !important;
     }
 
-    /* 2. SUBTÍTULOS ELEGANTES */
-    .m-meta span,
-    .h-info .m-meta span,
-    .reel-item .m-meta span,
-    .v-item .m-meta span {
+    .m-meta span, .h-info .m-meta span,
+    .reel-item .m-meta span, .v-item .m-meta span {
         font-size: 8px !important;
         letter-spacing: 2px !important;
         opacity: 0.7 !important;
         margin-bottom: 12px !important;
     }
 
-    /* 3. PROPORCIÓN EXACTA TIKTOK/REELS (9:16) - ESTRICTAMENTE SOLO VIDEOS */
     .reel-item {
         aspect-ratio: 9 / 16 !important; 
         min-width: 260px !important;
@@ -1069,24 +1060,52 @@
         height: auto !important;
     }
 
-    /* Asegura que el video llene el contenedor 9:16 sin deformarse */
-    .reel-item img,
-    .reel-item video {
+    .reel-item img, .reel-item video {
         object-fit: cover !important;
         width: 100% !important;
         height: 100% !important;
     }
     
-    /* 4. PADDING INTERNO PREMIUM (Look de galería) */
-    .m-content,
-    .h-info {
+    .m-content, .h-info {
         bottom: 25px !important;
         left: 25px !important;
         width: calc(100% - 50px) !important;
     }
 }
 
-/* 5. ANIQUILADOR DE LAG GLOBAL (Mata el blur en la sección de Proceso) */
+/* --- 2. MÓVIL (Rendimiento Extremo y Proporción 9:16) --- */
+@media (max-width: 767px) {
+    /* Forzar 9:16 en los videos de móvil */
+    .reel-item {
+        aspect-ratio: 9 / 16 !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 85vh !important; /* Evita que el video sea más alto que la pantalla del celular */
+    }
+    
+    .reel-item img, .reel-item video {
+        object-fit: cover !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* Aniquilador de Lag Móvil (Proceso -> Footer) */
+    /* Las sombras y blurs destruyen los FPS en celulares. Los eliminamos sin piedad. */
+    .p-card, 
+    .site-footer, 
+    [class*="footer"] {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important; /* Sombra desactivada para garantizar 60fps */
+    }
+
+    .p-card {
+        background: #0a0a0a !important; /* Fondo sólido ultra rápido para la GPU móvil */
+        border: 1px solid rgba(255,255,255,0.05) !important;
+    }
+}
+
+/* --- 3. GLOBAL PERFORMANCE (Todos los dispositivos) --- */
 .p-card {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
