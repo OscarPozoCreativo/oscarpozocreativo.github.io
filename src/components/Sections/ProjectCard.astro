@@ -58,28 +58,30 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
 <style>
 .monolith,
 .h-card {
-    width: 100%;
+    --op-card-ratio: 16 / 9;
+    --op-card-ratio-num: 1.777778;
+    --op-card-max-w: 1200px;
+    position: relative;
+    width: min(92vw, 1200px, var(--op-card-max-w));
     height: auto;
-    aspect-ratio: 16 / 9;
-    background: #050505 !important;
-    border: 1px solid rgba(255,255,255,0.04);
-    border-radius: 8px;
+    aspect-ratio: var(--op-card-ratio);
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
     overflow: hidden;
     display: block;
-    position: relative;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
     pointer-events: auto;
-    transform: translateZ(0);
+    transition: box-shadow 0.4s, border 0.4s, transform 0.4s;
+    transform: translate3d(0,0,0);
     backface-visibility: hidden;
-    will-change: transform;
+    will-change: transform, opacity;
     cursor: pointer;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .monolith:hover,
 .h-card:hover {
-    transform: scale(0.98) translateZ(0);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2);
     border-color: rgba(255,255,255,0.15);
 }
 
@@ -145,8 +147,8 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     height: 100%;
     object-fit: cover;
     object-position: center center;
-    transform: scale(1.05) translateZ(0);
-    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), filter 0.8s ease;
+    transform: translate3d(0,0,0);
+    transition: filter 0.8s cubic-bezier(0.19, 1, 0.22, 1);
     filter: grayscale(0.3) brightness(0.8);
     backface-visibility: hidden;
     will-change: transform;
@@ -159,7 +161,6 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     .monolith:hover :global(.target-img),
     .h-card:hover :global(.target-img) {
         filter: grayscale(0) brightness(1);
-        transform: scale(1) translateZ(0);
     }
 }
 
@@ -197,6 +198,9 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     display: none;
 }
 
+/* ==========================================
+   CDO PATCH: TIPOGRAFÍA PREMIUM ESTRICTA
+   ========================================== */
 .m-title,
 .h-info h3 {
     font-family: var(--font-display);
@@ -210,37 +214,48 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
 }
 
 @media (min-width: 768px) {
+    :global(.target-img),
+    :global(.h-img) {
+        object-fit: cover !important;
+        object-position: center center !important;
+    }
+
+    /* Forzamos tamaño pequeño y prohibimos romper palabras */
     .m-title,
     .h-info h3 {
-        overflow-wrap: anywhere;
-        text-wrap: balance;
+        font-size: clamp(0.85rem, 1.1vw, 1.1rem) !important; /* Letra mucho más pequeña y elegante */
+        line-height: 1.25 !important;
+        letter-spacing: 0.5px !important;
+        word-break: normal !important; /* JAMÁS romper palabras */
+        overflow-wrap: normal !important;
+        white-space: normal !important;
+        hyphens: none !important;
+        max-width: 95%;
     }
-}
 
-@media (min-width: 768px) and (max-width: 1180px) {
+    /* Subtítulos más sutiles */
+    .m-meta span,
+    .h-info .m-meta span {
+        font-size: 8px !important;
+        letter-spacing: 2px !important;
+        opacity: 0.7;
+        margin-bottom: 12px !important;
+    }
+
+    /* Ajuste específico para los videos verticales (Reels) */
+    :global(.reel-item) .m-title {
+        font-size: 0.8rem !important; /* Aún más pequeño para que quepa perfecto */
+    }
+    
+    :global(.reel-item) {
+        min-width: 260px !important; /* Evita que la tarjeta se aplaste demasiado */
+    }
+
     .m-content,
     .h-info {
-        bottom: clamp(22px, 3vw, 30px);
-        left: clamp(22px, 3vw, 30px);
-        width: calc(100% - clamp(44px, 6vw, 60px));
-    }
-    .m-title,
-    .h-info h3 {
-        font-size: clamp(1.05rem, 2vw, 1.7rem);
-        line-height: 1.18;
-    }
-}
-
-@media (min-width: 768px) and (max-width: 1680px), (min-width: 768px) and (max-height: 980px) {
-    .m-content,
-    .h-info {
-        bottom: clamp(20px, 2.6vw, 28px);
-        left: clamp(20px, 2.6vw, 28px);
-        width: calc(100% - clamp(40px, 5.2vw, 56px));
-    }
-    .m-title,
-    .h-info h3 {
-        font-size: clamp(1rem, 1.65vw, 1.45rem);
+        bottom: 25px !important;
+        left: 25px !important;
+        width: calc(100% - 50px) !important;
     }
 }
 
@@ -249,7 +264,7 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     .h-card {
         width: 100% !important;
         height: auto !important;
-        aspect-ratio: 16 / 9 !important;
+        aspect-ratio: var(--op-card-ratio, 16 / 9) !important;
         min-height: 0 !important;
         max-height: none !important;
         transform: none !important;
@@ -400,7 +415,7 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     :global(html.op-mobile-perf) .monolith {
         width: 100% !important;
         max-width: 100% !important;
-        aspect-ratio: 16 / 9 !important;
+        aspect-ratio: var(--op-card-ratio, 16 / 9) !important;
         backface-visibility: hidden !important;
         -webkit-backface-visibility: hidden !important;
         transform-style: flat !important;
@@ -421,47 +436,7 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     .monolith,
     .h-card {
         height: auto !important;
-        aspect-ratio: 16 / 9 !important;
-    }
-}
-/* ==========================================
-   PARCHE CDO: TIPOGRAFÍA Y PROPORCIONES PREMIUM 
-   (Estrictamente Desktop/Tablet. Móvil intacto)
-   ========================================== */
-@media (min-width: 768px) {
-    /* 1. Tipografía Premium: Más pequeña, más elegante, sin palabras rotas */
-    .m-title,
-    .h-info h3 {
-        font-size: clamp(0.9rem, 1.2vw, 1.25rem) !important; /* Reducción del tamaño */
-        line-height: 1.15 !important;
-        letter-spacing: -0.01em !important;
-        text-wrap: balance !important; /* Equilibra las líneas de texto */
-        word-break: keep-all !important; /* PROHÍBE romper palabras a la mitad */
-        overflow-wrap: normal !important;
-        hyphens: none !important;
-        max-width: 90%; /* Deja respirar el texto respecto al borde */
-    }
-
-    /* 2. Metadatos (Subtítulos) más refinados */
-    .m-meta span,
-    .h-info .m-meta span {
-        font-size: 9px !important;
-        letter-spacing: 1.5px !important;
-        opacity: 0.8;
-        margin-bottom: 10px !important;
-    }
-
-    /* 3. Ajuste de las tarjetas de Video (Reels) para que no sean tan estrechas */
-    :global(.reel-item) {
-        min-width: 280px !important; /* Evita que se aplasten al encoger el navegador */
-    }
-    
-    /* 4. Ajuste del padding interno para dar look de galería de arte */
-    .m-content,
-    .h-info {
-        bottom: 25px !important;
-        left: 25px !important;
-        width: calc(100% - 50px) !important;
+        aspect-ratio: var(--op-card-ratio, 16 / 9) !important;
     }
 }
 </style>
