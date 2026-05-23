@@ -1,1 +1,32 @@
-<canvas id="liquid-refraction-canvas" aria-hidden="true"></canvas>
+---
+// src/components/WebGL/LiquidCursor.astro
+---
+<canvas id="liquid-refraction-canvas" aria-hidden="true" style="position: fixed; inset: 0; z-index: 9999; pointer-events: none;"></canvas>
+
+<script>
+    let cursorRafId, cursorRenderer;
+
+    if (window.matchMedia('(pointer: fine)').matches && window.innerWidth >= 860) {
+        window.addEventListener('load', () => {
+            const initCursor = async () => {
+                const canvas = document.getElementById('liquid-refraction-canvas');
+                if (!canvas) return;
+
+                const THREE = await import('three');
+                cursorRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+                cursorRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.0)); // Límite estricto
+                cursorRenderer.setSize(window.innerWidth, window.innerHeight, false);
+                
+                // (Pega aquí tu lógica de ShaderMaterial y renderLiquid)
+            };
+
+            if ('requestIdleCallback' in window) requestIdleCallback(initCursor, { timeout: 3000 });
+            else setTimeout(initCursor, 1000);
+        });
+    }
+
+    document.addEventListener('astro:before-swap', () => {
+        if (cursorRafId) cancelAnimationFrame(cursorRafId);
+        if (cursorRenderer) cursorRenderer.dispose();
+    });
+</script>

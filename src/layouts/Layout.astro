@@ -1,14 +1,17 @@
 ---
+// src/layouts/Layout.astro
+import { ViewTransitions } from 'astro:transitions';
 import HeadSEO from '../components/Core/HeadSEO.astro';
-import Preloader from '../components/UI/Preloader.astro';
 import Navigation from '../components/UI/Navigation.astro';
 import Footer from '../components/UI/Footer.astro';
 import Lightbox from '../components/UI/Lightbox.astro';
 
+// --- SISTEMA DE MOTORES DESACOPLADOS ---
+import GlobalState from '../components/System/GlobalState.astro';
+import ScrollEngine from '../components/System/ScrollEngine.astro';
+import UIController from '../components/System/UIController.astro';
 import ParticlesBackground from '../components/WebGL/ParticlesBackground.astro';
 import LiquidCursor from '../components/WebGL/LiquidCursor.astro';
-
-import SmoothScroll from '../components/System/SmoothScroll.astro';
 import AudioEngine from '../components/System/AudioEngine.astro';
 
 import '../styles/global.css';
@@ -23,7 +26,8 @@ const { title, description, lang } = Astro.props;
 const currentPath = Astro.url?.pathname || '/';
 const isEnglish = String(lang || '').toLowerCase().startsWith('en') || currentPath.startsWith('/en');
 const effectiveLang = isEnglish ? 'en' : 'es';
-const loaderLabel = isEnglish ? 'ESTABLISHING CONNECTION...' : 'ESTABLECIENDO CONEXIÓN...';
+
+// Diccionario UI
 const lbCloseLabel = isEnglish ? 'CLOSE' : 'CERRAR';
 const lbPrevLabel = isEnglish ? 'PREVIOUS' : 'ANTERIOR';
 const lbNextLabel = isEnglish ? 'NEXT' : 'SIGUIENTE';
@@ -34,14 +38,11 @@ const lbViewTitle = isEnglish ? 'Project view' : 'Vista del proyecto';
 <html lang={effectiveLang} data-theme="dark">
 	<head>
 		<HeadSEO title={title} description={description} lang={effectiveLang} />
+		<!-- ViewTransitions es OBLIGATORIO para que funcione la limpieza de memoria (astro:before-swap) -->
+		<ViewTransitions fallback="swap" />
 	</head>
 	<body>
-		<Preloader loaderLabel={loaderLabel} />
 		<Navigation />
-
-		<!-- Motores Gráficos aislados -->
-		<ParticlesBackground />
-		<LiquidCursor />
 
 		<!-- Contenido de la página -->
 		<main>
@@ -56,8 +57,15 @@ const lbViewTitle = isEnglish ? 'Project view' : 'Vista del proyecto';
 			lbViewTitle={lbViewTitle}
 		/>
 
-		<!-- Motores Lógicos -->
-		<SmoothScroll />
+		<!-- 
+		  MOTORES LÓGICOS Y GRÁFICOS
+		  Orden estricto: El estado global primero, luego las físicas, luego la UI, y al final el WebGL pesado.
+		-->
+		<GlobalState />
+		<ScrollEngine />
+		<UIController />
+		<ParticlesBackground />
+		<LiquidCursor />
 		<AudioEngine />
 	</body>
 </html>
