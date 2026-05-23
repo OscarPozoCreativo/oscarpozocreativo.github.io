@@ -1,4 +1,4 @@
-her---
+---
 import ProjectCard from './ProjectCard.astro';
 
 interface HeroData {
@@ -27,7 +27,7 @@ interface Props {
 const { hero, projects } = Astro.props;
 ---
 
-<section class="z-wrapper">
+<section class="z-wrapper" id="hero-wrapper">
     <div class="z-layer layer-hero">
         <h1 class="hero-title">
             <span class="reveal-wrap"><span class="reveal-text">{hero.title1}</span></span><br />
@@ -44,9 +44,19 @@ const { hero, projects } = Astro.props;
     ))}
 </section>
 
+<script>
+    // Escuchamos al preloader. El Hero NO se mueve hasta recibir la orden.
+    window.addEventListener('preloaderComplete', () => {
+        const heroWrapper = document.getElementById('hero-wrapper');
+        if(heroWrapper) {
+            heroWrapper.classList.add('is-loaded');
+        }
+    });
+</script>
+
 <style>
 .reveal-wrap {
-    overflow: visible !important;
+    overflow: hidden !important;
     display: inline-block;
     vertical-align: top;
     position: relative;
@@ -54,13 +64,14 @@ const { hero, projects } = Astro.props;
 
 .reveal-text {
     display: inline-block;
-    transform: translateY(30px);
+    transform: translateY(100%);
     opacity: 0;
     position: relative;
     z-index: 2;
     padding: 10px 20px;
     margin: -10px -20px;
     will-change: transform, opacity;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s ease;
 }
 
 .glow-text {
@@ -135,19 +146,37 @@ const { hero, projects } = Astro.props;
     padding: 0 20px;
     opacity: 0;
     transform: translateY(20px);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s, opacity 0.8s ease 0.3s;
 }
 
 .scroll-indicator {
     position: absolute;
     bottom: 8vh;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(20px);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
     pointer-events: none;
     opacity: 0;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s, opacity 0.8s ease 0.5s;
+}
+
+/* ESTADOS DE CARGA COMPLETADA */
+.is-loaded .reveal-text {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.is-loaded .hero-desc {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.is-loaded .scroll-indicator {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 .scroll-line {
@@ -223,10 +252,6 @@ const { hero, projects } = Astro.props;
         align-items: center !important;
     }
 
-    .reveal-text {
-        transform: none !important;
-    }
-
     .scroll-indicator {
         display: none !important;
     }
@@ -273,20 +298,3 @@ const { hero, projects } = Astro.props;
     }
 }
 </style>
-<script>
-  function initHeroAnimations() {
-      // Aquí va tu código GSAP o de animación del Hero
-      // ej: gsap.to('.reveal-text', { opacity: 1, y: 0, duration: 1 });
-  }
-
-  // Si el preloader ya pasó (por caché), ejecutamos de inmediato
-  if (sessionStorage.getItem('preloaderDone')) {
-      initHeroAnimations();
-  } else {
-      // Si es la primera vez, esperamos al evento exacto del 100%
-      window.addEventListener('preloaderComplete', () => {
-          sessionStorage.setItem('preloaderDone', 'true');
-          initHeroAnimations();
-      });
-  }
-</script>

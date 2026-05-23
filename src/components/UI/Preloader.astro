@@ -7,78 +7,114 @@ const { loaderLabel } = Astro.props;
 ---
 
 <div id="system-init"><div class="loader-terminal"><span>{loaderLabel}</span><span class="loader-pct" id="loader-pct">[000%]</span></div></div>
-        <div id="progress-bar"></div>
-        <div id="op-nav-blur-shield" aria-hidden="true"></div>
-// Justo cuando tu loader llega a 100% y desaparece, añade esta línea:
-window.dispatchEvent(new CustomEvent('preloaderComplete'));
-<!-- Early mobile media guard: installed before page content to prevent hover videos/posters from competing with scroll. -->
-        <script is:inline>
-            (() => {
-                const root = document.documentElement;
-                const coarse = window.matchMedia?.('(pointer: coarse)')?.matches || false;
-                const vw = Math.round(window.visualViewport?.width || window.innerWidth || 0);
-                const vh = Math.round(window.visualViewport?.height || window.innerHeight || 0);
-                const mobile = vw < 768 || (coarse && vh <= 560);
-                if (!mobile || root.__opMobileEarlyMediaGuard) return;
-                root.__opMobileEarlyMediaGuard = true;
+<div id="progress-bar"></div>
+<div id="op-nav-blur-shield" aria-hidden="true"></div>
 
-                const projectSelector = '.monolith, .h-card, .v-item, .reel-item';
-                let imageCount = 0;
+<script is:inline>
+    // Motor del Preloader - Ejecución estricta y control de estado
+    document.addEventListener('DOMContentLoaded', () => {
+        const pctElement = document.getElementById('loader-pct');
+        const systemInit = document.getElementById('system-init');
+        let progress = 0;
+        
+        // Si ya cargó antes en esta sesión, lo saltamos para no frustrar al usuario
+        if (sessionStorage.getItem('siteLoaded')) {
+            if(systemInit) systemInit.style.display = 'none';
+            window.dispatchEvent(new CustomEvent('preloaderComplete'));
+            return;
+        }
 
-                const stripVideo = (video) => {
-                    if (!video || video.__opMobileSourceStripped) return;
-                    video.__opMobileSourceStripped = true;
-                    try { video.pause && video.pause(); } catch (_) {}
-                    video.muted = true;
-                    video.setAttribute('muted', '');
-                    video.setAttribute('playsinline', '');
-                    video.setAttribute('webkit-playsinline', '');
-                    video.setAttribute('preload', 'none');
-                    if (video.getAttribute('src')) {
-                        video.setAttribute('data-op-mobile-src', video.getAttribute('src'));
-                        video.removeAttribute('src');
-                    }
-                    video.querySelectorAll && video.querySelectorAll('source').forEach((source) => {
-                        const src = source.getAttribute('src');
-                        if (!src) return;
-                        source.setAttribute('data-op-mobile-src', src);
-                        source.removeAttribute('src');
-                    });
-                    try { video.load && video.load(); } catch (_) {}
-                };
+        const interval = setInterval(() => {
+            progress += Math.floor(Math.random() * 15) + 5;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                if(pctElement) pctElement.innerText = `[100%]`;
+                
+                if(systemInit) {
+                    systemInit.style.opacity = '0';
+                    systemInit.style.pointerEvents = 'none';
+                    systemInit.style.transition = 'opacity 0.4s ease-out';
+                    
+                    setTimeout(() => {
+                        systemInit.remove();
+                        sessionStorage.setItem('siteLoaded', 'true');
+                        window.dispatchEvent(new CustomEvent('preloaderComplete'));
+                    }, 400);
+                }
+            } else {
+                if(pctElement) pctElement.innerText = `[${progress.toString().padStart(3, '0')}%]`;
+            }
+        }, 80);
+    });
 
-                const prepImage = (img) => {
-                    if (!img || img.__opMobileImagePrepared) return;
-                    const card = img.closest && img.closest(projectSelector);
-                    if (!card) return;
-                    img.__opMobileImagePrepared = true;
-                    const isReel = card.classList.contains('reel-item');
-                    const isVertical = isReel || card.classList.contains('v-item');
-                    if (!img.hasAttribute('width')) img.setAttribute('width', isVertical ? '563' : '1000');
-                    if (!img.hasAttribute('height')) img.setAttribute('height', isVertical ? '1000' : '563');
-                    img.setAttribute('decoding', 'async');
-                    img.setAttribute('draggable', 'false');
-                    imageCount += 1;
-                    if (imageCount <= 28 || isReel) img.setAttribute('loading', 'eager');
-                    if (imageCount <= 4) img.setAttribute('fetchpriority', 'high');
-                    else if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'auto');
-                };
+    // Early mobile media guard original (Intacto)
+    (() => {
+        const root = document.documentElement;
+        const coarse = window.matchMedia?.('(pointer: coarse)')?.matches || false;
+        const vw = Math.round(window.visualViewport?.width || window.innerWidth || 0);
+        const vh = Math.round(window.visualViewport?.height || window.innerHeight || 0);
+        const mobile = vw < 768 || (coarse && vh <= 560);
+        if (!mobile || root.__opMobileEarlyMediaGuard) return;
+        root.__opMobileEarlyMediaGuard = true;
 
-                const scan = (node) => {
-                    if (!node || node.nodeType !== 1) return;
-                    if (node.matches && node.matches('video.hover-video, .reel-item video')) stripVideo(node);
-                    if (node.matches && node.matches(`${projectSelector} img`)) prepImage(node);
-                    node.querySelectorAll && node.querySelectorAll('video.hover-video, .reel-item video').forEach(stripVideo);
-                    node.querySelectorAll && node.querySelectorAll(`${projectSelector} img`).forEach(prepImage);
-                };
+        const projectSelector = '.monolith, .h-card, .v-item, .reel-item';
+        let imageCount = 0;
 
-                const observer = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => mutation.addedNodes && mutation.addedNodes.forEach(scan));
-                });
-                observer.observe(document.documentElement, { childList: true, subtree: true });
-                document.addEventListener('DOMContentLoaded', () => {
-                    scan(document.body);
-                    window.setTimeout(() => observer.disconnect(), 4500);
-                }, { once: true });
-            })();
-        </script>
+        const stripVideo = (video) => {
+            if (!video || video.__opMobileSourceStripped) return;
+            video.__opMobileSourceStripped = true;
+            try { video.pause && video.pause(); } catch (_) {}
+            video.muted = true;
+            video.setAttribute('muted', '');
+            video.setAttribute('playsinline', '');
+            video.setAttribute('webkit-playsinline', '');
+            video.setAttribute('preload', 'none');
+            if (video.getAttribute('src')) {
+                video.setAttribute('data-op-mobile-src', video.getAttribute('src'));
+                video.removeAttribute('src');
+            }
+            video.querySelectorAll && video.querySelectorAll('source').forEach((source) => {
+                const src = source.getAttribute('src');
+                if (!src) return;
+                source.setAttribute('data-op-mobile-src', src);
+                source.removeAttribute('src');
+            });
+            try { video.load && video.load(); } catch (_) {}
+        };
+
+        const prepImage = (img) => {
+            if (!img || img.__opMobileImagePrepared) return;
+            const card = img.closest && img.closest(projectSelector);
+            if (!card) return;
+            img.__opMobileImagePrepared = true;
+            const isReel = card.classList.contains('reel-item');
+            const isVertical = isReel || card.classList.contains('v-item');
+            if (!img.hasAttribute('width')) img.setAttribute('width', isVertical ? '563' : '1000');
+            if (!img.hasAttribute('height')) img.setAttribute('height', isVertical ? '1000' : '563');
+            img.setAttribute('decoding', 'async');
+            img.setAttribute('draggable', 'false');
+            imageCount += 1;
+            if (imageCount <= 28 || isReel) img.setAttribute('loading', 'eager');
+            if (imageCount <= 4) img.setAttribute('fetchpriority', 'high');
+            else if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'auto');
+        };
+
+        const scan = (node) => {
+            if (!node || node.nodeType !== 1) return;
+            if (node.matches && node.matches('video.hover-video, .reel-item video')) stripVideo(node);
+            if (node.matches && node.matches(`${projectSelector} img`)) prepImage(node);
+            node.querySelectorAll && node.querySelectorAll('video.hover-video, .reel-item video').forEach(stripVideo);
+            node.querySelectorAll && node.querySelectorAll(`${projectSelector} img`).forEach(prepImage);
+        };
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => mutation.addedNodes && mutation.addedNodes.forEach(scan));
+        });
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+        document.addEventListener('DOMContentLoaded', () => {
+            scan(document.body);
+            window.setTimeout(() => observer.disconnect(), 4500);
+        }, { once: true });
+    })();
+</script>

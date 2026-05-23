@@ -56,30 +56,31 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
 </ArticleTag>
 
 <style>
-.monolith, .h-card {
-    /* ELIMINA el width: min(...) y deja que el Grid padre mande */
+.monolith,
+.h-card {
     width: 100%;
     height: auto;
-    aspect-ratio: 16 / 9; /* Mantén este ratio estricto para look cinemático */
+    aspect-ratio: 16 / 9;
     background: #050505 !important;
-    
-    /* Look Premium: Bordes ultra sutiles, sin sombras sucias */
-    border: 1px solid rgba(255,255,255,0.03);
-    border-radius: 8px; /* Menos radio = más elegante y brutalista */
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 8px;
     overflow: hidden;
     display: block;
-    
-    /* Sombra ambiental, no sombra de caja barata */
+    position: relative;
     box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-    
-    /* Aceleración por hardware limpia */
+    pointer-events: auto;
     transform: translateZ(0);
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s;
+    backface-visibility: hidden;
+    will-change: transform;
+    cursor: pointer;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
-.monolith:hover, .h-card:hover {
-    transform: scale(0.98) translateZ(0); /* Efecto de hundimiento premium (Stripe style) */
-    border-color: rgba(255,255,255,0.1);
+.monolith:hover,
+.h-card:hover {
+    transform: scale(0.98) translateZ(0);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+    border-color: rgba(255,255,255,0.15);
 }
 
 :global(.op-scroll-life-target) {
@@ -144,8 +145,8 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     height: 100%;
     object-fit: cover;
     object-position: center center;
-    transform: translate3d(0,0,0);
-    transition: filter 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    transform: scale(1.05) translateZ(0);
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), filter 0.8s ease;
     filter: grayscale(0.3) brightness(0.8);
     backface-visibility: hidden;
     will-change: transform;
@@ -158,6 +159,7 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     .monolith:hover :global(.target-img),
     .h-card:hover :global(.target-img) {
         filter: grayscale(0) brightness(1);
+        transform: scale(1) translateZ(0);
     }
 }
 
@@ -208,12 +210,6 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
 }
 
 @media (min-width: 768px) {
-    :global(.target-img),
-    :global(.h-img) {
-        object-fit: cover !important;
-        object-position: center center !important;
-    }
-
     .m-title,
     .h-info h3 {
         overflow-wrap: anywhere;
@@ -222,20 +218,12 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
 }
 
 @media (min-width: 768px) and (max-width: 1180px) {
-    .monolith,
-    .h-card {
-        width: min(88vw, 1080px, var(--op-card-max-w, 1080px));
-        height: auto;
-        aspect-ratio: var(--op-card-ratio, 16 / 9);
-    }
-
     .m-content,
     .h-info {
         bottom: clamp(22px, 3vw, 30px);
         left: clamp(22px, 3vw, 30px);
         width: calc(100% - clamp(44px, 6vw, 60px));
     }
-
     .m-title,
     .h-info h3 {
         font-size: clamp(1.05rem, 2vw, 1.7rem);
@@ -244,19 +232,12 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
 }
 
 @media (min-width: 768px) and (max-width: 1680px), (min-width: 768px) and (max-height: 980px) {
-    .monolith,
-    .h-card {
-        width: min(64vw, 980px, var(--op-card-max-w, 980px));
-        max-width: 980px;
-    }
-
     .m-content,
     .h-info {
         bottom: clamp(20px, 2.6vw, 28px);
         left: clamp(20px, 2.6vw, 28px);
         width: calc(100% - clamp(40px, 5.2vw, 56px));
     }
-
     .m-title,
     .h-info h3 {
         font-size: clamp(1rem, 1.65vw, 1.45rem);
@@ -268,7 +249,7 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     .h-card {
         width: 100% !important;
         height: auto !important;
-        aspect-ratio: var(--op-card-ratio, 16 / 9) !important;
+        aspect-ratio: 16 / 9 !important;
         min-height: 0 !important;
         max-height: none !important;
         transform: none !important;
@@ -419,7 +400,7 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     :global(html.op-mobile-perf) .monolith {
         width: 100% !important;
         max-width: 100% !important;
-        aspect-ratio: var(--op-card-ratio, 16 / 9) !important;
+        aspect-ratio: 16 / 9 !important;
         backface-visibility: hidden !important;
         -webkit-backface-visibility: hidden !important;
         transform-style: flat !important;
@@ -440,25 +421,7 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     .monolith,
     .h-card {
         height: auto !important;
-        aspect-ratio: var(--op-card-ratio, 16 / 9) !important;
-    }
-}
-.projects-grid-wrapper {
-    display: grid;
-    /* Esto hace que estén cerca y escalen perfecto en cualquier pantalla */
-    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-    gap: 2vw; /* Espaciado matemático, no en píxeles fijos */
-    padding: 0 4vw;
-    width: 100%;
-    max-width: 1800px;
-    margin: 0 auto;
-}
-
-@media (max-width: 768px) {
-    .projects-grid-wrapper {
-        grid-template-columns: 1fr;
-        gap: 20px;
-        padding: 0 20px;
+        aspect-ratio: 16 / 9 !important;
     }
 }
 </style>
