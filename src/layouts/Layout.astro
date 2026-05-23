@@ -1,6 +1,6 @@
 ---
 // src/layouts/Layout.astro
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import HeadSEO from '../components/Core/HeadSEO.astro';
 import Navigation from '../components/UI/Navigation.astro';
 import Footer from '../components/UI/Footer.astro';
@@ -38,8 +38,8 @@ const lbViewTitle = isEnglish ? 'Project view' : 'Vista del proyecto';
 <html lang={effectiveLang} data-theme="dark">
 	<head>
 		<HeadSEO title={title} description={description} lang={effectiveLang} />
-		<!-- ViewTransitions es OBLIGATORIO para que funcione la limpieza de memoria (astro:before-swap) -->
-		<ViewTransitions fallback="swap" />
+		<!-- ClientRouter (Astro 5.0) gestiona la navegación SPA y la limpieza de memoria -->
+		<ClientRouter fallback="swap" />
 	</head>
 	<body>
 		<Navigation />
