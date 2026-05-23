@@ -1,4 +1,4 @@
----
+her---
 import ProjectCard from './ProjectCard.astro';
 
 interface HeroData {
@@ -273,3 +273,20 @@ const { hero, projects } = Astro.props;
     }
 }
 </style>
+<script>
+  function initHeroAnimations() {
+      // Aquí va tu código GSAP o de animación del Hero
+      // ej: gsap.to('.reveal-text', { opacity: 1, y: 0, duration: 1 });
+  }
+
+  // Si el preloader ya pasó (por caché), ejecutamos de inmediato
+  if (sessionStorage.getItem('preloaderDone')) {
+      initHeroAnimations();
+  } else {
+      // Si es la primera vez, esperamos al evento exacto del 100%
+      window.addEventListener('preloaderComplete', () => {
+          sessionStorage.setItem('preloaderDone', 'true');
+          initHeroAnimations();
+      });
+  }
+</script>

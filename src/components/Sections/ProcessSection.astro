@@ -56,27 +56,24 @@ const { title, steps } = Astro.props;
 
 .p-card {
     padding: 40px;
-    /* Gradiente más sólido para compensar la reducción del blur */
-    background: linear-gradient(145deg, rgba(20,20,20,0.8) 0%, rgba(10,10,10,0.9) 100%);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 16px;
+    /* Fondo sólido casi negro con un gradiente ultra sutil */
+    background: linear-gradient(145deg, rgba(15,15,15,1) 0%, rgba(8,8,8,1) 100%);
     
-    /* Reducimos el blur drásticamente. 10px da el efecto sin matar los FPS */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    /* Borde superior sutil para dar volumen (Efecto cristal sin el lag del cristal) */
+    border: 1px solid rgba(255,255,255,0.04);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
     
-    /* Forzamos aceleración por hardware correcta */
-    transform: translateZ(0); 
+    /* ELIMINADO TOTALMENTE: backdrop-filter */
     
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), border-color 0.3s;
-    
-    /* ELIMINADO: will-change: transform, opacity; (Esto causaba el 80% de tu lag) */
+    transform: translateZ(0); /* Mantiene la tarjeta en su propia capa de GPU */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;
 }
 
 .p-card:hover {
-    transform: translateY(-10px) translateZ(0);
-    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-8px) translateZ(0);
+    border-color: rgba(255,255,255,0.12);
 }
 
 .p-num {

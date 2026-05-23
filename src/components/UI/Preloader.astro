@@ -9,7 +9,8 @@ const { loaderLabel } = Astro.props;
 <div id="system-init"><div class="loader-terminal"><span>{loaderLabel}</span><span class="loader-pct" id="loader-pct">[000%]</span></div></div>
         <div id="progress-bar"></div>
         <div id="op-nav-blur-shield" aria-hidden="true"></div>
-
+// Justo cuando tu loader llega a 100% y desaparece, añade esta línea:
+window.dispatchEvent(new CustomEvent('preloaderComplete'));
 <!-- Early mobile media guard: installed before page content to prevent hover videos/posters from competing with scroll. -->
         <script is:inline>
             (() => {

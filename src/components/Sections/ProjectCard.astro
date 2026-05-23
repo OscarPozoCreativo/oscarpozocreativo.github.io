@@ -56,33 +56,30 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
 </ArticleTag>
 
 <style>
-.monolith,
-.h-card {
-    --op-card-ratio: 16 / 9;
-    --op-card-ratio-num: 1.777778;
-    --op-card-max-w: 1200px;
-    position: relative;
-    width: min(92vw, 1200px, var(--op-card-max-w));
+.monolith, .h-card {
+    /* ELIMINA el width: min(...) y deja que el Grid padre mande */
+    width: 100%;
     height: auto;
-    aspect-ratio: var(--op-card-ratio);
-    background: transparent !important;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
+    aspect-ratio: 16 / 9; /* Mantén este ratio estricto para look cinemático */
+    background: #050505 !important;
+    
+    /* Look Premium: Bordes ultra sutiles, sin sombras sucias */
+    border: 1px solid rgba(255,255,255,0.03);
+    border-radius: 8px; /* Menos radio = más elegante y brutalista */
     overflow: hidden;
     display: block;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-    pointer-events: auto;
-    transition: box-shadow 0.4s, border 0.4s, transform 0.4s;
-    transform: translate3d(0,0,0);
-    backface-visibility: hidden;
-    will-change: transform, opacity;
-    cursor: pointer;
+    
+    /* Sombra ambiental, no sombra de caja barata */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    
+    /* Aceleración por hardware limpia */
+    transform: translateZ(0);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s;
 }
 
-.monolith:hover,
-.h-card:hover {
-    box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.2);
-    border-color: rgba(255,255,255,0.15);
+.monolith:hover, .h-card:hover {
+    transform: scale(0.98) translateZ(0); /* Efecto de hundimiento premium (Stripe style) */
+    border-color: rgba(255,255,255,0.1);
 }
 
 :global(.op-scroll-life-target) {
@@ -444,6 +441,24 @@ const contentClass = isHorizontal ? 'h-info' : 'm-content';
     .h-card {
         height: auto !important;
         aspect-ratio: var(--op-card-ratio, 16 / 9) !important;
+    }
+}
+.projects-grid-wrapper {
+    display: grid;
+    /* Esto hace que estén cerca y escalen perfecto en cualquier pantalla */
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 2vw; /* Espaciado matemático, no en píxeles fijos */
+    padding: 0 4vw;
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .projects-grid-wrapper {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 0 20px;
     }
 }
 </style>
