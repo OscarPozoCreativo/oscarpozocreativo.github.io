@@ -56,16 +56,23 @@ const { title, steps } = Astro.props;
 
 .p-card {
     padding: 40px;
-    /* CDO PATCH: Fondo sólido premium. CERO transparencias pesadas (blur). */
-    background: linear-gradient(145deg, rgba(18,18,18,1) 0%, rgba(8,8,8,1) 100%);
     
-    /* Efecto cristal simulado con bordes, sin usar blur */
+    /* CDO PATCH: FONDO SÓLIDO PREMIUM. CERO CRISTAL. CERO LAG. */
+    /* Usamos colores hexadecimales sólidos para que la GPU no calcule transparencias */
+    background: linear-gradient(145deg, #161616 0%, #0a0a0a 100%);
+    
+    /* Efecto de volumen con bordes sutiles */
     border: 1px solid rgba(255,255,255,0.03);
     border-top: 1px solid rgba(255,255,255,0.08);
     border-radius: 12px;
     
-    /* Aceleración por hardware forzada y limpia */
+    /* DESTRUCCIÓN TOTAL DEL EFECTO CRISTAL */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    
+    /* Aceleración por hardware limpia */
     transform: translateZ(0); 
+    will-change: transform;
     
     box-shadow: 0 15px 35px rgba(0,0,0,0.5);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
@@ -74,7 +81,7 @@ const { title, steps } = Astro.props;
 .p-card:hover {
     transform: translateY(-8px) translateZ(0);
     border-color: rgba(255,255,255,0.15);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(64,181,229,0.1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 20px rgba(64,181,229,0.1);
 }
 
 .p-num {
