@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://oscarpozocreativo.github.io/sitemap.xml
+Sitemap: https://oscarpozocreativo.vercel.app/sitemap.xml
