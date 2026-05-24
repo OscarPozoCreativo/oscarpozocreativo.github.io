@@ -1112,3 +1112,35 @@
     background: linear-gradient(145deg, rgba(18,18,18,1) 0%, rgba(8,8,8,1) 100%) !important;
     transform: translateZ(0) !important;
 }
+/* 5. ANIQUILADOR DE LAG GLOBAL Y BLINDAJE DE GPU */
+
+/* Blindamos Proceso y Footer contra filtros pesados */
+.process-wrapper, 
+.site-footer, 
+footer, 
+[class*="footer"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    mix-blend-mode: normal !important;
+    box-shadow: none !important;
+    
+    /* Magia negra de rendimiento: Le dice al navegador que no renderice lo que está fuera de pantalla */
+    content-visibility: auto !important;
+    contain-intrinsic-size: auto 800px !important;
+}
+
+.p-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: linear-gradient(145deg, rgba(18,18,18,1) 0%, rgba(8,8,8,1) 100%) !important;
+    transform: translateZ(0) !important;
+    will-change: transform !important;
+}
+
+/* Apagado de motores WebGL cuando hacemos scroll profundo */
+html.is-scrolled-deep #webgl-canvas,
+html.is-scrolled-deep #liquid-refraction-canvas {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
