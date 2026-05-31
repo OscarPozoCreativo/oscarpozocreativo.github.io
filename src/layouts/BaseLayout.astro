@@ -1,0 +1,26 @@
+---
+import HeadSEO from '../components/Core/HeadSEO.astro';
+import Preloader from '../components/UI/Preloader.astro';
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description: string;
+	lang: string;
+}
+
+const { title, description, lang } = Astro.props;
+const isEnglish = lang === 'en';
+const loaderLabel = isEnglish ? 'ESTABLISHING CONNECTION...' : 'ESTABLECIENDO CONEXIÓN...';
+---
+
+<!doctype html>
+<html lang={lang} data-theme="dark">
+	<head>
+		<HeadSEO title={title} description={description} lang={lang} />
+	</head>
+	<body>
+		<Preloader loaderLabel={loaderLabel} />
+		<slot />
+	</body>
+</html>

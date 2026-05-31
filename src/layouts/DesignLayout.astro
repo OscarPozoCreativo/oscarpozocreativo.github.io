@@ -1,0 +1,39 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Navigation from '../components/UI/Navigation.astro';
+import Footer from '../components/UI/Footer.astro';
+import Lightbox from '../components/UI/Lightbox.astro';
+import ParticlesBackground from '../components/WebGL/ParticlesBackground.astro';
+import LiquidCursor from '../components/WebGL/LiquidCursor.astro';
+import SmoothScroll from '../components/System/SmoothScroll.astro';
+import AudioEngine from '../components/System/AudioEngine.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	lang: string;
+}
+
+const { title, description, lang } = Astro.props;
+const currentPath = Astro.url?.pathname || '/';
+const isEnglish = String(lang || '').toLowerCase().startsWith('en') || currentPath.startsWith('/en');
+const effectiveLang = isEnglish ? 'en' : 'es';
+
+const lbCloseLabel = isEnglish ? 'CLOSE' : 'CERRAR';
+const lbPrevLabel = isEnglish ? 'PREVIOUS' : 'ANTERIOR';
+const lbNextLabel = isEnglish ? 'NEXT' : 'SIGUIENTE';
+const lbViewTitle = isEnglish ? 'Project view' : 'Vista del proyecto';
+---
+
+<BaseLayout title={title} description={description} lang={effectiveLang}>
+	<Navigation />
+	<ParticlesBackground />
+	<LiquidCursor />
+	<main>
+		<slot />
+	</main>
+	<Footer />
+	<Lightbox lbCloseLabel={lbCloseLabel} lbPrevLabel={lbPrevLabel} lbNextLabel={lbNextLabel} lbViewTitle={lbViewTitle} />
+	<SmoothScroll />
+	<AudioEngine />
+</BaseLayout>

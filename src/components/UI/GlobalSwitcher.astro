@@ -1,0 +1,96 @@
+---
+// src/components/UI/GlobalSwitcher.astro
+const currentPath = Astro.url.pathname;
+const isEnglish = currentPath.startsWith('/en');
+const isPhoto = currentPath.includes('/photo');
+
+const designUrl = isEnglish ? '/en/' : '/';
+const photoUrl = isEnglish ? '/en/photo' : '/photo';
+
+const designText = isEnglish ? 'Design' : 'Diseño';
+const photoText = isEnglish ? 'Photography' : 'Fotografía';
+---
+
+<div class="switcher-inline gpu-layer" style="pointer-events: auto;">
+    <div class="switcher-pill">
+        <a href={designUrl} class={`switch-btn hover-target ${!isPhoto ? 'active' : ''}`}>
+            <span class="switch-text">{designText}</span>
+        </a>
+        <a href={photoUrl} class={`switch-btn hover-target ${isPhoto ? 'active' : ''}`}>
+            <span class="switch-text">{photoText}</span>
+        </a>
+        <div class={`switcher-glider ${isPhoto ? 'glider-right' : 'glider-left'}`}></div>
+    </div>
+</div>
+
+<style>
+    .switcher-inline {
+        display: flex;
+        align-items: center;
+    }
+
+    .switcher-pill {
+        display: flex;
+        align-items: center;
+        background: rgba(10, 10, 10, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 100px;
+        padding: 3px;
+        position: relative;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .switch-btn {
+        position: relative;
+        z-index: 2;
+        padding: 7px 20px;
+        border-radius: 100px;
+        color: rgba(255, 255, 255, 0.4);
+        text-decoration: none;
+        font-family: 'Satoshi', sans-serif;
+        font-size: 9.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: none;
+    }
+
+    .switch-btn:hover {
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    .switch-btn.active {
+        color: #ffffff;
+    }
+
+    .switcher-glider {
+        position: absolute;
+        top: 3px;
+        bottom: 3px;
+        width: calc(50% - 3px);
+        background: linear-gradient(135deg, #40B5E5, #1e87be);
+        border-radius: 100px;
+        z-index: 1;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 4px 12px rgba(64, 181, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .glider-left {
+        transform: translateX(0);
+    }
+
+    .glider-right {
+        transform: translateX(100%);
+    }
+
+    @media (max-width: 768px) {
+        .switch-btn {
+            padding: 6px 14px;
+            font-size: 9px;
+            letter-spacing: 1px;
+        }
+    }
+</style>

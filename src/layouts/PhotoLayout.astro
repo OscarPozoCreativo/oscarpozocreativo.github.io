@@ -1,0 +1,20 @@
+---
+// src/layouts/PhotoLayout.astro
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	lang: string;
+}
+
+const { title, description, lang } = Astro.props;
+const currentPath = Astro.url?.pathname || '/';
+const isEnglish = String(lang || '').toLowerCase().startsWith('en') || currentPath.startsWith('/en');
+const effectiveLang = isEnglish ? 'en' : 'es';
+---
+
+<BaseLayout title={title} description={description} lang={effectiveLang}>
+	<!-- Cargamos solo el contenido de la página -->
+	<slot />
+</BaseLayout>

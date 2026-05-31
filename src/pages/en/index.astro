@@ -1,31 +1,46 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import DesignLayout from '../../layouts/DesignLayout.astro';
+import GlobalSwitcher from '../../components/UI/GlobalSwitcher.astro';
 import data from '../../data/en.json';
 ---
 
-<Layout title="Oscar Pozo Creativo | Senior Graphic Designer" description={data.hero.desc} lang="en">
+<DesignLayout title="Oscar Pozo Creativo | Senior Graphic Designer" description={data.hero.desc} lang="en">
 	
-	<nav id="main-nav">
+	<!-- HEADER CLONADO 1:1 EN COORDENADAS Y ALINEACIONES -->
+	<nav id="main-nav" style="display: flex !important; align-items: flex-start !important; padding: 25px 40px !important; height: 120px !important; box-sizing: border-box !important;">
         <div class="hud-left">
-            <a href="#" class="hud-logo hover-target magnetic-target" tabindex="0" aria-label="Home">
+            <a href="#" class="hud-logo nav-link">
                 <img src="/assets/favicon-light.png" alt="Oscar Pozo Logo" style="width: 35px; height: 35px; transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), filter 0.3s; filter: var(--nav-logo-filter); transform: translateZ(0);">
             </a>
-            <div class="hud-controls">
-                <a href={data.nav.langUrl} class="ctrl-btn hover-target magnetic-target" tabindex="0">{data.nav.langText}</a>
-                <button class="ctrl-btn hover-target active magnetic-target" id="btn-audio" tabindex="0">SFX: ON</button>
-            </div>
+            <GlobalSwitcher />
         </div>
-        <div class="hud-right">
-            <div class="hud-status"><strong>{data.nav.role}</strong><br><span>{data.nav.loc}</span></div>
-            <a href="#contacto" class="btn-cta-nav magnetic-target hover-target">{data.nav.cta}</a>
+        <div class="hud-right" style="display: flex !important; align-items: center !important; gap: 0px !important;">
+            <div class="hud-status" style="text-align: right !important; flex-shrink: 0 !important; margin-right: 0px !important;">
+                <strong>Senior Graphic Designer</strong><br>
+                <span>Dominican Republic</span>
+            </div>
+            
+            <!-- LÍNEA DE DIVISIÓN EDITORIAL MAESTRA (1:1 COORDENADA FOTOGRAFÍA) -->
+            <div style="width: 1px; height: 24px; background: rgba(255, 255, 255, 0.1); margin-left: 25px !important; margin-right: 24px !important; align-self: center; flex-shrink: 0;"></div>
+
+            <!-- CONTROLES DE IDIOMA ALINEADOS -->
+            <div class="hud-controls flex gap-4 text-xs font-mono tracking-widest text-[var(--text)]" style="pointer-events: auto; align-items: center; flex-shrink: 0;">
+                <a href="/" class="ctrl-btn">ES</a>
+                <span class="opacity-20">/</span>
+                <a href="/en/" class="ctrl-btn active">EN</a>
+            </div>
+
+            <!-- CTA CON AJUSTE DE MARGEN COHESIVO -->
+            <a href="#contacto" class="btn-cta-nav magnetic-target hover-target" style="margin-left: 25px !important; flex-shrink: 0 !important;">{data.nav.cta}</a>
         </div>
     </nav>
 
 	<section class="z-wrapper">
 		<div class="z-layer layer-hero">
 			<h1 class="hero-title">
-                <span class="reveal-wrap"><span class="reveal-text">{data.hero.title1}</span></span><br>
-                <span class="reveal-wrap"><span class="reveal-text glow-text">{data.hero.title2}</span></span>
+                <!-- COPIA CORREGIDA A VISUAL CREATIVITY -->
+                <span class="reveal-wrap"><span class="reveal-text">VISUAL</span></span><br>
+                <span class="reveal-wrap"><span class="reveal-text glow-text">CREATIVITY.</span></span>
             </h1>
 			<p class="hero-desc" style="opacity:0; transform:translateY(20px);">{data.hero.desc}</p>
             <div class="scroll-indicator"><div class="scroll-line"></div><span>{data.hero.scroll}</span></div>
@@ -56,7 +71,7 @@ import data from '../../data/en.json';
                 <div class="h-panel">
                     <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={project.title}>
                         <div class="card-glare"></div>
-                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
+                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img parallax-img" loading="lazy" decoding="async"></div>
                         <div class="h-info">
                             <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                             <h3>{project.title}</h3>
@@ -181,4 +196,52 @@ import data from '../../data/en.json';
             <div><span>{data.footer.rights}</span></div>
         </div>
     </footer>
-</Layout>
+</DesignLayout>
+
+<style is:global>
+    /* --- BLINDAJE RESPONSIVE PREMIUM PARA EL HERO DE DISEÑO (IMAC 27" A MÓVIL) --- */
+    .photo-env .layer-hero,
+    .layer-hero {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        width: 100vw !important;
+        box-sizing: border-box !important;
+    }
+
+    .layer-hero .hero-title {
+        font-family: 'Syncopate', sans-serif !important;
+        font-size: clamp(2.2rem, 7.5vw, 7.5rem) !important; /* Fluido entre 2.2rem en móvil y 7.5rem en iMac 27" */
+        font-weight: 700 !important;
+        line-height: 1.05 !important;
+        letter-spacing: -2px !important;
+        text-transform: uppercase !important;
+        margin-bottom: 20px !important;
+        width: 100% !important;
+        max-width: 90vw !important;
+        box-sizing: border-box !important;
+    }
+
+    .layer-hero .hero-desc {
+        font-family: 'Satoshi', sans-serif !important;
+        font-size: clamp(0.95rem, 1.2vw, 1.15rem) !important;
+        line-height: 1.6 !important;
+        color: #888888 !important;
+        max-width: 600px !important;
+        width: 90% !important;
+        margin: 0 auto !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+    }
+
+    /* --- ALINEACIÓN DE COLOR ACTIVO DE IDIOMA EN DISEÑO --- */
+    #main-nav .ctrl-btn.active {
+        color: #40B5E5 !important;
+        opacity: 1 !important;
+    }
+    #main-nav .ctrl-btn:hover {
+        opacity: 1 !important;
+    }
+</style>

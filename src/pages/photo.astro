@@ -1,0 +1,780 @@
+---
+import Preloader from '../components/UI/Preloader.astro';
+import GlobalSwitcher from '../components/UI/GlobalSwitcher.astro';
+import '../styles/global.css';
+---
+
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- ACCESOS DE FAVICON OFICIAL CON CACHE-BUSTER -->
+    <link rel="shortcut icon" href="/favicon.ico?v=3" type="image/x-icon">
+    <link rel="icon" href="/assets/favicon-dark.png?v=3" type="image/png">
+    
+    <!-- RESETEO DE SCROLL INMEDIATO ANTES DE CARGAR EL DOM -->
+    <script is:inline>
+        if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+        window.onbeforeunload = function () { window.scrollTo(0, 0); }
+    </script>
+    
+    <title>Oscar Pozo | Fotógrafo Profesional</title>
+    <meta name="theme-color" content="#020202">
+    
+    <script is:inline src="https://cdn.tailwindcss.com"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- LIBRERÍAS DE ANIMACIÓN ÉLITE -->
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script is:inline src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+</head>
+<body class="photo-env">
+
+    <!-- TU PRELOADER DE DISEÑO ORIGINAL -->
+    <Preloader loaderLabel="ESTABLECIENDO CONEXIÓN..." />
+
+    <!-- PORTAL LIGHTBOX SOTY -->
+    <div id="photo-portal">
+        <img src="" alt="Portal" id="portal-img">
+        <div class="lightbox-ui">
+            <button class="lb-btn" id="lb-prev">←</button>
+            <button class="lb-btn" id="lb-next">→</button>
+            <button class="lb-btn lb-close" id="lb-close">✕</button>
+            <div class="lb-counter" id="lb-counter">1 / 11</div>
+        </div>
+    </div>
+
+    <!-- CANVAS BOKEH -->
+    <canvas id="webgl-bokeh"></canvas>
+    <div class="noise-overlay"></div>
+
+    <!-- NAVEGACIÓN -->
+    <nav id="main-nav">
+        <div class="hud-left">
+            <a href="#" class="hud-logo nav-link">
+                <img src="/assets/favicon-dark.png" alt="Oscar Pozo Logo">
+            </a>
+            <GlobalSwitcher />
+        </div>
+        <div class="hud-right">
+            <div class="hud-status">
+                <strong>Fotógrafo Profesional</strong><br>
+                <span>República Dominicana</span>
+            </div>
+            
+            <div class="hud-controls border-l border-white/10 pl-6 flex gap-4 text-xs font-mono tracking-widest text-[var(--text)]" style="pointer-events: auto;">
+                <a href="/photo" class="ctrl-btn active">ES</a>
+                <span class="opacity-20">/</span>
+                <a href="/en/photo" class="ctrl-btn">EN</a>
+            </div>
+
+            <a href="#agendar" class="btn-cta-nav nav-link">AGENDAR SESIÓN</a>
+        </div>
+    </nav>
+
+    <main id="smooth-wrapper">
+        <div id="smooth-content">
+            
+            <!-- HERO SECTION -->
+            <section class="layer-hero">
+                <div class="hero-bg">
+                    <img src="/hero-boda-beso.webp" alt="Fondo Boda" id="hero-bg-img" loading="eager">
+                    <div class="hero-bg-overlay"></div>
+                </div>
+                
+                <h1 class="hero-title">
+                    <div class="hero-anim gpu-layer" style="padding-top: 20px;">FOTOGRAFÍA</div>
+                    <div class="hero-anim glow-text gpu-layer">PROFESIONAL.</div>
+                </h1>
+                
+                <p class="hero-desc hero-anim mt-4">
+                    Imágenes de alto nivel para bodas, quinceañeras y maternidad en República Dominicana. Capturamos tu mejor momento con calidad de revista.
+                </p>
+            </section>
+
+            <!-- SCROLL HORIZONTAL (DESTACADOS) -->
+            <section class="h-wrapper" id="destacados">
+                <div class="h-container">
+                    
+                    <!-- 1. Boda Manos -->
+                    <div class="h-panel panel-scroll">
+                        <div class="art-wrapper">
+                            <div class="reveal-shutter" data-reveal="left">
+                                <div class="art-piece hover-target gpu-layer trigger-portal">
+                                    <div class="glare"></div>
+                                    <img src="/boda-pareja-manos.webp" alt="Manos Pareja" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <div class="photo-info">
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Complicidad</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Fotografía de Bodas</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Boda Ceremonia -->
+                    <div class="h-panel panel-scroll">
+                        <div class="art-wrapper">
+                            <div class="reveal-shutter" data-reveal="bottom">
+                                <div class="art-piece hover-target gpu-layer trigger-portal">
+                                    <div class="glare"></div>
+                                    <img src="/boda-pareja-ceremonia.webp" alt="Ceremonia" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <div class="photo-info">
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">La Ceremonia</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Fotografía de Bodas</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Quinceañera Rojo -->
+                    <div class="h-panel panel-scroll">
+                        <div class="art-wrapper">
+                            <div class="reveal-shutter" data-reveal="right">
+                                <div class="art-piece hover-target gpu-layer trigger-portal">
+                                    <div class="glare"></div>
+                                    <img src="/quinceanera-rojo-piedra.webp" alt="Quinceañera" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <div class="photo-info">
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Sesión Colonial de Rojo</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Sesión de Quinceañera</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Maternidad Abanico -->
+                    <div class="h-panel panel-scroll">
+                        <div class="art-wrapper">
+                            <div class="reveal-shutter" data-reveal="center">
+                                <div class="art-piece hover-target gpu-layer trigger-portal">
+                                    <div class="glare"></div>
+                                    <img src="/maternidad-playa-abanico.webp" alt="Maternidad Playa" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <div class="photo-info">
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Dulce Espera en la Playa</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Fotos de Maternidad</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Maternidad Atardecer -->
+                    <div class="h-panel panel-scroll">
+                        <div class="art-wrapper">
+                            <div class="reveal-shutter" data-reveal="top">
+                                <div class="art-piece hover-target gpu-layer trigger-portal">
+                                    <div class="glare"></div>
+                                    <img src="/maternidad-pareja-atardecer.webp" alt="Maternidad Atardecer" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <div class="photo-info">
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Atardecer en Pareja</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Fotos de Maternidad</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Familia Bicicletas -->
+                    <div class="h-panel panel-scroll">
+                        <div class="art-wrapper">
+                            <div class="reveal-shutter" data-reveal="left">
+                                <div class="art-piece hover-target gpu-layer trigger-portal">
+                                    <div class="glare"></div>
+                                    <img src="/familia-bicicletas-colonial.webp" alt="Familia Urbana" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                </div>
+                            </div>
+                            <div class="photo-info">
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Paseo en Bici Familiar</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Foto Familiar en Exteriores</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ARCHIVO COMERCIAL -->
+            <section class="vault-wrapper" id="archivo">
+                <div class="section-header">
+                    <div class="text-mask"><h2 class="font-display text-[3rem] uppercase text-mask-inner header-reveal gpu-layer">Portafolio</h2></div>
+                </div>
+
+                <!-- 1. Grid 50/50 -->
+                <div class="grid-50-50">
+                    <div class="text-box fade-up order-2 md:order-1">
+                        <span class="meta">Fotografía de Bodas</span>
+                        <h3>La Felicidad de la Novia</h3>
+                        <p>Capturamos las risas y la emoción real de tu día especial. Sin poses forzadas ni momentos incómodos, solo tú disfrutando cada segundo mientras nosotros guardamos tus mejores recuerdos de boda.</p>
+                    </div>
+                    <div class="img-box fade-up order-1 md:order-2">
+                        <div class="hover-target trigger-portal w-full flex justify-center gpu-layer">
+                            <img src="/boda-novia-feliz.webp" alt="Novia Feliz" class="gallery-image" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Grid 50/50 Invertido -->
+                <div class="grid-50-50">
+                    <div class="img-box fade-up order-1 md:order-1">
+                        <div class="hover-target trigger-portal w-full flex justify-center gpu-layer">
+                            <img src="/familia-madre-bebe.webp" alt="Conexión Familiar" class="gallery-image" loading="lazy">
+                        </div>
+                    </div>
+                    <div class="text-box fade-up order-2 md:order-2">
+                        <span class="meta">Fotografía Familiar</span>
+                        <h3>Conexión de Madre e Hija</h3>
+                        <p>Sesiones de fotos espontáneas en nuestras hermosas playas dominicanas. Creamos recuerdos naturales y emotivos que tu familia atesorará para toda la vida.</p>
+                    </div>
+                </div>
+
+                <!-- 3. Grid 50/50 -->
+                <div class="grid-50-50">
+                    <div class="text-box fade-up order-2 md:order-1">
+                        <span class="meta">Sesión de Quinceañera</span>
+                        <h3>Elegancia en la Zona Colonial</h3>
+                        <p>Un concepto de fotos moderno y sofisticado aprovechando la hermosa arquitectura de Santo Domingo. Hacemos que tus fotos de quince años parezcan una portada de revista de alta moda.</p>
+                    </div>
+                    <div class="img-box fade-up order-1 md:order-2">
+                        <div class="hover-target trigger-portal w-full flex justify-center gpu-layer">
+                            <img src="/quinceanera-verde-colonial.webp" alt="Quinceañera Verde" class="gallery-image" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Full Width -->
+                <div class="w-full mt-20 mb-32 fade-up flex flex-col items-center">
+                    <div class="inline-block">
+                        <div class="img-box w-full flex justify-center gpu-layer">
+                            <div class="hover-target w-full trigger-portal flex justify-center">
+                                <img src="/boda-recepcion-brindis.webp" alt="Recepción de Boda" class="gallery-image" loading="lazy" decoding="async" style="max-height: 75vh; width: auto; object-fit: contain;">
+                            </div>
+                        </div>
+                        <div class="mt-8 flex flex-col items-start w-full photo-info">
+                            <div class="text-mask"><h3>El Brindis de los Novios</h3></div>
+                            <div class="text-mask"><span>Fotografía de Bodas</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Grid 50/50 Invertido -->
+                <div class="grid-50-50">
+                    <div class="img-box fade-up order-1 md:order-1">
+                        <div class="hover-target trigger-portal w-full flex justify-center gpu-layer">
+                            <img src="/urbano-noche-luces.webp" alt="Retrato Urbano Noche" class="gallery-image" loading="lazy">
+                        </div>
+                    </div>
+                    <div class="text-box fade-up order-2 md:order-2">
+                        <span class="meta">Retrato Personal</span>
+                        <h3>Luces en la Ciudad de Noche</h3>
+                        <p>Fotografías nocturnas espectaculares usando las luces y el ambiente de la ciudad de Santo Domingo. Iluminación profesional y dirección de arte para lograr un retrato único y diferente.</p>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- AGENDAR SESIÓN -->
+            <section class="booking-wrapper" id="agendar">
+                <div class="booking-container">
+                    <div class="text-mask"><h2 class="booking-title text-mask-inner form-anim gpu-layer">Agendar Sesión</h2></div>
+                    <div class="text-mask"><p class="text-muted mb-10 text-sm mx-auto max-w-xl text-mask-inner form-anim gpu-layer">
+                        Trabajamos con un número limitado de clientes al mes para garantizar la máxima calidad en cada entrega. Cuéntanos sobre tu evento o sesión y te contactaremos a la brevedad.
+                    </p></div>
+                    
+                    <form id="booking-form">
+                        <div class="form-grid">
+                            <div class="text-mask"><input type="text" id="form-name" placeholder="Nombre Completo" class="form-input hover-target text-mask-inner form-anim gpu-layer" required></div>
+                            <div class="text-mask"><input type="email" id="form-email" placeholder="Correo Electrónico" class="form-input hover-target text-mask-inner form-anim gpu-layer" required></div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="text-mask"><input type="text" id="form-phone" placeholder="Teléfono / WhatsApp" class="form-input hover-target text-mask-inner form-anim gpu-layer" required></div>
+                            <div class="text-mask">
+                                <select id="form-type" class="form-input hover-target text-mask-inner form-anim gpu-layer" style="color: #888;" required>
+                                    <option value="" disabled selected>Tipo de Sesión...</option>
+                                    <option value="Boda / Evento">Boda / Evento</option>
+                                    <option value="Maternidad / Familia">Maternidad / Familia</option>
+                                    <option value="Retrato / Quinceañera">Retrato / Quinceañera</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="text-mask"><button type="submit" class="btn-submit hover-target text-mask-inner form-anim gpu-layer">Enviar Solicitud</button></div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="site-footer">
+                <div class="footer-grid">
+                    <!-- LOGO DE FOOTER ESTÁTICO (NO CLIQUEABLE) -->
+                    <div class="footer-logo-wrap">
+                        <img src="/assets/logo.png" alt="Oscar Pozo Creativo" style="height: 85px; width: auto; object-fit: contain;">
+                    </div>
+                    <div class="footer-links">
+                        <a href="https://api.whatsapp.com/send?phone=18296748268" target="_blank" class="hover-target">WhatsApp</a>
+                        <a href="https://www.linkedin.com/in/oscar-enrique-g-pozo-187a7b245" target="_blank" class="hover-target">LinkedIn</a>
+                    </div>
+                    <div><span style="color: var(--muted); font-size: 0.8rem;">© 2026 Oscar Pozo Creativo.</span></div>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+
+    <style>
+        :root {
+            --bg: #020202; --text: #ffffff; 
+            --accent: #40B5E5; 
+            --muted: #888888; --border: rgba(255,255,255,0.06);
+            --font-display: 'Syncopate', sans-serif; 
+            --font-body: 'Satoshi', sans-serif; 
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        body.photo-env { background-color: var(--bg); color: var(--text); font-family: var(--font-body); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        .photo-env ::selection { background: var(--accent); color: #fff; }
+        .photo-env ::-webkit-scrollbar { display: none; }
+        .gpu-layer { transform: translateZ(0); will-change: transform, opacity, clip-path; }
+
+        #webgl-bokeh { position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: 0.6; will-change: transform; }
+        .noise-overlay { position: fixed; inset: 0; z-index: -1; opacity: 0.03; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
+
+        nav { position: fixed; top: 0; width: 100%; padding: 25px 40px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 100; pointer-events: none; height: 120px; }
+        nav::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(to bottom, rgba(2,2,2,0.95) 0%, rgba(2,2,2,0) 100%); }
+        
+        /* SEGURIDAD DE LOGO NAVEGACIÓN (EVITA LA DISTORSIÓN MÓVIL) */
+        .hud-logo { display: flex; align-items: center; justify-content: center; width: 35px !important; height: 35px !important; flex-shrink: 0 !important; }
+        .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; transition: transform 0.4s; }
+        .hud-logo:hover img { transform: scale(1.15); }
+
+        .hud-left { display: flex; align-items: center; gap: 40px; pointer-events: auto; }
+        .hud-controls { display: flex; gap: 20px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; }
+        .ctrl-btn { color: var(--text); opacity: 0.5; text-decoration: none; transition: opacity 0.3s, color 0.3s; font-weight: 700; letter-spacing: 1px; }
+        .ctrl-btn:hover { opacity: 1; }
+        .ctrl-btn.active { opacity: 1; color: var(--accent); }
+        .hud-right { display: flex; align-items: center; gap: 25px; pointer-events: auto; }
+        .hud-status { text-align: right; font-family: var(--font-display); font-size: 8px; opacity: 0.7; line-height: 1.8; text-transform: uppercase; letter-spacing: 1px; }
+        .hud-status strong { font-size: 10px; font-weight: 700; opacity: 1; }
+        .btn-cta-nav { padding: 12px 24px; background: #fff; color: #000; border-radius: 100px; font-family: var(--font-display); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; transition: transform 0.3s; }
+        .btn-cta-nav:hover { transform: scale(1.05); }
+
+        .layer-hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
+        .hero-bg { position: absolute; inset: 0; z-index: -1; opacity: 0.55; }
+        .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-bg-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 0%, transparent 60%, var(--bg) 100%); }
+        
+        .hero-title { font-family: var(--font-display); font-size: clamp(2.5rem, 7vw, 8rem); font-weight: 700; line-height: 0.85; text-transform: uppercase; letter-spacing: -2px; display: flex; flex-direction: column; align-items: center; gap: 0; margin-bottom: 10px; }
+        
+        /* EFECTO DE APARICIÓN DE HERO ORIGINAL */
+        .hero-anim { opacity: 0; transform: translateY(30px); will-change: opacity, transform; }
+
+        .glow-text { 
+            background: linear-gradient(270deg, var(--accent), #ffffff, var(--accent)); 
+            background-size: 200% 200%; 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            animation: flowPlasma 4s ease-in-out infinite alternate; 
+            text-shadow: 0 0 35px rgba(64,181,229,0.3); 
+            display: inline-block; 
+            padding-top: 0.15em; 
+            padding-bottom: 15px; 
+            margin-bottom: -15px; 
+            margin-top: -0.15em;
+        }
+        @keyframes flowPlasma { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
+        .hero-desc { max-width: 650px; font-size: 1.1rem; line-height: 1.6; color: var(--muted); padding: 0 20px; }
+
+        .reveal-shutter { overflow: hidden; display: inline-block; position: relative; }
+        .text-mask { overflow: hidden; display: inline-block; vertical-align: top; padding-top: 15px; margin-top: -15px; }
+        .text-mask-inner { display: block; }
+
+        /* AJUSTE PREMIUM DE COMPRESIÓN HORIZONTAL - DISTANCIA CALIBRADA */
+        .h-wrapper { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
+        .h-container { display: flex; width: max-content; height: 100vh; padding-right: 3vw !important; align-items: center; will-change: transform; }
+        
+        /* FORCE OVERRIDE: Forzamos a colapsar el ancho de 100vw de Diseño con un espaciado intermedio premium */
+        .photo-env .h-panel { 
+            height: 100vh !important; 
+            width: auto !important; 
+            max-width: max-content !important; 
+            display: flex !important; 
+            flex-direction: column !important; 
+            justify-content: center !important; 
+            padding: 0 2.5vw !important; /* Calibración premium a 2.5vw */
+            flex-shrink: 0 !important; 
+            perspective: 1000px !important; 
+        }
+        
+        .art-wrapper { display: inline-block; }
+        .art-piece { position: relative; display: inline-block; will-change: transform; }
+        /* CALIBRACIÓN DE ALTURA RESPONSIVE (62vh) PARA EVITAR CORTES EN LAPTOPS */
+        .art-piece img { max-height: 62vh; max-width: 80vw; width: auto; height: auto; display: block; object-fit: contain; filter: brightness(0.9); transition: filter 0.4s; }
+        .art-piece:hover img { filter: brightness(1.05); }
+
+        .photo-info { margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; width: 100%; }
+        .photo-info span { font-family: var(--font-mono); font-size: 9px; color: var(--accent); text-transform: uppercase; letter-spacing: 3px; }
+        .photo-info h3 { font-family: var(--font-display); font-size: clamp(1.2rem, 1.8vw, 1.8rem); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+
+        .vault-wrapper { padding: clamp(60px, 8vh, 100px) 5vw; border-top: 1px solid var(--border); max-width: 1600px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 100px; }
+        .section-header h2 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); text-transform: uppercase; }
+        
+        .grid-50-50 { display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 150px; align-items: center; }
+        @media (min-width: 768px) { .grid-50-50 { grid-template-columns: 1fr 1fr; gap: 80px; } }
+        
+        .img-box { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; will-change: transform; }
+        /* CALIBRACIÓN DE ALTURA RESPONSIVE (75vh) EN PORTAFOLIO */
+        .img-box img { max-height: 75vh; max-width: 100%; width: auto; height: auto; object-fit: contain; display: block; filter: brightness(0.9); transition: filter 0.5s, transform 0.5s; }
+        .img-box:hover img { filter: brightness(1.05); transform: scale(1.02); }
+
+        .text-box h3 { font-family: var(--font-display); font-size: clamp(1.5rem, 2vw, 2rem); text-transform: uppercase; font-weight: 700; margin-bottom: 15px; }
+        .text-box .meta { font-family: var(--font-mono); font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 20px; }
+        .text-box p { color: var(--muted); line-height: 1.6; font-size: 1rem; }
+
+        /* ESTILO PREMIUM PARA LAS IMÁGENES CLIQUEABLES DE TODA LA WEB (EXCEPTO HERO) */
+        .gallery-image {
+            cursor: pointer !important;
+            pointer-events: auto !important; /* Forza la recepción física del clic */
+        }
+        .trigger-portal img {
+            transition: filter 0.4s ease, transform 0.4s ease !important;
+        }
+        .trigger-portal:hover img {
+            transform: scale(1.03) !important;
+            filter: brightness(1.05) !important;
+        }
+
+        #photo-portal { position: fixed; z-index: 9999; background: rgba(2, 2, 2, 0.98); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; top:0; left:0; width:100vw; height:100vh; transition: opacity 0.4s ease; backdrop-filter: blur(10px); }
+        #portal-img { max-width: 90vw; max-height: 90vh; object-fit: contain; position: absolute; will-change: transform, opacity; box-shadow: 0 50px 100px rgba(0,0,0,0.8); }
+        
+        .lightbox-ui { position: absolute; inset: 0; pointer-events: none; z-index: 10000; opacity: 0; transition: opacity 0.3s; display: flex; justify-content: space-between; align-items: center; padding: 0 2vw; }
+        .lb-btn { pointer-events: auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: background 0.3s, transform 0.3s; font-family: var(--font-mono); font-size: 16px; backdrop-filter: blur(5px); }
+        .lb-btn:hover { background: var(--accent); transform: scale(1.1); border-color: var(--accent); }
+        .lb-close { position: absolute; top: 30px; right: 30px; }
+        .lb-counter { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: 2px; }
+
+        .booking-wrapper { padding: 100px 5vw; background: #050505; border-top: 1px solid var(--border); }
+        .booking-container { max-width: 1000px; margin: 0 auto; text-align: center; }
+        .booking-title { font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.5rem); text-transform: uppercase; font-weight: 700; margin-bottom: 15px; letter-spacing: 2px; }
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 30px; margin-bottom: 30px; text-align: left; }
+        @media (min-width: 768px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+        .form-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); padding: 12px 0; color: var(--text); font-family: var(--font-body); font-size: 0.9rem; outline: none; transition: border-color 0.3s; border-radius: 0; }
+        .form-input:focus { border-bottom-color: var(--accent); }
+        .form-input::placeholder { color: #555; }
+        select.form-input option { background: var(--bg); color: var(--text); }
+        .btn-submit { margin-top: 20px; padding: 15px 35px; background: var(--text); color: var(--bg); font-family: var(--font-display); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; border: none; transition: transform 0.3s, background 0.3s; }
+        .btn-submit:hover { transform: translateY(-3px); background: var(--accent); color: #fff; }
+
+        .site-footer { padding: 50px 5vw; border-top: 1px solid var(--border); background: var(--bg); position: relative; z-index: 10; }
+        .footer-grid { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 30px; max-width: 1400px; margin: 0 auto; }
+        .footer-links { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
+        .footer-links a { background: transparent; border: none; color: var(--muted); font-family: var(--font-display); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; text-decoration: none; }
+        .footer-links a:hover { color: var(--text); }
+
+        /* --- SECCIÓN MOBILE / TABLET OPTIMIZADA AL 100% (CALIBRACIONES DE ESPECIFICIDAD EXCLUSIVAS) --- */
+        @media (max-width: 1024px) {
+            nav { padding: 20px; height: auto; }
+            .hud-status { display: none; }
+            
+            /* Calibración de Hero en móviles (Evita cortes de pantalla y reduce espacio muerto del título) */
+            .photo-env .layer-hero { height: auto !important; padding: 100px 20px 20px 20px !important; }
+            .photo-env .hero-title { font-size: 2.3rem !important; line-height: 1.1 !important; margin-bottom: 5px !important; }
+            .photo-env .hero-desc { font-size: 0.95rem !important; margin-top: 10px !important; }
+
+            /* Espaciado vertical comprimido en horizontal móvil (Evita vacíos negros gigantes, snap idéntico a portafolio) */
+            .h-wrapper { height: auto !important; overflow: visible !important; }
+            .h-container { width: 100% !important; height: auto !important; flex-direction: column !important; transform: none !important; display: flex !important; gap: 15px !important; padding: 10px 5vw !important; }
+            
+            /* Override estricto de especificidad (Evita el estiramiento de 100vh y min-height de Diseño) */
+            .photo-env .h-panel { 
+                width: 100% !important; 
+                height: auto !important; 
+                min-height: 0px !important; /* Anula de raíz el min-height: 100vh de global.css */
+                padding: 0 !important; 
+                margin-bottom: 0px !important; 
+            }
+            
+            /* Ajuste de cajas de portafolio para evitar vacíos */
+            .grid-50-50 { margin-bottom: 45px !important; gap: 20px !important; }
+            .vault-wrapper { padding: 40px 5vw !important; }
+            
+            .art-wrapper { display: block; width: 100%; }
+            .art-piece img, .img-box img { max-height: 50vh !important; }
+            .footer-grid { flex-direction: column; text-align: center; }
+            .lb-btn { width: 40px; height: 40px; font-size: 12px; }
+            .site-footer { padding: 30px 5vw !important; }
+        }
+    </style>
+
+    <!-- INICIALIZADOR DE PRELOADER VANILLA JS CON POLLING SEGURO -->
+    <script is:inline>
+        (function() {
+            var pct, initScreen, progBar, blurShield;
+
+            function pollDOM() {
+                pct = document.getElementById('loader-pct');
+                initScreen = document.getElementById('system-init');
+                progBar = document.getElementById('progress-bar');
+                blurShield = document.getElementById('op-nav-blur-shield');
+
+                if (pct && initScreen && progBar) {
+                    startPreloader(); 
+                } else {
+                    setTimeout(pollDOM, 10);
+                }
+            }
+
+            function startPreloader() {
+                var progress = 0;
+                var interval = setInterval(function() {
+                    progress += Math.floor(Math.random() * 12) + 6;
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(interval);
+                        
+                        var hideLoader = function() {
+                            if (typeof gsap !== 'undefined') {
+                                gsap.to([initScreen, progBar, blurShield], {
+                                    opacity: 0,
+                                    duration: 0.8,
+                                    ease: "power2.inOut",
+                                    onComplete: function() {
+                                        if(initScreen) initScreen.style.display = 'none';
+                                        if(progBar) progBar.style.display = 'none';
+                                        if(blurShield) blurShield.style.display = 'none';
+                                        initSite(); 
+                                    }
+                                });
+                            } else {
+                                if(initScreen) initScreen.style.transition = 'opacity 0.8s';
+                                if(progBar) progBar.style.transition = 'opacity 0.8s';
+                                if(blurShield) blurShield.style.transition = 'opacity 0.8s';
+                                if(initScreen) initScreen.style.opacity = '0';
+                                if(progBar) progBar.style.opacity = '0';
+                                if(blurShield) blurShield.style.opacity = '0';
+                                setTimeout(function() {
+                                    if(initScreen) initScreen.style.display = 'none';
+                                    if(progBar) progBar.style.display = 'none';
+                                    if(blurShield) blurShield.style.display = 'none';
+                                    initSite();
+                                }, 800);
+                            }
+                        };
+                        hideLoader();
+                    }
+                    
+                    var padProgress = progress < 10 ? '00' + progress : (progress < 100 ? '0' + progress : progress);
+                    if (pct) pct.innerText = '[' + padProgress + '%]';
+                    if (progBar) progBar.style.width = progress + "%";
+                }, 50);
+            }
+
+            function initSite() {
+                if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined' || typeof Lenis === 'undefined') {
+                    setTimeout(initSite, 30);
+                    return;
+                }
+                gsap.registerPlugin(ScrollTrigger);
+
+                const lenis = new Lenis({ duration: 1.2, smooth: true });
+                function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+                requestAnimationFrame(raf);
+
+                // EFECTO DE APARICIÓN DE HERO ORIGINAL RESTAURADA CON TRANSLATEY PREMIUM
+                gsap.to('.hero-anim', { opacity: 1, y: 0, duration: 1.4, stagger: 0.15, ease: "power4.out" });
+                gsap.to('#hero-bg-img', { scale: 1.1, duration: 15, ease: "power1.inOut", repeat: -1, yoyo: true });
+
+                let mm = gsap.matchMedia();
+
+                mm.add("(min-width: 1025px)", () => {
+                    const hContainer = document.querySelector('.h-container');
+                    if(!hContainer) return;
+                    let hTween = gsap.to(hContainer, { 
+                        x: () => -(hContainer.scrollWidth - window.innerWidth), 
+                        ease: "none", 
+                        scrollTrigger: { 
+                            trigger: ".h-wrapper", 
+                            pin: true, 
+                            scrub: 1, 
+                            invalidateOnRefresh: true, // RECALCULA EL ANCHO DINÁMICAMENTE AL REDUCIR EL NAVEGADOR
+                            end: () => "+=" + hContainer.scrollWidth 
+                        } 
+                    });
+
+                    document.querySelectorAll('.h-panel .reveal-shutter').forEach((wrapper, i) => {
+                        let direction = wrapper.getAttribute('data-reveal');
+                        let clipStart = getClipPath(direction);
+                        let stConfig = { trigger: wrapper.parentElement, containerAnimation: hTween, start: "left 75%", end: "right 15%", toggleActions: "play none none reverse" };
+                        if (i === 0) stConfig = { trigger: ".h-wrapper", start: "top 80%", toggleActions: "play none none reverse" };
+                        
+                        gsap.fromTo(wrapper, { clipPath: clipStart }, { clipPath: direction === 'center' ? 'inset(0% 0% 0% 0%)' : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 1.4, ease: "power4.inOut", scrollTrigger: stConfig });
+                        const img = wrapper.querySelector('.reveal-img');
+                        if(img) gsap.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.4, ease: "power4.inOut", scrollTrigger: stConfig });
+                    });
+
+                    document.querySelectorAll('.h-panel .photo-info').forEach((container, i) => {
+                        const texts = container.querySelectorAll('.info-text');
+                        let stConfig = { trigger: container.parentElement, containerAnimation: hTween, start: "left 75%", end: "right 15%", toggleActions: "play none none reverse" };
+                        if (i === 0) stConfig = { trigger: ".h-wrapper", start: "top 80%", toggleActions: "play none none reverse" };
+                        
+                        gsap.fromTo(texts, { y: "100%" }, { y: "0%", duration: 0.9, stagger: 0.08, ease: "power3.out", scrollTrigger: stConfig });
+                    });
+
+                    setupVerticalAnimations();
+                });
+
+                mm.add("(max-width: 1024px)", () => {
+                    document.querySelectorAll('.reveal-shutter').forEach(wrapper => {
+                        let direction = wrapper.getAttribute('data-reveal');
+                        let clipStart = getClipPath(direction);
+                        
+                        gsap.fromTo(wrapper, { clipPath: clipStart }, { clipPath: direction === 'center' ? 'inset(0% 0% 0% 0%)' : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 1.2, ease: "power3.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
+                        const img = wrapper.querySelector('.reveal-img');
+                        if(img) gsap.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.2, ease: "power3.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
+                    });
+                    
+                    document.querySelectorAll('.photo-info').forEach(container => {
+                        const texts = container.querySelectorAll('.info-text');
+                        gsap.fromTo(texts, { y: "100%" }, { y: "0%", duration: 0.9, stagger: 0.08, ease: "power3.out", scrollTrigger: { trigger: container, start: "top 85%", toggleActions: "play none none reverse" } });
+                    });
+
+                    setupVerticalAnimations();
+                });
+
+                function getClipPath(direction) {
+                    switch(direction) {
+                        case 'left': return 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)';
+                        case 'right': return 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)';
+                        case 'top': return 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)';
+                        case 'bottom': return 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)';
+                        case 'center': return 'inset(50% 50% 50% 50%)';
+                        default: return 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)';
+                    }
+                }
+
+                // --- SISTEMA INTERACTIVO DE PORTAL LIGHTBOX CON EVENT DELEGATION EXCLUSIVO (A PRUEBA DE FALLOS EN HORIZONTAL) ---
+                const portal = document.getElementById('photo-portal');
+                const portalImg = document.getElementById('portal-img');
+                const btnPrev = document.getElementById('lb-prev');
+                const btnNext = document.getElementById('lb-next');
+                const btnClose = document.getElementById('lb-close');
+                const counterUI = document.getElementById('lb-counter');
+                
+                const allImages = Array.from(document.querySelectorAll('.gallery-image'));
+                let currentIndex = -1;
+
+                // DELEGACIÓN GLOBAL DE EVENTO CLIC (Inmune a la clonación de GSAP o de la estructura del DOM)
+                document.addEventListener('click', function(e) {
+                    const card = e.target.closest('.trigger-portal');
+                    if (card) {
+                        const img = card.querySelector('.gallery-image');
+                        if (img) {
+                            currentIndex = allImages.indexOf(img);
+                            openLightbox(card, img);
+                        }
+                    }
+                });
+
+                function openLightbox(card, img) {
+                    const rect = card.getBoundingClientRect();
+                    portalImg.src = img.src;
+                    updateCounter();
+                    
+                    gsap.set(portal, { opacity: 1, pointerEvents: "auto" });
+                    gsap.set(portalImg, { top: rect.top, left: rect.left, width: rect.width, height: rect.height, borderRadius: "8px", opacity: 1 });
+                    
+                    gsap.to(portalImg, { top: "5vh", left: "5vw", width: "90vw", height: "90vh", borderRadius: "0px", duration: 0.6, ease: "power4.inOut" });
+                    gsap.to('.lightbox-ui', { opacity: 1, duration: 0.3, delay: 0.3 });
+                    lenis.stop();
+                }
+
+                function closeLightbox() {
+                    if (currentIndex === -1) return;
+                    const targetCard = allImages[currentIndex].closest('.trigger-portal');
+                    const rect = targetCard.getBoundingClientRect();
+                    
+                    gsap.to('.lightbox-ui', { opacity: 0, duration: 0.2 });
+                    gsap.to(portalImg, {
+                        top: rect.top, left: rect.left, width: rect.width, height: rect.height, borderRadius: "8px", duration: 0.6, ease: "power4.inOut",
+                        onComplete: () => {
+                            gsap.set(portal, { opacity: 0, pointerEvents: "none" });
+                            currentIndex = -1;
+                            lenis.start();
+                        }
+                    });
+                }
+
+                function navLightbox(direction) {
+                    if (direction === 'next' && currentIndex < allImages.length - 1) currentIndex++;
+                    else if (direction === 'prev' && currentIndex > 0) currentIndex--;
+                    else return;
+
+                    updateCounter();
+                    const newImg = allImages[currentIndex];
+                    
+                    gsap.to(portalImg, { opacity: 0, duration: 0.2, onComplete: () => {
+                        portalImg.src = newImg.src;
+                        gsap.to(portalImg, { opacity: 1, duration: 0.2 });
+                    }});
+                }
+
+                function updateCounter() {
+                    if(counterUI) counterUI.innerText = `${currentIndex + 1} / ${allImages.length}`;
+                }
+
+                if(btnClose) btnClose.addEventListener('click', closeLightbox);
+                if(btnNext) btnNext.addEventListener('click', () => navLightbox('next'));
+                if(btnPrev) btnPrev.addEventListener('click', () => navLightbox('prev'));
+                if(portal) portal.addEventListener('click', (e) => { if (e.target === portal) closeLightbox(); });
+
+                window.addEventListener('keydown', (e) => {
+                    if (currentIndex === -1) return;
+                    if (e.key === 'Escape') closeLightbox();
+                    if (e.key === 'ArrowRight') navLightbox('next');
+                    if (e.key === 'ArrowLeft') navLightbox('prev');
+                });
+            }
+
+            function setupVerticalAnimations() {
+                document.querySelectorAll('.vault-wrapper .reveal-shutter').forEach(wrapper => {
+                    let direction = wrapper.getAttribute('data-reveal');
+                    gsap.fromTo(wrapper, { clipPath: getClipPath(direction) }, { clipPath: direction === 'center' ? 'inset(0% 0% 0% 0%)' : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 1.4, ease: "power4.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
+                    const img = wrapper.querySelector('.reveal-img');
+                    if(img) gsap.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.4, ease: "power4.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
+                });
+
+                gsap.utils.toArray('.fade-up').forEach(el => {
+                    gsap.fromTo(el, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none reverse" } });
+                });
+            }
+
+            // --- GESTIÓN DE FORMULARIO ---
+            const form = document.getElementById('booking-form');
+            if(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('form-name').value;
+                    const email = document.getElementById('form-email').value;
+                    const phone = document.getElementById('form-phone').value;
+                    const type = document.getElementById('form-type').value;
+
+                    const isEN = document.documentElement.lang === 'en';
+                    const subject = isEN ? `New Session Request: ${type} - ${name}` : `Nueva Solicitud de Sesión: ${type} - ${name}`;
+                    const body = isEN ? 
+                        `Hello Oscar,\n\nI would like to book a photography session.\n\nClient Details:\n- Name: ${name}\n- Email: ${email}\n- Phone/WhatsApp: ${phone}\n- Session Type: ${type}\n\nLooking forward to your reply.\n\nBest regards.` :
+                        `Hello Oscar,\n\nI would like to book a photography session.\n\nClient Details:\n- Name: ${name}\n- Email: ${email}\n- Phone/WhatsApp: ${phone}\n- Session Type: ${type}\n\nLooking forward to your reply.\n\nBest regards.`;
+
+                    window.location.href = `mailto:oscarpozo072@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                });
+            }
+
+            // Arrancar el Polling del DOM al cargar el documento
+            pollDOM();
+        })();
+    </script>
+</body>
+</html>
