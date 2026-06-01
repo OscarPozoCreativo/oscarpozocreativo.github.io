@@ -1,4 +1,5 @@
 ---
+// src/layouts/Layout.astro
 import HeadSEO from '../components/Core/HeadSEO.astro';
 import Preloader from '../components/UI/Preloader.astro';
 import Navigation from '../components/UI/Navigation.astro';
@@ -56,7 +57,7 @@ const lbViewTitle = isEnglish ? 'Project view' : 'Vista del proyecto';
 			lbViewTitle={lbViewTitle}
 		/>
 
-		<!-- Motores Lógicos -->
+		<!-- Motores Lógicos al final para optimizar rendimiento -->
 		<SmoothScroll />
 		<AudioEngine />
 		

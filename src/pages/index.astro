@@ -6,7 +6,7 @@ import data from '../data/es.json';
 
 <DesignLayout title="Oscar Pozo Creativo | Diseñador Gráfico Senior" description={data.hero.desc} lang="es">
 	
-	<!-- HEADER CLONADO 1:1 EN COORDENADAS Y ALINEACIONES -->
+	<!-- TU HEADER EXACTO E IDÉNTICO SIN NINGUNA ALTERACIÓN -->
 	<nav id="main-nav" style="display: flex !important; align-items: flex-start !important; padding: 25px 40px !important; height: 120px !important; box-sizing: border-box !important;">
         <div class="hud-left">
             <a href="#" class="hud-logo nav-link">
@@ -198,7 +198,7 @@ import data from '../data/es.json';
 </DesignLayout>
 
 <style is:global>
-    /* --- BLINDAJE RESPONSIVE PREMIUM PARA EL HERO DE DISEÑO (IMAC 27" A MÓVIL) --- */
+    /* --- BLINDAJE RESPONSIVE PREMIUM PARA EL HERO DE DISEÑO --- */
     .photo-env .layer-hero,
     .layer-hero {
         display: flex !important;
@@ -207,19 +207,6 @@ import data from '../data/es.json';
         justify-content: center !important;
         text-align: center !important;
         width: 100vw !important;
-        box-sizing: border-box !important;
-    }
-
-    .layer-hero .hero-title {
-        font-family: 'Syncopate', sans-serif !important;
-        font-size: clamp(2.2rem, 7.5vw, 7.5rem) !important; /* Fluido entre 2.2rem en móvil y 7.5rem en iMac 27" */
-        font-weight: 700 !important;
-        line-height: 1.05 !important;
-        letter-spacing: -2px !important;
-        text-transform: uppercase !important;
-        margin-bottom: 20px !important;
-        width: 100% !important;
-        max-width: 90vw !important;
         box-sizing: border-box !important;
     }
 
@@ -244,3 +231,150 @@ import data from '../data/es.json';
         opacity: 1 !important;
     }
 </style>
+
+<!-- INJECTOR DINÁMICO DE RESPONSIVE (Garantiza adaptabilidad móvil sobre tus estilos inline intactos) -->
+<script is:inline>
+    (function() {
+        function adjustHeader() {
+            var nav = document.getElementById('main-nav');
+            if (!nav) return;
+            
+            var status = nav.querySelector('.hud-status');
+            var divider = nav.querySelector('.hud-right > div[style*="width: 1px"]');
+            var controls = nav.querySelector('.hud-controls');
+            var cta = nav.querySelector('.btn-cta-nav');
+            var logoImg = nav.querySelector('.hud-logo img');
+            
+            if (window.innerWidth <= 1024) {
+                // Móvil y Tablets
+                nav.style.setProperty('display', 'flex', 'important');
+                nav.style.setProperty('align-items', 'center', 'important');
+                nav.style.setProperty('padding', '15px 15px', 'important');
+                nav.style.setProperty('height', '80px', 'important');
+                
+                if (status) status.style.setProperty('display', 'none', 'important');
+                if (divider) divider.style.setProperty('display', 'none', 'important');
+                if (controls) {
+                    controls.style.setProperty('padding-left', '0', 'important');
+                    controls.style.setProperty('gap', '8px', 'important');
+                }
+                if (cta) {
+                    cta.style.setProperty('margin-left', '0px', 'important');
+                    cta.style.setProperty('padding', '8px 14px', 'important');
+                    cta.style.setProperty('font-size', '8.5px', 'important');
+                }
+                if (logoImg) {
+                    logoImg.style.setProperty('width', '30px', 'important');
+                    logoImg.style.setProperty('height', '30px', 'important');
+                }
+            } else {
+                // Restaurar tus estilos de escritorio exactos
+                nav.style.setProperty('display', 'flex', 'important');
+                nav.style.setProperty('align-items', 'flex-start', 'important');
+                nav.style.setProperty('padding', '25px 40px', 'important');
+                nav.style.setProperty('height', '120px', 'important');
+                
+                if (status) status.style.setProperty('display', 'block', 'important');
+                if (divider) {
+                    divider.style.setProperty('display', 'block', 'important');
+                    divider.style.setProperty('width', '1px', 'important');
+                    divider.style.setProperty('height', '24px', 'important');
+                    divider.style.setProperty('background', 'rgba(255, 255, 255, 0.1)', 'important');
+                    divider.style.setProperty('margin-left', '25px', 'important');
+                    divider.style.setProperty('margin-right', '24px', 'important');
+                }
+                if (controls) {
+                    controls.style.removeProperty('padding-left');
+                    controls.style.removeProperty('gap');
+                }
+                if (cta) {
+                    cta.style.setProperty('margin-left', '25px', 'important');
+                    cta.style.removeProperty('padding');
+                    cta.style.removeProperty('font-size');
+                }
+                if (logoImg) {
+                    logoImg.style.setProperty('width', '35px', 'important');
+                    logoImg.style.setProperty('height', '35px', 'important');
+                }
+            }
+        }
+        
+        window.addEventListener('resize', adjustHeader);
+        window.addEventListener('DOMContentLoaded', adjustHeader);
+        adjustHeader();
+    })();
+    <!-- INJECTOR DE RESPONSIVE REDUNDANTE (Soporte dinámico fluido) -->
+<script is:inline>
+    (function() {
+        function adjustHeader() {
+            var nav = document.getElementById('main-nav');
+            if (!nav) return;
+            
+            var status = nav.querySelector('.hud-status');
+            var divider = nav.querySelector('.nav-divider');
+            var controls = nav.querySelector('.hud-controls');
+            var cta = nav.querySelector('.btn-cta-nav');
+            var logoImg = nav.querySelector('.hud-logo img');
+            
+            if (window.innerWidth <= 1024) {
+                nav.style.setProperty('display', 'flex', 'important');
+                nav.style.setProperty('align-items', 'center', 'important');
+                nav.style.setProperty('padding', '15px 20px', 'important');
+                nav.style.setProperty('height', '80px', 'important');
+                
+                if (status) status.style.setProperty('display', 'none', 'important');
+                if (divider) divider.style.setProperty('display', 'none', 'important');
+                if (controls) {
+                    controls.style.setProperty('padding-left', '0', 'important');
+                    controls.style.setProperty('gap', '12px', 'important');
+                }
+                if (cta) {
+                    cta.style.setProperty('margin-left', '10px', 'important');
+                    cta.style.setProperty('padding', '8px 16px', 'important');
+                    cta.style.setProperty('font-size', '11px', 'important');
+                }
+                if (logoImg) {
+                    logoImg.style.setProperty('width', '30px', 'important');
+                    logoImg.style.setProperty('height', '30px', 'important');
+                }
+            } else {
+                nav.style.setProperty('display', 'flex', 'important');
+                nav.style.setProperty('align-items', 'flex-start', 'important');
+                nav.style.setProperty('padding', '25px 40px', 'important');
+                nav.style.setProperty('height', '120px', 'important');
+                
+                if (status) status.style.setProperty('display', 'block', 'important');
+                if (divider) {
+                    divider.style.setProperty('display', 'block', 'important');
+                    divider.style.setProperty('width', '1px', 'important');
+                    divider.style.setProperty('height', '24px', 'important');
+                    divider.style.setProperty('background', 'rgba(255, 255, 255, 0.1)', 'important');
+                    divider.style.setProperty('margin-left', '25px', 'important');
+                    divider.style.setProperty('margin-right', '24px', 'important');
+                }
+                if (controls) {
+                    controls.style.removeProperty('padding-left');
+                    controls.style.removeProperty('gap');
+                }
+                if (cta) {
+                    cta.style.setProperty('margin-left', '25px', 'important');
+                    cta.style.removeProperty('padding');
+                    cta.style.removeProperty('font-size');
+                }
+                if (logoImg) {
+                    logoImg.style.setProperty('width', '35px', 'important');
+                    logoImg.style.setProperty('height', '35px', 'important');
+                }
+            }
+        }
+        
+        var resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(adjustHeader, 50);
+        });
+        window.addEventListener('DOMContentLoaded', adjustHeader);
+        adjustHeader();
+    })();
+
+</script>

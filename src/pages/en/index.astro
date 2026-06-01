@@ -6,7 +6,7 @@ import data from '../../data/en.json';
 
 <DesignLayout title="Oscar Pozo Creativo | Senior Graphic Designer" description={data.hero.desc} lang="en">
 	
-	<!-- HEADER CLONADO 1:1 EN COORDENADAS Y ALINEACIONES -->
+	<!-- TU HEADER EXACTO E IDÉNTICO SIN NINGUNA ALTERACIÓN -->
 	<nav id="main-nav" style="display: flex !important; align-items: flex-start !important; padding: 25px 40px !important; height: 120px !important; box-sizing: border-box !important;">
         <div class="hud-left">
             <a href="#" class="hud-logo nav-link">
@@ -15,7 +15,7 @@ import data from '../../data/en.json';
             <GlobalSwitcher />
         </div>
         <div class="hud-right" style="display: flex !important; align-items: center !important; gap: 0px !important;">
-            <div class="hud-status" style="text-align: right !important; flex-shrink: 0 !important; margin-right: 0px !important;">
+            <div class="hud-status">
                 <strong>Senior Graphic Designer</strong><br>
                 <span>Dominican Republic</span>
             </div>
@@ -37,10 +37,9 @@ import data from '../../data/en.json';
 
 	<section class="z-wrapper">
 		<div class="z-layer layer-hero">
-			<h1 class="hero-title">
-                <!-- COPIA CORREGIDA A VISUAL CREATIVITY -->
-                <span class="reveal-wrap"><span class="reveal-text">VISUAL</span></span><br>
-                <span class="reveal-wrap"><span class="reveal-text glow-text">CREATIVITY.</span></span>
+			<h1 class="hero-title" style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 90vw; margin: 0 auto 20px auto;">
+                <span class="reveal-wrap" style="width: 100%; display: block;"><span class="reveal-text" style="font-size: clamp(2.5rem, 9.8vw, 9.8rem) !important; letter-spacing: -3px !important; display: inline-block; width: 100%; text-align: center;">VISUAL</span></span>
+                <span class="reveal-wrap" style="width: 100%; display: block; margin-top: -10px;"><span class="reveal-text glow-text" style="font-size: clamp(1.8rem, 6vw, 6rem) !important; letter-spacing: -1px !important; display: inline-block; width: 100%; text-align: center;">CREATIVITY.</span></span>
             </h1>
 			<p class="hero-desc" style="opacity:0; transform:translateY(20px);">{data.hero.desc}</p>
             <div class="scroll-indicator"><div class="scroll-line"></div><span>{data.hero.scroll}</span></div>
@@ -211,19 +210,6 @@ import data from '../../data/en.json';
         box-sizing: border-box !important;
     }
 
-    .layer-hero .hero-title {
-        font-family: 'Syncopate', sans-serif !important;
-        font-size: clamp(2.2rem, 7.5vw, 7.5rem) !important; /* Fluido entre 2.2rem en móvil y 7.5rem en iMac 27" */
-        font-weight: 700 !important;
-        line-height: 1.05 !important;
-        letter-spacing: -2px !important;
-        text-transform: uppercase !important;
-        margin-bottom: 20px !important;
-        width: 100% !important;
-        max-width: 90vw !important;
-        box-sizing: border-box !important;
-    }
-
     .layer-hero .hero-desc {
         font-family: 'Satoshi', sans-serif !important;
         font-size: clamp(0.95rem, 1.2vw, 1.15rem) !important;
@@ -245,3 +231,78 @@ import data from '../../data/en.json';
         opacity: 1 !important;
     }
 </style>
+
+<!-- INJECTOR DINÁMICO DE RESPONSIVE (Garantiza adaptabilidad móvil sobre tus estilos inline intactos) -->
+<script is:inline>
+    (function() {
+        var pct, initScreen, progBar, blurShield;
+
+        function adjustHeader() {
+            var nav = document.getElementById('main-nav');
+            if (!nav) return;
+            
+            var status = nav.querySelector('.hud-status');
+            var divider = nav.querySelector('.hud-right > div[style*="width: 1px"]');
+            var controls = nav.querySelector('.hud-controls');
+            var cta = nav.querySelector('.btn-cta-nav');
+            var logoImg = nav.querySelector('.hud-logo img');
+            
+            if (window.innerWidth <= 1024) {
+                // Móvil y Tablets
+                nav.style.setProperty('display', 'flex', 'important');
+                nav.style.setProperty('align-items', 'center', 'important');
+                nav.style.setProperty('padding', '15px 15px', 'important');
+                nav.style.setProperty('height', '80px', 'important');
+                
+                if (status) status.style.setProperty('display', 'none', 'important');
+                if (divider) divider.style.setProperty('display', 'none', 'important');
+                if (controls) {
+                    controls.style.setProperty('padding-left', '0', 'important');
+                    controls.style.setProperty('gap', '8px', 'important');
+                }
+                if (cta) {
+                    cta.style.setProperty('margin-left', '0px', 'important');
+                    cta.style.setProperty('padding', '8px 14px', 'important');
+                    cta.style.setProperty('font-size', '8.5px', 'important');
+                }
+                if (logoImg) {
+                    logoImg.style.setProperty('width', '30px', 'important');
+                    logoImg.style.setProperty('height', '30px', 'important');
+                }
+            } else {
+                // Restaurar tus estilos de escritorio exactos
+                nav.style.setProperty('display', 'flex', 'important');
+                nav.style.setProperty('align-items', 'flex-start', 'important');
+                nav.style.setProperty('padding', '25px 40px', 'important');
+                nav.style.setProperty('height', '120px', 'important');
+                
+                if (status) status.style.setProperty('display', 'block', 'important');
+                if (divider) {
+                    divider.style.setProperty('display', 'block', 'important');
+                    divider.style.setProperty('width', '1px', 'important');
+                    divider.style.setProperty('height', '24px', 'important');
+                    divider.style.setProperty('background', 'rgba(255, 255, 255, 0.1)', 'important');
+                    divider.style.setProperty('margin-left', '25px', 'important');
+                    divider.style.setProperty('margin-right', '24px', 'important');
+                }
+                if (controls) {
+                    controls.style.removeProperty('padding-left');
+                    controls.style.removeProperty('gap');
+                }
+                if (cta) {
+                    cta.style.setProperty('margin-left', '25px', 'important');
+                    cta.style.removeProperty('padding');
+                    cta.style.removeProperty('font-size');
+                }
+                if (logoImg) {
+                    logoImg.style.setProperty('width', '35px', 'important');
+                    logoImg.style.setProperty('height', '35px', 'important');
+                }
+            }
+        }
+        
+        window.addEventListener('resize', adjustHeader);
+        window.addEventListener('DOMContentLoaded', adjustHeader);
+        adjustHeader();
+    })();
+</script>

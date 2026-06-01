@@ -11,86 +11,57 @@ const designText = isEnglish ? 'Design' : 'Diseño';
 const photoText = isEnglish ? 'Photography' : 'Fotografía';
 ---
 
-<div class="switcher-inline gpu-layer" style="pointer-events: auto;">
-    <div class="switcher-pill">
-        <a href={designUrl} class={`switch-btn hover-target ${!isPhoto ? 'active' : ''}`}>
-            <span class="switch-text">{designText}</span>
-        </a>
-        <a href={photoUrl} class={`switch-btn hover-target ${isPhoto ? 'active' : ''}`}>
-            <span class="switch-text">{photoText}</span>
-        </a>
-        <div class={`switcher-glider ${isPhoto ? 'glider-right' : 'glider-left'}`}></div>
-    </div>
+<div class="switcher-text-only gpu-layer" style="pointer-events: auto;">
+    <!-- ENLACE DISEÑO (Hereda la clase ctrl-btn nativa) -->
+    <a href={designUrl} class={`ctrl-btn switch-link hover-target ${!isPhoto ? 'active' : ''}`}>
+        {designText}
+    </a>
+    
+    <!-- DIVISOR CON OPACIDAD DE DISEÑO -->
+    <span class="switcher-divider">/</span>
+    
+    <!-- ENLACE FOTOGRAFÍA (Hereda la clase ctrl-btn nativa) -->
+    <a href={photoUrl} class={`ctrl-btn switch-link hover-target ${isPhoto ? 'active' : ''}`}>
+        {photoText}
+    </a>
 </div>
 
 <style>
-    .switcher-inline {
+    .switcher-text-only {
         display: flex;
         align-items: center;
+        gap: 15px; /* Mismo gap simétrico que el selector de idiomas de la derecha */
+        flex-shrink: 0;
     }
 
-    .switcher-pill {
-        display: flex;
-        align-items: center;
-        background: rgba(10, 10, 10, 0.7);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        border-radius: 100px;
-        padding: 3px;
-        position: relative;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
-
-    .switch-btn {
-        position: relative;
-        z-index: 2;
-        padding: 7px 20px;
-        border-radius: 100px;
-        color: rgba(255, 255, 255, 0.4);
+    /* Forzamos la herencia y agregamos transiciones suaves */
+    .switch-link {
         text-decoration: none;
-        font-family: 'Satoshi', sans-serif;
-        font-size: 9.5px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        cursor: none;
+        transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: pointer !important; /* MODIFICADO: Puntero nativo visible */
     }
 
-    .switch-btn:hover {
-        color: rgba(255, 255, 255, 0.85);
+    /* TU AZUL DE FIRMA PREMIUM CON EFECTO DE GLOW / PLASMA */
+    .switch-link.active {
+        color: #40B5E5 !important;
+        opacity: 1 !important;
+        text-shadow: 0 0 15px rgba(64, 181, 229, 0.45) !important; /* Brillo premium sutil */
     }
 
-    .switch-btn.active {
+    .switcher-divider {
+        font-family: var(--font-mono, monospace);
+        font-size: 11px;
         color: #ffffff;
+        opacity: 0.15; /* Sintonizado con la barra divisora de ES / EN */
+        user-select: none;
     }
 
-    .switcher-glider {
-        position: absolute;
-        top: 3px;
-        bottom: 3px;
-        width: calc(50% - 3px);
-        background: linear-gradient(135deg, #40B5E5, #1e87be);
-        border-radius: 100px;
-        z-index: 1;
-        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        box-shadow: 0 4px 12px rgba(64, 181, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    }
-
-    .glider-left {
-        transform: translateX(0);
-    }
-
-    .glider-right {
-        transform: translateX(100%);
-    }
-
-    @media (max-width: 768px) {
-        .switch-btn {
-            padding: 6px 14px;
+    @media (max-width: 1024px) {
+        .switcher-text-only {
+            gap: 8px; /* Gap compacto para móvil */
+        }
+        .switcher-divider {
             font-size: 9px;
-            letter-spacing: 1px;
         }
     }
 </style>
