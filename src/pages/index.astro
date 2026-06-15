@@ -39,7 +39,7 @@ import data from '../data/es.json';
 		<div class="z-layer layer-hero">
 			<h1 class="hero-title">
                 <span class="reveal-wrap"><span class="reveal-text">CREATIVIDAD</span></span><br>
-                <span class="reveal-wrap"><span class="reveal-text glow-text">VISUAL.</span></span>
+                <span class="reveal-wrap"><span class="reveal-text glow-text">ESTRATÉGICA.</span></span>
             </h1>
 			<p class="hero-desc" style="opacity:0; transform:translateY(20px);">{data.hero.desc}</p>
             <div class="scroll-indicator"><div class="scroll-line"></div><span>{data.hero.scroll}</span></div>
@@ -70,7 +70,7 @@ import data from '../data/es.json';
                 <div class="h-panel">
                     <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
                         <div class="card-glare"></div>
-                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
+                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img parallax-img" loading="lazy" decoding="async"></div>
                         <div class="h-info">
                             <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                             <h3>{project.title}</h3>
@@ -198,7 +198,38 @@ import data from '../data/es.json';
 </DesignLayout>
 
 <style is:global>
-    /* --- BLINDAJE RESPONSIVE PREMIUM PARA EL HERO DE DISEÑO --- */
+    /* ==========================================================================
+       1. HEADER: ALINEACIÓN MILIMÉTRICA (INTACTO)
+       ========================================================================== */
+    .hud-status strong {
+        font-size: 10px !important;
+        text-transform: uppercase !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px !important;
+    }
+
+    nav#main-nav .hud-left a:not(.hud-logo),
+    nav#main-nav .hud-left span,
+    nav#main-nav .hud-left p,
+    nav#main-nav .hud-left div:not(.hud-logo) {
+        font-size: 10px !important;
+        text-transform: uppercase !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px !important;
+    }
+
+    .hud-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 40px !important; 
+    }
+
+    .hud-logo { display: flex !important; align-items: center !important; justify-content: center !important; width: 35px !important; height: 35px !important; flex-shrink: 0 !important; }
+    .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; }
+
+    /* ==========================================================================
+       2. HERO: CLONACIÓN DE FOTOGRAFÍA + COMPRESIÓN DE INTERLINEADO BRUTALISTA
+       ========================================================================== */
     .photo-env .layer-hero,
     .layer-hero {
         display: flex !important;
@@ -206,8 +237,70 @@ import data from '../data/es.json';
         align-items: center !important;
         justify-content: center !important;
         text-align: center !important;
-        width: 100vw !important;
+        width: 100% !important;
+        max-width: 100vw !important;
         box-sizing: border-box !important;
+        padding: 0 15px !important;
+        overflow: hidden !important;
+    }
+
+    .layer-hero .hero-title {
+        font-size: clamp(2.5rem, 7vw, 8rem) !important;
+        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA */
+        letter-spacing: -2px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 0 !important;
+        margin-bottom: 10px !important;
+        text-transform: uppercase !important;
+        width: 100% !important;
+    }
+
+    /* ELIMINA LA LÍNEA EN BLANCO GENERADA POR EL SALTO DE LÍNEA <br> */
+    .layer-hero .hero-title br {
+        display: none !important;
+    }
+
+    /* AISLAMIENTO EXCLUSIVO AL HERO: Orden de apilamiento controlado */
+    .layer-hero .reveal-wrap {
+        display: block !important; 
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow: visible !important; 
+        text-align: center !important;
+    }
+
+    /* FORZADO DE ORDEN DE PINTADO NATIVO: La primera línea pisa a la segunda */
+    .layer-hero .reveal-wrap:first-of-type {
+        position: relative !important;
+        z-index: 10 !important; /* Capa superior: Tapa el acento */
+    }
+
+    .layer-hero .reveal-wrap:last-of-type {
+        position: relative !important;
+        z-index: 1 !important; /* Capa inferior: Se deja tapar */
+    }
+
+    .layer-hero .reveal-text {
+        display: inline-block !important;
+        white-space: nowrap !important; 
+        padding-bottom: 0px !important; 
+    }
+
+    /* EFECTO PLASMA DE FOTOGRAFÍA ORIGINAL */
+    .layer-hero .glow-text { 
+        background: linear-gradient(270deg, var(--accent), #ffffff, var(--accent)) !important; 
+        background-size: 200% 200% !important; 
+        -webkit-background-clip: text !important; 
+        -webkit-text-fill-color: transparent !important; 
+        animation: flowPlasma 4s ease-in-out infinite alternate !important; 
+        text-shadow: 0 0 35px rgba(64,181,229,0.3) !important; 
+        display: inline-block !important; 
+    }
+    @keyframes flowPlasma { 
+        0%{background-position:0% 50%} 
+        100%{background-position:100% 50%} 
     }
 
     .layer-hero .hero-desc {
@@ -216,10 +309,71 @@ import data from '../data/es.json';
         line-height: 1.6 !important;
         color: #888888 !important;
         max-width: 600px !important;
-        width: 90% !important;
-        margin: 0 auto !important;
+        width: 100% !important;
+        margin: 25px auto 0 auto !important;
         text-align: center !important;
         box-sizing: border-box !important;
+    }
+
+    /* ==========================================================================
+       3. MEDIA QUERIES (COMPRESIÓN DE INTERLINEADO ULTRA-TIGHT PARA MÓVIL)
+       ========================================================================== */
+    @media (max-width: 1024px) {
+        #main-nav {
+            height: auto !important;
+            padding: 20px !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+
+        .hud-status,
+        #main-nav div[style*="width: 1px"] {
+            display: none !important;
+        }
+
+        .hud-right {
+            gap: 15px !important;
+        }
+
+        .hud-logo, .hud-logo img {
+            width: 30px !important;
+            height: 30px !important;
+        }
+        
+        .layer-hero .hero-title {
+            font-size: 7vw !important; 
+            line-height: 0.75 !important; /* Compresión extrema para tablets */
+            margin-bottom: 5px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hud-left {
+            gap: 15px !important;
+        }
+
+        nav#main-nav .hud-left a:not(.hud-logo),
+        nav#main-nav .hud-left span,
+        nav#main-nav .hud-left p,
+        nav#main-nav .hud-left div:not(.hud-logo) {
+            font-size: 9px !important; 
+        }
+
+        .hud-controls {
+            gap: 10px !important;
+            font-size: 9px !important;
+        }
+
+        .btn-cta-nav {
+            padding: 8px 16px !important;
+            font-size: 9px !important;
+            margin-left: 0 !important;
+        }
+
+        .layer-hero .hero-title {
+            font-size: 7.5vw !important; 
+            line-height: 0.75 !important; /* Compresión extrema: Slices del acento perfectos en móviles */
+        }
     }
 
     /* --- ALINEACIÓN DE COLOR ACTIVO DE IDIOMA EN DISEÑO --- */
@@ -232,7 +386,9 @@ import data from '../data/es.json';
     }
 </style>
 
-<!-- INJECTOR DINÁMICO DE RESPONSIVE (Garantiza adaptabilidad móvil sobre tus estilos inline intactos) -->
+<!-- ==========================================================================
+     4. SCRIPT ÚNICO: CONTROL DE BOTÓN Y LAYOUT FLUIDO (INTACTO)
+     ========================================================================== -->
 <script is:inline>
     (function() {
         function adjustHeader() {
@@ -245,94 +401,35 @@ import data from '../data/es.json';
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
             
+            var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
+            switcherText.forEach(function(el) {
+                el.style.setProperty('text-transform', 'uppercase', 'important');
+                el.style.setProperty('font-weight', '700', 'important');
+                el.style.setProperty('letter-spacing', '1px', 'important');
+                el.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+            });
+
             if (window.innerWidth <= 1024) {
-                // Móvil y Tablets
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', '15px 15px', 'important');
-                nav.style.setProperty('height', '80px', 'important');
+                nav.style.setProperty('padding', '20px', 'important');
+                nav.style.setProperty('height', 'auto', 'important');
+                nav.style.setProperty('justify-content', 'space-between', 'important');
                 
                 if (status) status.style.setProperty('display', 'none', 'important');
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '8px', 'important');
+                    controls.style.setProperty('gap', '10px', 'important');
                 }
-                if (cta) {
-                    cta.style.setProperty('margin-left', '0px', 'important');
-                    cta.style.setProperty('padding', '8px 14px', 'important');
-                    cta.style.setProperty('font-size', '8.5px', 'important');
-                }
-                if (logoImg) {
-                    logoImg.style.setProperty('width', '30px', 'important');
-                    logoImg.style.setProperty('height', '30px', 'important');
-                }
-            } else {
-                // Restaurar tus estilos de escritorio exactos
-                nav.style.setProperty('display', 'flex', 'important');
-                nav.style.setProperty('align-items', 'flex-start', 'important');
-                nav.style.setProperty('padding', '25px 40px', 'important');
-                nav.style.setProperty('height', '120px', 'important');
                 
-                if (status) status.style.setProperty('display', 'block', 'important');
-                if (divider) {
-                    divider.style.setProperty('display', 'block', 'important');
-                    divider.style.setProperty('width', '1px', 'important');
-                    divider.style.setProperty('height', '24px', 'important');
-                    divider.style.setProperty('background', 'rgba(255, 255, 255, 0.1)', 'important');
-                    divider.style.setProperty('margin-left', '25px', 'important');
-                    divider.style.setProperty('margin-right', '24px', 'important');
-                }
-                if (controls) {
-                    controls.style.removeProperty('padding-left');
-                    controls.style.removeProperty('gap');
-                }
-                if (cta) {
-                    cta.style.setProperty('margin-left', '25px', 'important');
-                    cta.style.removeProperty('padding');
-                    cta.style.removeProperty('font-size');
-                }
-                if (logoImg) {
-                    logoImg.style.setProperty('width', '35px', 'important');
-                    logoImg.style.setProperty('height', '35px', 'important');
-                }
-            }
-        }
-        
-        window.addEventListener('resize', adjustHeader);
-        window.addEventListener('DOMContentLoaded', adjustHeader);
-        adjustHeader();
-    })();
-    <!-- INJECTOR DE RESPONSIVE REDUNDANTE (Soporte dinámico fluido) -->
-<script is:inline>
-    (function() {
-        function adjustHeader() {
-            var nav = document.getElementById('main-nav');
-            if (!nav) return;
-            
-            var status = nav.querySelector('.hud-status');
-            var divider = nav.querySelector('.nav-divider');
-            var controls = nav.querySelector('.hud-controls');
-            var cta = nav.querySelector('.btn-cta-nav');
-            var logoImg = nav.querySelector('.hud-logo img');
-            
-            if (window.innerWidth <= 1024) {
-                nav.style.setProperty('display', 'flex', 'important');
-                nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', '15px 20px', 'important');
-                nav.style.setProperty('height', '80px', 'important');
-                
-                if (status) status.style.setProperty('display', 'none', 'important');
-                if (divider) divider.style.setProperty('display', 'none', 'important');
-                if (controls) {
-                    controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '12px', 'important');
-                }
                 if (cta) {
                     cta.style.setProperty('margin-left', '10px', 'important');
-                    cta.style.setProperty('padding', '8px 16px', 'important');
-                    cta.style.setProperty('font-size', '11px', 'important');
+                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 16px' : '10px 20px', 'important');
+                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                    cta.style.setProperty('white-space', 'nowrap', 'important');
                 }
+                
                 if (logoImg) {
                     logoImg.style.setProperty('width', '30px', 'important');
                     logoImg.style.setProperty('height', '30px', 'important');
@@ -342,15 +439,11 @@ import data from '../data/es.json';
                 nav.style.setProperty('align-items', 'flex-start', 'important');
                 nav.style.setProperty('padding', '25px 40px', 'important');
                 nav.style.setProperty('height', '120px', 'important');
+                nav.style.setProperty('justify-content', 'space-between', 'important');
                 
                 if (status) status.style.setProperty('display', 'block', 'important');
                 if (divider) {
                     divider.style.setProperty('display', 'block', 'important');
-                    divider.style.setProperty('width', '1px', 'important');
-                    divider.style.setProperty('height', '24px', 'important');
-                    divider.style.setProperty('background', 'rgba(255, 255, 255, 0.1)', 'important');
-                    divider.style.setProperty('margin-left', '25px', 'important');
-                    divider.style.setProperty('margin-right', '24px', 'important');
                 }
                 if (controls) {
                     controls.style.removeProperty('padding-left');
@@ -360,6 +453,7 @@ import data from '../data/es.json';
                     cta.style.setProperty('margin-left', '25px', 'important');
                     cta.style.removeProperty('padding');
                     cta.style.removeProperty('font-size');
+                    cta.style.removeProperty('white-space');
                 }
                 if (logoImg) {
                     logoImg.style.setProperty('width', '35px', 'important');
@@ -371,10 +465,9 @@ import data from '../data/es.json';
         var resizeTimeout;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(adjustHeader, 50);
+            resizeTimeout = setTimeout(adjustHeader, 15);
         });
         window.addEventListener('DOMContentLoaded', adjustHeader);
         adjustHeader();
     })();
-
 </script>

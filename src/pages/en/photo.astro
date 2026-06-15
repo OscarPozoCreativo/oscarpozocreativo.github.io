@@ -34,10 +34,10 @@ import '../../styles/global.css';
 </head>
 <body class="photo-env">
 
-    <!-- TU PRELOADER DE DISEÑO ORIGINAL (INGLÉS) -->
+    <!-- TU PRELOADER DE DISEÑO ORIGINAL -->
     <Preloader loaderLabel="ESTABLISHING CONNECTION..." />
 
-    <!-- PORTAL LIGHTBOX -->
+    <!-- PORTAL LIGHTBOX SOTY -->
     <div id="photo-portal">
         <img src="" alt="Portal" id="portal-img">
         <div class="lightbox-ui">
@@ -52,27 +52,34 @@ import '../../styles/global.css';
     <canvas id="webgl-bokeh"></canvas>
     <div class="noise-overlay"></div>
 
-    <!-- NAVEGACIÓN -->
-    <nav id="main-nav">
+    <!-- ==========================================================================
+         NAVEGACIÓN: CLON EXACTO DE LA PÁGINA DE DISEÑO
+         ========================================================================== -->
+    <nav id="main-nav" style="display: flex !important; align-items: flex-start !important; padding: 25px 40px !important; height: 120px !important; box-sizing: border-box !important;">
         <div class="hud-left">
-            <a href="/en/" class="hud-logo nav-link">
-                <img src="/assets/favicon-dark.png" alt="Oscar Pozo Logo">
+            <a href="#" class="hud-logo nav-link">
+                <img src="/assets/favicon-dark.png" alt="Oscar Pozo Logo" style="width: 35px; height: 35px; transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);">
             </a>
             <GlobalSwitcher />
         </div>
-        <div class="hud-right">
-            <div class="hud-status">
+        <div class="hud-right" style="display: flex !important; align-items: center !important; gap: 0px !important;">
+            <div class="hud-status" style="text-align: right !important; flex-shrink: 0 !important; margin-right: 0px !important;">
                 <strong>Professional Photographer</strong><br>
                 <span>Dominican Republic</span>
             </div>
             
-            <div class="hud-controls border-l border-white/10 pl-6 flex gap-4 text-xs font-mono tracking-widest text-[var(--text)]" style="pointer-events: auto;">
+            <!-- LÍNEA DE DIVISIÓN EDITORIAL MAESTRA -->
+            <div style="width: 1px; height: 24px; background: rgba(255, 255, 255, 0.1); margin-left: 25px !important; margin-right: 24px !important; align-self: center; flex-shrink: 0;"></div>
+
+            <!-- CONTROLES DE IDIOMA ALINEADOS -->
+            <div class="hud-controls flex gap-4 text-xs font-mono tracking-widest text-[var(--text)]" style="pointer-events: auto; align-items: center; flex-shrink: 0;">
                 <a href="/photo" class="ctrl-btn">ES</a>
                 <span class="opacity-20">/</span>
                 <a href="/en/photo" class="ctrl-btn active">EN</a>
             </div>
 
-            <a href="#agendar" class="btn-cta-nav nav-link">BOOK A SESSION</a>
+            <!-- CTA CON AJUSTE DE MARGEN COHESIVO -->
+            <a href="#agendar" class="btn-cta-nav nav-link" style="margin-left: 25px !important; flex-shrink: 0 !important;">BOOK SESSION</a>
         </div>
     </nav>
 
@@ -92,7 +99,7 @@ import '../../styles/global.css';
                 </h1>
                 
                 <p class="hero-desc hero-anim mt-4">
-                    High-end imagery for weddings, quinceañeras, and maternity in the Dominican Republic. We capture your best moments with editorial quality.
+                    High-end images for weddings, sweet sixteens, and maternity in the Dominican Republic. We capture your best moments with magazine quality.
                 </p>
             </section>
 
@@ -138,12 +145,12 @@ import '../../styles/global.css';
                             <div class="reveal-shutter" data-reveal="right">
                                 <div class="art-piece hover-target gpu-layer trigger-portal">
                                     <div class="glare"></div>
-                                    <img src="/quinceanera-rojo-piedra.webp" alt="Quinceañera Session" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                    <img src="/quinceanera-rojo-piedra.webp" alt="Sweet Sixteen" class="reveal-img gallery-image" loading="lazy" decoding="async">
                                 </div>
                             </div>
                             <div class="photo-info">
-                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Colonial Portrait in Red</h3></div>
-                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Quinceañera Session</span></div>
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Red Colonial Session</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Sweet Sixteen Session</span></div>
                             </div>
                         </div>
                     </div>
@@ -158,8 +165,8 @@ import '../../styles/global.css';
                                 </div>
                             </div>
                             <div class="photo-info">
-                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Sweet Wait on the Beach</h3></div>
-                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Maternity Session</span></div>
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Sweet Wait at the Beach</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Maternity Photos</span></div>
                             </div>
                         </div>
                     </div>
@@ -174,8 +181,8 @@ import '../../styles/global.css';
                                 </div>
                             </div>
                             <div class="photo-info">
-                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Sunset in Couple</h3></div>
-                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Maternity Session</span></div>
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Sunset as a Couple</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Maternity Photos</span></div>
                             </div>
                         </div>
                     </div>
@@ -186,12 +193,12 @@ import '../../styles/global.css';
                             <div class="reveal-shutter" data-reveal="left">
                                 <div class="art-piece hover-target gpu-layer trigger-portal">
                                     <div class="glare"></div>
-                                    <img src="/familia-bicicletas-colonial.webp" alt="Family Portrait" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                    <img src="/familia-bicicletas-colonial.webp" alt="Urban Family" class="reveal-img gallery-image" loading="lazy" decoding="async">
                                 </div>
                             </div>
                             <div class="photo-info">
                                 <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Family Bike Ride</h3></div>
-                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Outdoor Family Portrait</span></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Outdoor Family Photo</span></div>
                             </div>
                         </div>
                     </div>
@@ -210,7 +217,7 @@ import '../../styles/global.css';
                     <div class="text-box fade-up order-2 md:order-1">
                         <span class="meta">Wedding Photography</span>
                         <h3>The Bride's Happiness</h3>
-                        <p>We capture the laughter and real emotion of your special day. No forced poses or uncomfortable moments, just you enjoying every second while we save your best wedding memories.</p>
+                        <p>We capture the laughter and real emotion of your special day. No forced poses or awkward moments, just you enjoying every second while we save your best wedding memories.</p>
                     </div>
                     <div class="img-box fade-up order-1 md:order-2">
                         <div class="hover-target trigger-portal w-full flex justify-center gpu-layer">
@@ -228,21 +235,21 @@ import '../../styles/global.css';
                     </div>
                     <div class="text-box fade-up order-2 md:order-2">
                         <span class="meta">Family Photography</span>
-                        <h3>Mother & Daughter Connection</h3>
-                        <p>Candid photo sessions on our beautiful Dominican beaches. We create natural and emotional memories that your family will treasure for a lifetime.</p>
+                        <h3>Mother and Daughter Connection</h3>
+                        <p>Spontaneous photo sessions on our beautiful Dominican beaches. We create natural and emotional memories that your family will treasure for a lifetime.</p>
                     </div>
                 </div>
 
                 <!-- 3. Grid 50/50 -->
                 <div class="grid-50-50">
                     <div class="text-box fade-up order-2 md:order-1">
-                        <span class="meta">Quinceañera Session</span>
+                        <span class="meta">Sweet Sixteen Session</span>
                         <h3>Elegance in the Colonial Zone</h3>
-                        <p>A modern and sophisticated photo concept taking advantage of the beautiful architecture of Santo Domingo. We make your fifteen years photos look like a high-fashion magazine cover.</p>
+                        <p>A modern and sophisticated photo concept taking advantage of the beautiful architecture of Santo Domingo. We make your sweet sixteen photos look like a high fashion magazine cover.</p>
                     </div>
                     <div class="img-box fade-up order-1 md:order-2">
                         <div class="hover-target trigger-portal w-full flex justify-center gpu-layer">
-                            <img src="/quinceanera-verde-colonial.webp" alt="Quinceañera Verde" class="gallery-image" loading="lazy">
+                            <img src="/quinceanera-verde-colonial.webp" alt="Green Sweet Sixteen" class="gallery-image" loading="lazy">
                         </div>
                     </div>
                 </div>
@@ -255,9 +262,8 @@ import '../../styles/global.css';
                                 <img src="/boda-recepcion-brindis.webp" alt="Wedding Reception" class="gallery-image" loading="lazy" decoding="async" style="max-height: 75vh; width: auto; object-fit: contain;">
                             </div>
                         </div>
-                        <!-- TIPOGRAFÍA NORMALIZADA CON LA CLASE GLOBAL PHOTO-INFO (INGLÉS) -->
                         <div class="mt-8 flex flex-col items-start w-full photo-info">
-                            <div class="text-mask"><h3>The Toast of the Newlyweds</h3></div>
+                            <div class="text-mask"><h3>The Couple's Toast</h3></div>
                             <div class="text-mask"><span>Wedding Photography</span></div>
                         </div>
                     </div>
@@ -273,7 +279,7 @@ import '../../styles/global.css';
                     <div class="text-box fade-up order-2 md:order-2">
                         <span class="meta">Personal Portrait</span>
                         <h3>City Lights at Night</h3>
-                        <p>Spectacular night photographs using the lights and atmosphere of the city of Santo Domingo. Professional lighting and art direction to achieve a unique and different portrait.</p>
+                        <p>Spectacular night photography using the lights and atmosphere of Santo Domingo city. Professional lighting and art direction to achieve a unique and different portrait.</p>
                     </div>
                 </div>
 
@@ -284,7 +290,7 @@ import '../../styles/global.css';
                 <div class="booking-container">
                     <div class="text-mask"><h2 class="booking-title text-mask-inner form-anim gpu-layer">Book a Session</h2></div>
                     <div class="text-mask"><p class="text-muted mb-10 text-sm mx-auto max-w-xl text-mask-inner form-anim gpu-layer">
-                        We work with a limited number of clients per month to guarantee maximum quality in each delivery. Tell us about your event or session and we will contact you shortly.
+                        We work with a limited number of clients per month to guarantee the highest quality in every delivery. Tell us about your event or session and we will contact you shortly.
                     </p></div>
                     
                     <form id="booking-form">
@@ -299,7 +305,7 @@ import '../../styles/global.css';
                                     <option value="" disabled selected>Session Type...</option>
                                     <option value="Wedding / Event">Wedding / Event</option>
                                     <option value="Maternity / Family">Maternity / Family</option>
-                                    <option value="Portrait / Quinceañera">Portrait / Quinceañera</option>
+                                    <option value="Portrait / Sweet Sixteen">Portrait / Sweet Sixteen</option>
                                 </select>
                             </div>
                         </div>
@@ -344,25 +350,54 @@ import '../../styles/global.css';
         #webgl-bokeh { position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: 0.6; will-change: transform; }
         .noise-overlay { position: fixed; inset: 0; z-index: -1; opacity: 0.03; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
 
-        nav { position: fixed; top: 0; width: 100%; padding: 25px 40px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 100; pointer-events: none; height: 120px; }
+        /* ==========================================================================
+           1. HEADER: CLON EXACTO DE DISEÑO (CON PENETRACIÓN NUCLEAR DE COMPONENTE)
+           ========================================================================== */
+        nav { position: fixed; top: 0; width: 100%; z-index: 100; pointer-events: none; }
         nav::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(to bottom, rgba(2,2,2,0.95) 0%, rgba(2,2,2,0) 100%); }
         
-        /* SEGURIDAD DE LOGO NAVEGACIÓN (EVITA LA DISTORSIÓN MÓVIL) */
+        .hud-left, .hud-right { pointer-events: auto; }
+        
+        .hud-status { font-family: var(--font-display); font-size: 8px; opacity: 0.7; line-height: 1.8; text-transform: uppercase; letter-spacing: 1px; }
+        .hud-status strong {
+            font-size: 10px !important;
+            text-transform: uppercase !important;
+            font-weight: 700 !important;
+            letter-spacing: 1px !important;
+            opacity: 1;
+        }
+
+        /* PENETRACIÓN AGRESIVA Y ABSOLUTA PARA EL COMPONENTE GLOBAL SWITCHER */
+        nav#main-nav .hud-left a:not(.hud-logo),
+        nav#main-nav .hud-left span,
+        nav#main-nav .hud-left p,
+        nav#main-nav .hud-left div:not(.hud-logo) {
+            font-size: 10px !important;
+            text-transform: uppercase !important;
+            font-weight: 700 !important;
+            letter-spacing: 1px !important;
+        }
+
+        .hud-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 40px !important;
+        }
+
         .hud-logo { display: flex; align-items: center; justify-content: center; width: 35px !important; height: 35px !important; flex-shrink: 0 !important; }
         .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; transition: transform 0.4s; }
         .hud-logo:hover img { transform: scale(1.15); }
 
-        .hud-left { display: flex; align-items: center; gap: 40px; pointer-events: auto; }
-        .hud-controls { display: flex; gap: 20px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; }
         .ctrl-btn { color: var(--text); opacity: 0.5; text-decoration: none; transition: opacity 0.3s, color 0.3s; font-weight: 700; letter-spacing: 1px; }
         .ctrl-btn:hover { opacity: 1; }
         .ctrl-btn.active { opacity: 1; color: var(--accent); }
-        .hud-right { display: flex; align-items: center; gap: 25px; pointer-events: auto; }
-        .hud-status { text-align: right; font-family: var(--font-display); font-size: 8px; opacity: 0.7; line-height: 1.8; text-transform: uppercase; letter-spacing: 1px; }
-        .hud-status strong { font-size: 10px; font-weight: 700; opacity: 1; }
+
         .btn-cta-nav { padding: 12px 24px; background: #fff; color: #000; border-radius: 100px; font-family: var(--font-display); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; transition: transform 0.3s; }
         .btn-cta-nav:hover { transform: scale(1.05); }
 
+        /* ==========================================================================
+           2. HERO Y RESTO DE FOTOGRAFÍA (INTACTO)
+           ========================================================================== */
         .layer-hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
         .hero-bg { position: absolute; inset: 0; z-index: -1; opacity: 0.55; }
         .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
@@ -370,7 +405,6 @@ import '../../styles/global.css';
         
         .hero-title { font-family: var(--font-display); font-size: clamp(2.5rem, 7vw, 8rem); font-weight: 700; line-height: 0.85; text-transform: uppercase; letter-spacing: -2px; display: flex; flex-direction: column; align-items: center; gap: 0; margin-bottom: 10px; }
         
-        /* EFECTO DE APARICIÓN DE HERO ORIGINAL */
         .hero-anim { opacity: 0; transform: translateY(30px); will-change: opacity, transform; }
 
         .glow-text { 
@@ -393,11 +427,9 @@ import '../../styles/global.css';
         .text-mask { overflow: hidden; display: inline-block; vertical-align: top; padding-top: 15px; margin-top: -15px; }
         .text-mask-inner { display: block; }
 
-        /* AJUSTE PREMIUM DE COMPRESIÓN HORIZONTAL - DISTANCIA CALIBRADA */
         .h-wrapper { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
         .h-container { display: flex; width: max-content; height: 100vh; padding-right: 3vw !important; align-items: center; will-change: transform; }
         
-        /* FORCE OVERRIDE: Forzamos a colapsar el ancho de 100vw de Diseño con un espaciado intermedio premium */
         .photo-env .h-panel { 
             height: 100vh !important; 
             width: auto !important; 
@@ -405,14 +437,13 @@ import '../../styles/global.css';
             display: flex !important; 
             flex-direction: column !important; 
             justify-content: center !important; 
-            padding: 0 2.5vw !important; /* Calibración premium a 2.5vw */
+            padding: 0 2.5vw !important; 
             flex-shrink: 0 !important; 
             perspective: 1000px !important; 
         }
         
         .art-wrapper { display: inline-block; }
         .art-piece { position: relative; display: inline-block; will-change: transform; }
-        /* CALIBRACIÓN DE ALTURA RESPONSIVE (62vh) PARA EVITAR CORTES EN LAPTOPS */
         .art-piece img { max-height: 62vh; max-width: 80vw; width: auto; height: auto; display: block; object-fit: contain; filter: brightness(0.9); transition: filter 0.4s; }
         .art-piece:hover img { filter: brightness(1.05); }
 
@@ -428,7 +459,6 @@ import '../../styles/global.css';
         @media (min-width: 768px) { .grid-50-50 { grid-template-columns: 1fr 1fr; gap: 80px; } }
         
         .img-box { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; will-change: transform; }
-        /* CALIBRACIÓN DE ALTURA RESPONSIVE (75vh) EN PORTAFOLIO */
         .img-box img { max-height: 75vh; max-width: 100%; width: auto; height: auto; object-fit: contain; display: block; filter: brightness(0.9); transition: filter 0.5s, transform 0.5s; }
         .img-box:hover img { filter: brightness(1.05); transform: scale(1.02); }
 
@@ -436,18 +466,9 @@ import '../../styles/global.css';
         .text-box .meta { font-family: var(--font-mono); font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 20px; }
         .text-box p { color: var(--muted); line-height: 1.6; font-size: 1rem; }
 
-        /* ESTILO PREMIUM PARA LAS IMÁGENES CLIQUEABLES DE TODA LA WEB (EXCEPTO HERO) */
-        .gallery-image {
-            cursor: pointer !important;
-            pointer-events: auto !important; /* Forza la recepción física del clic */
-        }
-        .trigger-portal img {
-            transition: filter 0.4s ease, transform 0.4s ease !important;
-        }
-        .trigger-portal:hover img {
-            transform: scale(1.03) !important;
-            filter: brightness(1.05) !important;
-        }
+        .gallery-image { cursor: pointer !important; pointer-events: auto !important; }
+        .trigger-portal img { transition: filter 0.4s ease, transform 0.4s ease !important; }
+        .trigger-portal:hover img { transform: scale(1.03) !important; filter: brightness(1.05) !important; }
 
         #photo-portal { position: fixed; z-index: 9999; background: rgba(2, 2, 2, 0.98); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; top:0; left:0; width:100vw; height:100vh; transition: opacity 0.4s ease; backdrop-filter: blur(10px); }
         #portal-img { max-width: 90vw; max-height: 90vh; object-fit: contain; position: absolute; will-change: transform, opacity; box-shadow: 0 50px 100px rgba(0,0,0,0.8); }
@@ -476,307 +497,399 @@ import '../../styles/global.css';
         .footer-links a { background: transparent; border: none; color: var(--muted); font-family: var(--font-display); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; text-decoration: none; }
         .footer-links a:hover { color: var(--text); }
 
-        /* --- SECCIÓN MOBILE / TABLET OPTIMIZADA AL 100% (CALIBRACIONES DE ESPECIFICIDAD EXCLUSIVAS) --- */
+        /* ==========================================================================
+           3. MEDIA QUERIES: HEADER DISEÑO + REGLAS FOTOGRAFÍA
+           ========================================================================== */
         @media (max-width: 1024px) {
-            nav { padding: 20px; height: auto; }
-            .hud-status { display: none; }
-            
-            /* Calibración de Hero en móviles (Evita cortes de pantalla y reduce espacio muerto del título) */
+            /* HEADER DISEÑO */
+            #main-nav { height: auto !important; padding: 20px !important; align-items: center !important; justify-content: space-between !important; }
+            .hud-status, #main-nav div[style*="width: 1px"] { display: none !important; }
+            .hud-right { gap: 15px !important; }
+            .hud-logo img { width: 30px !important; height: 30px !important; }
+
+            /* REGLAS FOTOGRAFÍA INTACTAS */
             .photo-env .layer-hero { height: auto !important; padding: 100px 20px 20px 20px !important; }
             .photo-env .hero-title { font-size: 2.3rem !important; line-height: 1.1 !important; margin-bottom: 5px !important; }
             .photo-env .hero-desc { font-size: 0.95rem !important; margin-top: 10px !important; }
-
-            /* Espaciado vertical comprimido en horizontal móvil (Evita vacíos negros gigantes, snap idéntico a portafolio) */
             .h-wrapper { height: auto !important; overflow: visible !important; }
             .h-container { width: 100% !important; height: auto !important; flex-direction: column !important; transform: none !important; display: flex !important; gap: 15px !important; padding: 10px 5vw !important; }
-            
-            /* Override estricto de especificidad (Anula el min-height heredado de global.css de Diseño) */
-            .photo-env .h-panel { 
-                width: 100% !important; 
-                height: auto !important; 
-                min-height: 0px !important; /* Anula de raíz el min-height: 100vh de global.css */
-                padding: 0 !important; 
-                margin-bottom: 0px !important; 
-            }
-            
-            /* Ajuste de cajas de portafolio para evitar vacíos */
+            .photo-env .h-panel { width: 100% !important; height: auto !important; min-height: 0px !important; padding: 0 !important; margin-bottom: 0px !important; }
             .grid-50-50 { margin-bottom: 45px !important; gap: 20px !important; }
             .vault-wrapper { padding: 40px 5vw !important; }
-            
             .art-wrapper { display: block; width: 100%; }
             .art-piece img, .img-box img { max-height: 50vh !important; }
             .footer-grid { flex-direction: column; text-align: center; }
             .lb-btn { width: 40px; height: 40px; font-size: 12px; }
             .site-footer { padding: 30px 5vw !important; }
         }
+
+        @media (max-width: 480px) {
+            /* HEADER DISEÑO */
+            .hud-left { gap: 15px !important; }
+            
+            /* PENETRACIÓN MÓVIL PARA EL COMPONENTE */
+            .hud-left a:not(.hud-logo),
+            .hud-left span,
+            .hud-left > *:not(.hud-logo), 
+            .hud-left > *:not(.hud-logo) * { font-size: 9px !important; }
+            
+            .hud-controls { gap: 10px !important; font-size: 9px !important; }
+            .btn-cta-nav { padding: 8px 16px !important; font-size: 9px !important; margin-left: 0 !important; }
+        }
     </style>
 
     <!-- INICIALIZADOR DE PRELOADER VANILLA JS CON POLLING SEGURO -->
     <script is:inline>
-        var pct, initScreen, progBar, blurShield;
+        (function() {
+            var pct, initScreen, progBar, blurShield;
 
-        function pollDOM() {
-            pct = document.getElementById('loader-pct');
-            initScreen = document.getElementById('system-init');
-            progBar = document.getElementById('progress-bar');
-            blurShield = document.getElementById('op-nav-blur-shield');
+            function pollDOM() {
+                pct = document.getElementById('loader-pct');
+                initScreen = document.getElementById('system-init');
+                progBar = document.getElementById('progress-bar');
+                blurShield = document.getElementById('op-nav-blur-shield');
 
-            if (pct && initScreen && progBar) {
-                startPreloader(); 
-            } else {
-                setTimeout(pollDOM, 10);
+                if (pct && initScreen && progBar) {
+                    startPreloader(); 
+                } else {
+                    setTimeout(pollDOM, 10);
+                }
             }
-        }
 
-        function startPreloader() {
-            var progress = 0;
-            var interval = setInterval(function() {
-                progress += Math.floor(Math.random() * 12) + 6;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    var hideLoader = function() {
-                        if (typeof gsap !== 'undefined') {
-                            gsap.to([initScreen, progBar, blurShield], {
-                                opacity: 0,
-                                duration: 0.8,
-                                ease: "power2.inOut",
-                                onComplete: function() {
+            function startPreloader() {
+                var progress = 0;
+                var interval = setInterval(function() {
+                    progress += Math.floor(Math.random() * 12) + 6;
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(interval);
+                        
+                        var hideLoader = function() {
+                            if (typeof gsap !== 'undefined') {
+                                gsap.to([initScreen, progBar, blurShield], {
+                                    opacity: 0,
+                                    duration: 0.8,
+                                    ease: "power2.inOut",
+                                    onComplete: function() {
+                                        if(initScreen) initScreen.style.display = 'none';
+                                        if(progBar) progBar.style.display = 'none';
+                                        if(blurShield) blurShield.style.display = 'none';
+                                        initSite(); 
+                                    }
+                                });
+                            } else {
+                                if(initScreen) initScreen.style.transition = 'opacity 0.8s';
+                                if(progBar) progBar.style.transition = 'opacity 0.8s';
+                                if(blurShield) blurShield.style.transition = 'opacity 0.8s';
+                                if(initScreen) initScreen.style.opacity = '0';
+                                if(progBar) progBar.style.opacity = '0';
+                                if(blurShield) blurShield.style.opacity = '0';
+                                setTimeout(function() {
                                     if(initScreen) initScreen.style.display = 'none';
                                     if(progBar) progBar.style.display = 'none';
                                     if(blurShield) blurShield.style.display = 'none';
-                                    initSite(); 
-                                }
-                            });
-                        } else {
-                            if(initScreen) initScreen.style.transition = 'opacity 0.8s';
-                            if(progBar) progBar.style.transition = 'opacity 0.8s';
-                            if(blurShield) blurShield.style.transition = 'opacity 0.8s';
-                            if(initScreen) initScreen.style.opacity = '0';
-                            if(progBar) progBar.style.opacity = '0';
-                            if(blurShield) blurShield.style.opacity = '0';
-                            setTimeout(function() {
-                                if(initScreen) initScreen.style.display = 'none';
-                                if(progBar) progBar.style.display = 'none';
-                                if(blurShield) blurShield.style.display = 'none';
-                                initSite();
-                            }, 800);
+                                    initSite();
+                                }, 800);
+                            }
+                        };
+                        hideLoader();
+                    }
+                    
+                    var padProgress = progress < 10 ? '00' + progress : (progress < 100 ? '0' + progress : progress);
+                    if (pct) pct.innerText = '[' + padProgress + '%]';
+                    if (progBar) progBar.style.width = progress + "%";
+                }, 50);
+            }
+
+            function initSite() {
+                if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined' || typeof Lenis === 'undefined') {
+                    setTimeout(initSite, 30);
+                    return;
+                }
+                gsap.registerPlugin(ScrollTrigger);
+
+                const lenis = new Lenis({ duration: 1.2, smooth: true });
+                function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+                requestAnimationFrame(raf);
+
+                // EFECTO DE APARICIÓN DE HERO ORIGINAL RESTAURADA CON TRANSLATEY PREMIUM
+                gsap.to('.hero-anim', { opacity: 1, y: 0, duration: 1.4, stagger: 0.15, ease: "power4.out" });
+                gsap.to('#hero-bg-img', { scale: 1.1, duration: 15, ease: "power1.inOut", repeat: -1, yoyo: true });
+
+                let mm = gsap.matchMedia();
+
+                mm.add("(min-width: 1025px)", () => {
+                    const hContainer = document.querySelector('.h-container');
+                    if(!hContainer) return;
+                    let hTween = gsap.to(hContainer, { 
+                        x: () => -(hContainer.scrollWidth - window.innerWidth), 
+                        ease: "none", 
+                        scrollTrigger: { 
+                            trigger: ".h-wrapper", 
+                            pin: true, 
+                            scrub: 1, 
+                            invalidateOnRefresh: true, // RECALCULA EL ANCHO DINÁMICAMENTE AL REDUCIR EL NAVEGADOR
+                            end: () => "+=" + hContainer.scrollWidth 
+                        } 
+                    });
+
+                    document.querySelectorAll('.h-panel .reveal-shutter').forEach((wrapper, i) => {
+                        let direction = wrapper.getAttribute('data-reveal');
+                        let clipStart = getClipPath(direction);
+                        let stConfig = { trigger: wrapper.parentElement, containerAnimation: hTween, start: "left 75%", end: "right 15%", toggleActions: "play none none reverse" };
+                        if (i === 0) stConfig = { trigger: ".h-wrapper", start: "top 80%", toggleActions: "play none none reverse" };
+                        
+                        gsap.fromTo(wrapper, { clipPath: clipStart }, { clipPath: direction === 'center' ? 'inset(0% 0% 0% 0%)' : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 1.4, ease: "power4.inOut", scrollTrigger: stConfig });
+                        const img = wrapper.querySelector('.reveal-img');
+                        if(img) gsap.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.4, ease: "power4.inOut", scrollTrigger: stConfig });
+                    });
+
+                    document.querySelectorAll('.h-panel .photo-info').forEach((container, i) => {
+                        const texts = container.querySelectorAll('.info-text');
+                        let stConfig = { trigger: container.parentElement, containerAnimation: hTween, start: "left 75%", end: "right 15%", toggleActions: "play none none reverse" };
+                        if (i === 0) stConfig = { trigger: ".h-wrapper", start: "top 80%", toggleActions: "play none none reverse" };
+                        
+                        gsap.fromTo(texts, { y: "100%" }, { y: "0%", duration: 0.9, stagger: 0.08, ease: "power3.out", scrollTrigger: stConfig });
+                    });
+
+                    setupVerticalAnimations();
+                });
+
+                mm.add("(max-width: 1024px)", () => {
+                    document.querySelectorAll('.reveal-shutter').forEach(wrapper => {
+                        let direction = wrapper.getAttribute('data-reveal');
+                        let clipStart = getClipPath(direction);
+                        
+                        gsap.fromTo(wrapper, { clipPath: clipStart }, { clipPath: direction === 'center' ? 'inset(0% 0% 0% 0%)' : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 1.2, ease: "power3.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
+                        const img = wrapper.querySelector('.reveal-img');
+                        if(img) gsap.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.2, ease: "power3.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
+                    });
+                    
+                    document.querySelectorAll('.photo-info').forEach(container => {
+                        const texts = container.querySelectorAll('.info-text');
+                        gsap.fromTo(texts, { y: "100%" }, { y: "0%", duration: 0.9, stagger: 0.08, ease: "power3.out", scrollTrigger: { trigger: container, start: "top 85%", toggleActions: "play none none reverse" } });
+                    });
+
+                    setupVerticalAnimations();
+                });
+
+                function getClipPath(direction) {
+                    switch(direction) {
+                        case 'left': return 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)';
+                        case 'right': return 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)';
+                        case 'top': return 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)';
+                        case 'bottom': return 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)';
+                        case 'center': return 'inset(50% 50% 50% 50%)';
+                        default: return 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)';
+                    }
+                }
+
+                // --- SISTEMA INTERACTIVO DE PORTAL LIGHTBOX CON EVENT DELEGATION EXCLUSIVO (A PRUEBA DE FALLOS EN HORIZONTAL) ---
+                const portal = document.getElementById('photo-portal');
+                const portalImg = document.getElementById('portal-img');
+                const btnPrev = document.getElementById('lb-prev');
+                const btnNext = document.getElementById('lb-next');
+                const btnClose = document.getElementById('lb-close');
+                const counterUI = document.getElementById('lb-counter');
+                
+                const allImages = Array.from(document.querySelectorAll('.gallery-image'));
+                let currentIndex = -1;
+
+                // DELEGACIÓN GLOBAL DE EVENTO CLIC (Inmune a la clonación de GSAP o de la estructura del DOM)
+                document.addEventListener('click', function(e) {
+                    const card = e.target.closest('.trigger-portal');
+                    if (card) {
+                        const img = card.querySelector('.gallery-image');
+                        if (img) {
+                            currentIndex = allImages.indexOf(img);
+                            openLightbox(card, img);
                         }
-                    };
-                    hideLoader();
+                    }
+                });
+
+                function openLightbox(card, img) {
+                    const rect = card.getBoundingClientRect();
+                    portalImg.src = img.src;
+                    updateCounter();
+                    
+                    gsap.set(portal, { opacity: 1, pointerEvents: "auto" });
+                    gsap.set(portalImg, { top: rect.top, left: rect.left, width: rect.width, height: rect.height, borderRadius: "8px", opacity: 1 });
+                    
+                    gsap.to(portalImg, { top: "5vh", left: "5vw", width: "90vw", height: "90vh", borderRadius: "0px", duration: 0.6, ease: "power4.inOut" });
+                    gsap.to('.lightbox-ui', { opacity: 1, duration: 0.3, delay: 0.3 });
+                    lenis.stop();
                 }
-                
-                var padProgress = progress < 10 ? '00' + progress : (progress < 100 ? '0' + progress : progress);
-                if (pct) pct.innerText = '[' + padProgress + '%]';
-                if (progBar) progBar.style.width = progress + "%";
-            }, 50);
-        }
 
-        var allImages = [];
-        var currentIndex = -1;
-        var portal, portalImg, btnPrev, btnNext, btnClose, counterUI;
-
-        function initSite() {
-            if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined' || typeof Lenis === 'undefined') {
-                setTimeout(initSite, 30);
-                return;
-            }
-            gsap.registerPlugin(ScrollTrigger);
-
-            const lenis = new Lenis({ duration: 1.2, smooth: true });
-            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-            requestAnimationFrame(raf);
-
-            // EFECTO DE APARICIÓN DE HERO ORIGINAL RESTAURADA CON TRANSLATEY PREMIUM
-            gsap.to('.hero-anim', { opacity: 1, y: 0, duration: 1.4, stagger: 0.15, ease: "power4.out" });
-            gsap.to('#hero-bg-img', { scale: 1.1, duration: 15, ease: "power1.inOut", repeat: -1, yoyo: true });
-
-            let mm = gsap.matchMedia();
-
-            mm.add("(min-width: 1025px)", () => {
-                const hContainer = document.querySelector('.h-container');
-                if(!hContainer) return;
-                let hTween = gsap.to(hContainer, { 
-                    x: () => -(hContainer.scrollWidth - window.innerWidth), 
-                    ease: "none", 
-                    scrollTrigger: { 
-                        trigger: ".h-wrapper", 
-                        pin: true, 
-                        scrub: 1, 
-                        invalidateOnRefresh: true, // RECALCULA EL ANCHO DINÁMICAMENTE AL REDUCIR EL NAVEGADOR
-                        end: () => "+=" + hContainer.scrollWidth 
-                    } 
-                });
-
-                document.querySelectorAll('.h-panel .reveal-shutter').forEach((wrapper, i) => {
-                    let direction = wrapper.getAttribute('data-reveal');
-                    let clipStart = getClipPath(direction);
-                    let stConfig = { trigger: wrapper.parentElement, containerAnimation: hTween, start: "left 75%", end: "right 15%", toggleActions: "play none none reverse" };
-                    if (i === 0) stConfig = { trigger: ".h-wrapper", start: "top 80%", toggleActions: "play none none reverse" };
+                function closeLightbox() {
+                    if (currentIndex === -1) return;
+                    const targetCard = allImages[currentIndex].closest('.trigger-portal');
+                    const rect = targetCard.getBoundingClientRect();
                     
-                    gsap.fromTo(wrapper, { clipPath: clipStart }, { clipPath: direction === 'center' ? 'inset(0% 0% 0% 0%)' : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 1.4, ease: "power4.inOut", scrollTrigger: stConfig });
-                    const img = wrapper.querySelector('.reveal-img');
-                    if(img) gsap.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.4, ease: "power4.inOut", scrollTrigger: stConfig });
-                });
-
-                document.querySelectorAll('.h-panel .photo-info').forEach((container, i) => {
-                    const texts = container.querySelectorAll('.info-text');
-                    let stConfig = { trigger: container.parentElement, containerAnimation: hTween, start: "left 75%", end: "right 15%", toggleActions: "play none none reverse" };
-                    if (i === 0) stConfig = { trigger: ".h-wrapper", start: "top 80%", toggleActions: "play none none reverse" };
-                    
-                    gsap.fromTo(texts, { y: "100%" }, { y: "0%", duration: 0.9, stagger: 0.08, ease: "power3.out", scrollTrigger: stConfig });
-                });
-
-                setupVerticalAnimations();
-            });
-
-            mm.add("(max-width: 1024px)", () => {
-                document.querySelectorAll('.reveal-shutter').forEach(wrapper => {
-                    let direction = wrapper.getAttribute('data-reveal');
-                    let clipStart = getClipPath(direction);
-                    
-                    gsap.fromTo(wrapper, { clipPath: clipStart }, { clipPath: direction === 'center' ? 'inset(0% 0% 0% 0%)' : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 1.2, ease: "power3.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
-                    const img = wrapper.querySelector('.reveal-img');
-                    if(img) gsap.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.2, ease: "power3.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
-                });
-                
-                document.querySelectorAll('.photo-info').forEach(container => {
-                    const texts = container.querySelectorAll('.info-text');
-                    gsap.fromTo(texts, { y: "100%" }, { y: "0%", duration: 0.9, stagger: 0.08, ease: "power3.out", scrollTrigger: { trigger: container, start: "top 85%", toggleActions: "play none none reverse" } });
-                });
-
-                setupVerticalAnimations();
-            });
-
-            function getClipPath(direction) {
-                switch(direction) {
-                    case 'left': return 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)';
-                    case 'right': return 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)';
-                    case 'top': return 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)';
-                    case 'bottom': return 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)';
-                    case 'center': return 'inset(50% 50% 50% 50%)';
-                    default: return 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)';
+                    gsap.to('.lightbox-ui', { opacity: 0, duration: 0.2 });
+                    gsap.to(portalImg, {
+                        top: rect.top, left: rect.left, width: rect.width, height: rect.height, borderRadius: "8px", duration: 0.6, ease: "power4.inOut",
+                        onComplete: () => {
+                            gsap.set(portal, { opacity: 0, pointerEvents: "none" });
+                            currentIndex = -1;
+                            lenis.start();
+                        }
+                    });
                 }
+
+                function navLightbox(direction) {
+                    if (direction === 'next' && currentIndex < allImages.length - 1) currentIndex++;
+                    else if (direction === 'prev' && currentIndex > 0) currentIndex--;
+                    else return;
+
+                    updateCounter();
+                    const newImg = allImages[currentIndex];
+                    
+                    gsap.to(portalImg, { opacity: 0, duration: 0.2, onComplete: () => {
+                        portalImg.src = newImg.src;
+                        gsap.to(portalImg, { opacity: 1, duration: 0.2 });
+                    }});
+                }
+
+                function updateCounter() {
+                    if(counterUI) counterUI.innerText = `${currentIndex + 1} / ${allImages.length}`;
+                }
+
+                if(btnClose) btnClose.addEventListener('click', closeLightbox);
+                if(btnNext) btnNext.addEventListener('click', () => navLightbox('next'));
+                if(btnPrev) btnPrev.addEventListener('click', () => navLightbox('prev'));
+                if(portal) portal.addEventListener('click', (e) => { if (e.target === portal) closeLightbox(); });
+
+                window.addEventListener('keydown', (e) => {
+                    if (currentIndex === -1) return;
+                    if (e.key === 'Escape') closeLightbox();
+                    if (e.key === 'ArrowRight') navLightbox('next');
+                    if (e.key === 'ArrowLeft') navLightbox('prev');
+                });
             }
 
-            // --- SISTEMA INTERACTIVO DE PORTAL LIGHTBOX CON EVENT DELEGATION EXCLUSIVO (A PRUEBA DE FALLOS EN HORIZONTAL) ---
-            portal = document.getElementById('photo-portal');
-            portalImg = document.getElementById('portal-img');
-            btnPrev = document.getElementById('lb-prev');
-            btnNext = document.getElementById('lb-next');
-            btnClose = document.getElementById('lb-close');
-            counterUI = document.getElementById('lb-counter');
+            function setupVerticalAnimations() {
+                document.querySelectorAll('.vault-wrapper .reveal-shutter').forEach(wrapper => {
+                    let direction = wrapper.getAttribute('data-reveal');
+                    gsap.fromTo(wrapper, { clipPath: getClipPath(direction) }, { clipPath: direction === 'center' ? 'inset(0% 0% 0% 0%)' : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 1.4, ease: "power4.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
+                    const img = wrapper.querySelector('.reveal-img');
+                    if(img) gsap.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.4, ease: "power4.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
+                });
+
+                gsap.utils.toArray('.fade-up').forEach(el => {
+                    gsap.fromTo(el, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none reverse" } });
+                });
+            }
+
+            // --- GESTIÓN DE FORMULARIO ---
+            const form = document.getElementById('booking-form');
+            if(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('form-name').value;
+                    const email = document.getElementById('form-email').value;
+                    const phone = document.getElementById('form-phone').value;
+                    const type = document.getElementById('form-type').value;
+
+                    const isEN = document.documentElement.lang === 'en';
+                    const subject = isEN ? `New Session Request: ${type} - ${name}` : `Nueva Solicitud de Sesión: ${type} - ${name}`;
+                    const body = isEN ? 
+                        `Hello Oscar,\n\nI would like to book a photography session.\n\nClient Details:\n- Name: ${name}\n- Email: ${email}\n- Phone/WhatsApp: ${phone}\n- Session Type: ${type}\n\nLooking forward to your reply.\n\nBest regards.` :
+                        `Hello Oscar,\n\nI would like to book a photography session.\n\nClient Details:\n- Name: ${name}\n- Email: ${email}\n- Phone/WhatsApp: ${phone}\n- Session Type: ${type}\n\nLooking forward to your reply.\n\nBest regards.`;
+
+                    window.location.href = `mailto:oscarpozo072@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                });
+            }
+
+            // Arrancar el Polling del DOM al cargar el documento
+            pollDOM();
+        })();
+    </script>
+
+    <!-- ==========================================================================
+         SCRIPT DE HEADER RESPONSIVE (CLON DE DISEÑO) CON INYECCIÓN FÍSICA
+         ========================================================================== -->
+    <script is:inline>
+        (function() {
+            function adjustHeader() {
+                var nav = document.getElementById('main-nav');
+                if (!nav) return;
+                
+                var status = nav.querySelector('.hud-status');
+                var divider = nav.querySelector('.hud-right > div[style*="width: 1px"]');
+                var controls = nav.querySelector('.hud-controls');
+                var cta = nav.querySelector('.btn-cta-nav');
+                var logoImg = nav.querySelector('.hud-logo img');
+                
+                // FORZADO FÍSICO DE ESTILOS PARA BYPASSEAR ASTRO SCOPED CSS
+                var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
+                switcherText.forEach(function(el) {
+                    el.style.setProperty('text-transform', 'uppercase', 'important');
+                    el.style.setProperty('font-weight', '700', 'important');
+                    el.style.setProperty('letter-spacing', '1px', 'important');
+                    el.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                });
+
+                if (window.innerWidth <= 1024) {
+                    nav.style.setProperty('display', 'flex', 'important');
+                    nav.style.setProperty('align-items', 'center', 'important');
+                    nav.style.setProperty('padding', '20px', 'important');
+                    nav.style.setProperty('height', 'auto', 'important');
+                    nav.style.setProperty('justify-content', 'space-between', 'important');
+                    
+                    if (status) status.style.setProperty('display', 'none', 'important');
+                    if (divider) divider.style.setProperty('display', 'none', 'important');
+                    if (controls) {
+                        controls.style.setProperty('padding-left', '0', 'important');
+                        controls.style.setProperty('gap', '10px', 'important');
+                    }
+                    
+                    if (cta) {
+                        cta.style.setProperty('margin-left', '10px', 'important');
+                        cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 16px' : '10px 20px', 'important');
+                        cta.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                        cta.style.setProperty('white-space', 'nowrap', 'important');
+                    }
+                    
+                    if (logoImg) {
+                        logoImg.style.setProperty('width', '30px', 'important');
+                        logoImg.style.setProperty('height', '30px', 'important');
+                    }
+                } else {
+                    nav.style.setProperty('display', 'flex', 'important');
+                    nav.style.setProperty('align-items', 'flex-start', 'important');
+                    nav.style.setProperty('padding', '25px 40px', 'important');
+                    nav.style.setProperty('height', '120px', 'important');
+                    nav.style.setProperty('justify-content', 'space-between', 'important');
+                    
+                    if (status) status.style.setProperty('display', 'block', 'important');
+                    if (divider) {
+                        divider.style.setProperty('display', 'block', 'important');
+                    }
+                    if (controls) {
+                        controls.style.removeProperty('padding-left');
+                        controls.style.removeProperty('gap');
+                    }
+                    if (cta) {
+                        cta.style.setProperty('margin-left', '25px', 'important');
+                        cta.style.removeProperty('padding');
+                        cta.style.removeProperty('font-size');
+                        cta.style.removeProperty('white-space');
+                    }
+                    if (logoImg) {
+                        logoImg.style.setProperty('width', '35px', 'important');
+                        logoImg.style.setProperty('height', '35px', 'important');
+                    }
+                }
+            }
             
-            allImages = Array.from(document.querySelectorAll('.gallery-image'));
-
-            // DELEGACIÓN GLOBAL DE EVENTO CLIC (Inmune a la clonación de GSAP o de la estructura del DOM)
-            document.addEventListener('click', function(e) {
-                const card = e.target.closest('.trigger-portal');
-                if (card) {
-                    const img = card.querySelector('.gallery-image');
-                    if (img) {
-                        currentIndex = allImages.indexOf(img);
-                        openLightbox(card, img);
-                    }
-                }
+            var resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(adjustHeader, 15);
             });
-
-            function openLightbox(card, img) {
-                const rect = card.getBoundingClientRect();
-                portalImg.src = img.src;
-                updateCounter();
-                
-                gsap.set(portal, { opacity: 1, pointerEvents: "auto" });
-                gsap.set(portalImg, { top: rect.top, left: rect.left, width: rect.width, height: rect.height, borderRadius: "8px", opacity: 1 });
-                
-                gsap.to(portalImg, { top: "5vh", left: "5vw", width: "90vw", height: "90vh", borderRadius: "0px", duration: 0.6, ease: "power4.inOut" });
-                gsap.to('.lightbox-ui', { opacity: 1, duration: 0.3, delay: 0.3 });
-                if (lenis) lenis.stop();
-            }
-
-            function closeLightbox() {
-                if (currentIndex === -1) return;
-                const targetCard = allImages[currentIndex].closest('.trigger-portal');
-                const rect = targetCard.getBoundingClientRect();
-                
-                gsap.to('.lightbox-ui', { opacity: 0, duration: 0.2 });
-                gsap.to(portalImg, {
-                    top: rect.top, left: rect.left, width: rect.width, height: rect.height, borderRadius: "8px", duration: 0.6, ease: "power4.inOut",
-                    onComplete: () => {
-                        gsap.set(portal, { opacity: 0, pointerEvents: "none" });
-                        currentIndex = -1;
-                        if (lenis) lenis.start();
-                    }
-                });
-            }
-
-            function navLightbox(direction) {
-                if (direction === 'next' && currentIndex < allImages.length - 1) currentIndex++;
-                else if (direction === 'prev' && currentIndex > 0) currentIndex--;
-                else return;
-
-                updateCounter();
-                const newImg = allImages[currentIndex];
-                
-                gsap.to(portalImg, { opacity: 0, duration: 0.2, onComplete: () => {
-                    portalImg.src = newImg.src;
-                    gsap.to(portalImg, { opacity: 1, duration: 0.2 });
-                }});
-            }
-
-            function updateCounter() {
-                if(counterUI) counterUI.innerText = `${currentIndex + 1} / ${allImages.length}`;
-            }
-
-            if(btnClose) btnClose.addEventListener('click', closeLightbox);
-            if(btnNext) btnNext.addEventListener('click', () => navLightbox('next'));
-            if(btnPrev) btnPrev.addEventListener('click', () => navLightbox('prev'));
-            if(portal) portal.addEventListener('click', (e) => { if (e.target === portal) closeLightbox(); });
-
-            window.addEventListener('keydown', (e) => {
-                if (currentIndex === -1) return;
-                if (e.key === 'Escape') closeLightbox();
-                if (e.key === 'ArrowRight') navLightbox('next');
-                if (e.key === 'ArrowLeft') navLightbox('prev');
-            });
-        }
-
-        function setupVerticalAnimations() {
-            document.querySelectorAll('.vault-wrapper .reveal-shutter').forEach(wrapper => {
-                let direction = wrapper.getAttribute('data-reveal');
-                gsap.fromTo(wrapper, { clipPath: getClipPath(direction) }, { clipPath: direction === 'center' ? 'inset(0% 0% 0% 0%)' : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 1.4, ease: "power4.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
-                const img = wrapper.querySelector('.reveal-img');
-                if(img) gsap.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.4, ease: "power4.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
-            });
-
-            gsap.utils.toArray('.fade-up').forEach(el => {
-                gsap.fromTo(el, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none reverse" } });
-            });
-        }
-
-        // --- GESTIÓN DE FORMULARIO ---
-        const form = document.getElementById('booking-form');
-        if(form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('form-name').value;
-                const email = document.getElementById('form-email').value;
-                const phone = document.getElementById('form-phone').value;
-                const type = document.getElementById('form-type').value;
-
-                const isEN = document.documentElement.lang === 'en';
-                const subject = isEN ? `New Session Request: ${type} - ${name}` : `Nueva Solicitud de Sesión: ${type} - ${name}`;
-                const body = isEN ? 
-                    `Hello Oscar,\n\nI would like to book a photography session.\n\nClient Details:\n- Name: ${name}\n- Email: ${email}\n- Phone/WhatsApp: ${phone}\n- Session Type: ${type}\n\nLooking forward to your reply.\n\nBest regards.` :
-                    `Hello Oscar,\n\nI would like to book a photography session.\n\nClient Details:\n- Name: ${name}\n- Email: ${email}\n- Phone/WhatsApp: ${phone}\n- Session Type: ${type}\n\nLooking forward to your reply.\n\nBest regards.`;
-
-                window.location.href = `mailto:oscarpozo072@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            });
-        }
-
-        // Arrancar el Polling del DOM al cargar el documento
-        pollDOM();
-</script>
+            window.addEventListener('DOMContentLoaded', adjustHeader);
+            adjustHeader();
+        })();
+    </script>
 </body>
 </html>

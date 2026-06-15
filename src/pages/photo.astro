@@ -52,27 +52,34 @@ import '../styles/global.css';
     <canvas id="webgl-bokeh"></canvas>
     <div class="noise-overlay"></div>
 
-    <!-- NAVEGACIÓN -->
-    <nav id="main-nav">
+    <!-- ==========================================================================
+         NAVEGACIÓN: CLON EXACTO DE LA PÁGINA DE DISEÑO
+         ========================================================================== -->
+    <nav id="main-nav" style="display: flex !important; align-items: flex-start !important; padding: 25px 40px !important; height: 120px !important; box-sizing: border-box !important;">
         <div class="hud-left">
             <a href="#" class="hud-logo nav-link">
-                <img src="/assets/favicon-dark.png" alt="Oscar Pozo Logo">
+                <img src="/assets/favicon-dark.png" alt="Oscar Pozo Logo" style="width: 35px; height: 35px; transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);">
             </a>
             <GlobalSwitcher />
         </div>
-        <div class="hud-right">
-            <div class="hud-status">
+        <div class="hud-right" style="display: flex !important; align-items: center !important; gap: 0px !important;">
+            <div class="hud-status" style="text-align: right !important; flex-shrink: 0 !important; margin-right: 0px !important;">
                 <strong>Fotógrafo Profesional</strong><br>
                 <span>República Dominicana</span>
             </div>
             
-            <div class="hud-controls border-l border-white/10 pl-6 flex gap-4 text-xs font-mono tracking-widest text-[var(--text)]" style="pointer-events: auto;">
+            <!-- LÍNEA DE DIVISIÓN EDITORIAL MAESTRA -->
+            <div style="width: 1px; height: 24px; background: rgba(255, 255, 255, 0.1); margin-left: 25px !important; margin-right: 24px !important; align-self: center; flex-shrink: 0;"></div>
+
+            <!-- CONTROLES DE IDIOMA ALINEADOS -->
+            <div class="hud-controls flex gap-4 text-xs font-mono tracking-widest text-[var(--text)]" style="pointer-events: auto; align-items: center; flex-shrink: 0;">
                 <a href="/photo" class="ctrl-btn active">ES</a>
                 <span class="opacity-20">/</span>
                 <a href="/en/photo" class="ctrl-btn">EN</a>
             </div>
 
-            <a href="#agendar" class="btn-cta-nav nav-link">AGENDAR SESIÓN</a>
+            <!-- CTA CON AJUSTE DE MARGEN COHESIVO -->
+            <a href="#agendar" class="btn-cta-nav nav-link" style="margin-left: 25px !important; flex-shrink: 0 !important;">AGENDAR SESIÓN</a>
         </div>
     </nav>
 
@@ -343,25 +350,54 @@ import '../styles/global.css';
         #webgl-bokeh { position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: 0.6; will-change: transform; }
         .noise-overlay { position: fixed; inset: 0; z-index: -1; opacity: 0.03; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
 
-        nav { position: fixed; top: 0; width: 100%; padding: 25px 40px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 100; pointer-events: none; height: 120px; }
+        /* ==========================================================================
+           1. HEADER: CLON EXACTO DE DISEÑO (CON PENETRACIÓN NUCLEAR DE COMPONENTE)
+           ========================================================================== */
+        nav { position: fixed; top: 0; width: 100%; z-index: 100; pointer-events: none; }
         nav::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(to bottom, rgba(2,2,2,0.95) 0%, rgba(2,2,2,0) 100%); }
         
-        /* SEGURIDAD DE LOGO NAVEGACIÓN (EVITA LA DISTORSIÓN MÓVIL) */
+        .hud-left, .hud-right { pointer-events: auto; }
+        
+        .hud-status { font-family: var(--font-display); font-size: 8px; opacity: 0.7; line-height: 1.8; text-transform: uppercase; letter-spacing: 1px; }
+        .hud-status strong {
+            font-size: 10px !important;
+            text-transform: uppercase !important;
+            font-weight: 700 !important;
+            letter-spacing: 1px !important;
+            opacity: 1;
+        }
+
+        /* PENETRACIÓN AGRESIVA Y ABSOLUTA PARA EL COMPONENTE GLOBAL SWITCHER */
+        nav#main-nav .hud-left a:not(.hud-logo),
+        nav#main-nav .hud-left span,
+        nav#main-nav .hud-left p,
+        nav#main-nav .hud-left div:not(.hud-logo) {
+            font-size: 10px !important;
+            text-transform: uppercase !important;
+            font-weight: 700 !important;
+            letter-spacing: 1px !important;
+        }
+
+        .hud-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 40px !important;
+        }
+
         .hud-logo { display: flex; align-items: center; justify-content: center; width: 35px !important; height: 35px !important; flex-shrink: 0 !important; }
         .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; transition: transform 0.4s; }
         .hud-logo:hover img { transform: scale(1.15); }
 
-        .hud-left { display: flex; align-items: center; gap: 40px; pointer-events: auto; }
-        .hud-controls { display: flex; gap: 20px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; }
         .ctrl-btn { color: var(--text); opacity: 0.5; text-decoration: none; transition: opacity 0.3s, color 0.3s; font-weight: 700; letter-spacing: 1px; }
         .ctrl-btn:hover { opacity: 1; }
         .ctrl-btn.active { opacity: 1; color: var(--accent); }
-        .hud-right { display: flex; align-items: center; gap: 25px; pointer-events: auto; }
-        .hud-status { text-align: right; font-family: var(--font-display); font-size: 8px; opacity: 0.7; line-height: 1.8; text-transform: uppercase; letter-spacing: 1px; }
-        .hud-status strong { font-size: 10px; font-weight: 700; opacity: 1; }
+
         .btn-cta-nav { padding: 12px 24px; background: #fff; color: #000; border-radius: 100px; font-family: var(--font-display); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; transition: transform 0.3s; }
         .btn-cta-nav:hover { transform: scale(1.05); }
 
+        /* ==========================================================================
+           2. HERO Y RESTO DE FOTOGRAFÍA (INTACTO)
+           ========================================================================== */
         .layer-hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
         .hero-bg { position: absolute; inset: 0; z-index: -1; opacity: 0.55; }
         .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
@@ -369,7 +405,6 @@ import '../styles/global.css';
         
         .hero-title { font-family: var(--font-display); font-size: clamp(2.5rem, 7vw, 8rem); font-weight: 700; line-height: 0.85; text-transform: uppercase; letter-spacing: -2px; display: flex; flex-direction: column; align-items: center; gap: 0; margin-bottom: 10px; }
         
-        /* EFECTO DE APARICIÓN DE HERO ORIGINAL */
         .hero-anim { opacity: 0; transform: translateY(30px); will-change: opacity, transform; }
 
         .glow-text { 
@@ -392,11 +427,9 @@ import '../styles/global.css';
         .text-mask { overflow: hidden; display: inline-block; vertical-align: top; padding-top: 15px; margin-top: -15px; }
         .text-mask-inner { display: block; }
 
-        /* AJUSTE PREMIUM DE COMPRESIÓN HORIZONTAL - DISTANCIA CALIBRADA */
         .h-wrapper { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
         .h-container { display: flex; width: max-content; height: 100vh; padding-right: 3vw !important; align-items: center; will-change: transform; }
         
-        /* FORCE OVERRIDE: Forzamos a colapsar el ancho de 100vw de Diseño con un espaciado intermedio premium */
         .photo-env .h-panel { 
             height: 100vh !important; 
             width: auto !important; 
@@ -404,14 +437,13 @@ import '../styles/global.css';
             display: flex !important; 
             flex-direction: column !important; 
             justify-content: center !important; 
-            padding: 0 2.5vw !important; /* Calibración premium a 2.5vw */
+            padding: 0 2.5vw !important; 
             flex-shrink: 0 !important; 
             perspective: 1000px !important; 
         }
         
         .art-wrapper { display: inline-block; }
         .art-piece { position: relative; display: inline-block; will-change: transform; }
-        /* CALIBRACIÓN DE ALTURA RESPONSIVE (62vh) PARA EVITAR CORTES EN LAPTOPS */
         .art-piece img { max-height: 62vh; max-width: 80vw; width: auto; height: auto; display: block; object-fit: contain; filter: brightness(0.9); transition: filter 0.4s; }
         .art-piece:hover img { filter: brightness(1.05); }
 
@@ -427,7 +459,6 @@ import '../styles/global.css';
         @media (min-width: 768px) { .grid-50-50 { grid-template-columns: 1fr 1fr; gap: 80px; } }
         
         .img-box { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; will-change: transform; }
-        /* CALIBRACIÓN DE ALTURA RESPONSIVE (75vh) EN PORTAFOLIO */
         .img-box img { max-height: 75vh; max-width: 100%; width: auto; height: auto; object-fit: contain; display: block; filter: brightness(0.9); transition: filter 0.5s, transform 0.5s; }
         .img-box:hover img { filter: brightness(1.05); transform: scale(1.02); }
 
@@ -435,18 +466,9 @@ import '../styles/global.css';
         .text-box .meta { font-family: var(--font-mono); font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 20px; }
         .text-box p { color: var(--muted); line-height: 1.6; font-size: 1rem; }
 
-        /* ESTILO PREMIUM PARA LAS IMÁGENES CLIQUEABLES DE TODA LA WEB (EXCEPTO HERO) */
-        .gallery-image {
-            cursor: pointer !important;
-            pointer-events: auto !important; /* Forza la recepción física del clic */
-        }
-        .trigger-portal img {
-            transition: filter 0.4s ease, transform 0.4s ease !important;
-        }
-        .trigger-portal:hover img {
-            transform: scale(1.03) !important;
-            filter: brightness(1.05) !important;
-        }
+        .gallery-image { cursor: pointer !important; pointer-events: auto !important; }
+        .trigger-portal img { transition: filter 0.4s ease, transform 0.4s ease !important; }
+        .trigger-portal:hover img { transform: scale(1.03) !important; filter: brightness(1.05) !important; }
 
         #photo-portal { position: fixed; z-index: 9999; background: rgba(2, 2, 2, 0.98); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; top:0; left:0; width:100vw; height:100vh; transition: opacity 0.4s ease; backdrop-filter: blur(10px); }
         #portal-img { max-width: 90vw; max-height: 90vh; object-fit: contain; position: absolute; will-change: transform, opacity; box-shadow: 0 50px 100px rgba(0,0,0,0.8); }
@@ -475,38 +497,44 @@ import '../styles/global.css';
         .footer-links a { background: transparent; border: none; color: var(--muted); font-family: var(--font-display); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; text-decoration: none; }
         .footer-links a:hover { color: var(--text); }
 
-        /* --- SECCIÓN MOBILE / TABLET OPTIMIZADA AL 100% (CALIBRACIONES DE ESPECIFICIDAD EXCLUSIVAS) --- */
+        /* ==========================================================================
+           3. MEDIA QUERIES: HEADER DISEÑO + REGLAS FOTOGRAFÍA
+           ========================================================================== */
         @media (max-width: 1024px) {
-            nav { padding: 20px; height: auto; }
-            .hud-status { display: none; }
-            
-            /* Calibración de Hero en móviles (Evita cortes de pantalla y reduce espacio muerto del título) */
+            /* HEADER DISEÑO */
+            #main-nav { height: auto !important; padding: 20px !important; align-items: center !important; justify-content: space-between !important; }
+            .hud-status, #main-nav div[style*="width: 1px"] { display: none !important; }
+            .hud-right { gap: 15px !important; }
+            .hud-logo img { width: 30px !important; height: 30px !important; }
+
+            /* REGLAS FOTOGRAFÍA INTACTAS */
             .photo-env .layer-hero { height: auto !important; padding: 100px 20px 20px 20px !important; }
             .photo-env .hero-title { font-size: 2.3rem !important; line-height: 1.1 !important; margin-bottom: 5px !important; }
             .photo-env .hero-desc { font-size: 0.95rem !important; margin-top: 10px !important; }
-
-            /* Espaciado vertical comprimido en horizontal móvil (Evita vacíos negros gigantes, snap idéntico a portafolio) */
             .h-wrapper { height: auto !important; overflow: visible !important; }
             .h-container { width: 100% !important; height: auto !important; flex-direction: column !important; transform: none !important; display: flex !important; gap: 15px !important; padding: 10px 5vw !important; }
-            
-            /* Override estricto de especificidad (Evita el estiramiento de 100vh y min-height de Diseño) */
-            .photo-env .h-panel { 
-                width: 100% !important; 
-                height: auto !important; 
-                min-height: 0px !important; /* Anula de raíz el min-height: 100vh de global.css */
-                padding: 0 !important; 
-                margin-bottom: 0px !important; 
-            }
-            
-            /* Ajuste de cajas de portafolio para evitar vacíos */
+            .photo-env .h-panel { width: 100% !important; height: auto !important; min-height: 0px !important; padding: 0 !important; margin-bottom: 0px !important; }
             .grid-50-50 { margin-bottom: 45px !important; gap: 20px !important; }
             .vault-wrapper { padding: 40px 5vw !important; }
-            
             .art-wrapper { display: block; width: 100%; }
             .art-piece img, .img-box img { max-height: 50vh !important; }
             .footer-grid { flex-direction: column; text-align: center; }
             .lb-btn { width: 40px; height: 40px; font-size: 12px; }
             .site-footer { padding: 30px 5vw !important; }
+        }
+
+        @media (max-width: 480px) {
+            /* HEADER DISEÑO */
+            .hud-left { gap: 15px !important; }
+            
+            /* PENETRACIÓN MÓVIL PARA EL COMPONENTE */
+            .hud-left a:not(.hud-logo),
+            .hud-left span,
+            .hud-left > *:not(.hud-logo), 
+            .hud-left > *:not(.hud-logo) * { font-size: 9px !important; }
+            
+            .hud-controls { gap: 10px !important; font-size: 9px !important; }
+            .btn-cta-nav { padding: 8px 16px !important; font-size: 9px !important; margin-left: 0 !important; }
         }
     </style>
 
@@ -774,6 +802,93 @@ import '../styles/global.css';
 
             // Arrancar el Polling del DOM al cargar el documento
             pollDOM();
+        })();
+    </script>
+
+    <!-- ==========================================================================
+         SCRIPT DE HEADER RESPONSIVE (CLON DE DISEÑO) CON INYECCIÓN FÍSICA
+         ========================================================================== -->
+    <script is:inline>
+        (function() {
+            function adjustHeader() {
+                var nav = document.getElementById('main-nav');
+                if (!nav) return;
+                
+                var status = nav.querySelector('.hud-status');
+                var divider = nav.querySelector('.hud-right > div[style*="width: 1px"]');
+                var controls = nav.querySelector('.hud-controls');
+                var cta = nav.querySelector('.btn-cta-nav');
+                var logoImg = nav.querySelector('.hud-logo img');
+                
+                // FORZADO FÍSICO DE ESTILOS PARA BYPASSEAR ASTRO SCOPED CSS
+                var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
+                switcherText.forEach(function(el) {
+                    el.style.setProperty('text-transform', 'uppercase', 'important');
+                    el.style.setProperty('font-weight', '700', 'important');
+                    el.style.setProperty('letter-spacing', '1px', 'important');
+                    el.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                });
+
+                if (window.innerWidth <= 1024) {
+                    nav.style.setProperty('display', 'flex', 'important');
+                    nav.style.setProperty('align-items', 'center', 'important');
+                    nav.style.setProperty('padding', '20px', 'important');
+                    nav.style.setProperty('height', 'auto', 'important');
+                    nav.style.setProperty('justify-content', 'space-between', 'important');
+                    
+                    if (status) status.style.setProperty('display', 'none', 'important');
+                    if (divider) divider.style.setProperty('display', 'none', 'important');
+                    if (controls) {
+                        controls.style.setProperty('padding-left', '0', 'important');
+                        controls.style.setProperty('gap', '10px', 'important');
+                    }
+                    
+                    if (cta) {
+                        cta.style.setProperty('margin-left', '10px', 'important');
+                        cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 16px' : '10px 20px', 'important');
+                        cta.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                        cta.style.setProperty('white-space', 'nowrap', 'important');
+                    }
+                    
+                    if (logoImg) {
+                        logoImg.style.setProperty('width', '30px', 'important');
+                        logoImg.style.setProperty('height', '30px', 'important');
+                    }
+                } else {
+                    nav.style.setProperty('display', 'flex', 'important');
+                    nav.style.setProperty('align-items', 'flex-start', 'important');
+                    nav.style.setProperty('padding', '25px 40px', 'important');
+                    nav.style.setProperty('height', '120px', 'important');
+                    nav.style.setProperty('justify-content', 'space-between', 'important');
+                    
+                    if (status) status.style.setProperty('display', 'block', 'important');
+                    if (divider) {
+                        divider.style.setProperty('display', 'block', 'important');
+                    }
+                    if (controls) {
+                        controls.style.removeProperty('padding-left');
+                        controls.style.removeProperty('gap');
+                    }
+                    if (cta) {
+                        cta.style.setProperty('margin-left', '25px', 'important');
+                        cta.style.removeProperty('padding');
+                        cta.style.removeProperty('font-size');
+                        cta.style.removeProperty('white-space');
+                    }
+                    if (logoImg) {
+                        logoImg.style.setProperty('width', '35px', 'important');
+                        logoImg.style.setProperty('height', '35px', 'important');
+                    }
+                }
+            }
+            
+            var resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(adjustHeader, 15);
+            });
+            window.addEventListener('DOMContentLoaded', adjustHeader);
+            adjustHeader();
         })();
     </script>
 </body>
