@@ -228,7 +228,7 @@ import data from '../../data/en.json';
     .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; }
 
     /* ==========================================================================
-       2. HERO: ESCALA MÁS GRANDE PREMIUM EN INGLÉS
+       2. HERO: CLONACIÓN DE FOTOGRAFÍA + COMPRESIÓN DE INTERLINEADO BRUTALISTA
        ========================================================================== */
     .photo-env .layer-hero,
     .layer-hero {
@@ -245,8 +245,8 @@ import data from '../../data/en.json';
     }
 
     .layer-hero .hero-title {
-        /* ESCALA PREMIUM DE ALTO IMPACTO EN INGLÉS */
-        font-size: clamp(2.7rem, 7.8vw, 8.5rem) !important;
+        /* ESCALA MÁS GRANDE PREMIUM PARA PALABRAS EN INGLÉS */
+        font-size: clamp(2.5rem, 7.5vw, 8.5rem) !important;
         line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
         letter-spacing: -2px !important;
         display: flex !important;
@@ -343,7 +343,7 @@ import data from '../../data/en.json';
         
         .layer-hero .hero-title {
             font-size: 8vw !important; /* Escalado unificado responsivo para tablets */
-            line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
+            line-height: 0.76 !important; /* Compresión de interlineado */
             margin-bottom: 5px !important;
         }
     }
@@ -353,17 +353,18 @@ import data from '../../data/en.json';
             gap: 15px !important;
         }
 
-        /* ESCALA AJUSTADA AL MENÚ DE INGLÉS PARA EVITAR COLISIONES EN CELULARES */
         nav#main-nav .hud-left a:not(.hud-logo),
         nav#main-nav .hud-left span,
         nav#main-nav .hud-left p,
         nav#main-nav .hud-left div:not(.hud-logo) {
-            font-size: 9px !important; /* Escala de 9px exacta de la versión en español */
+            font-size: 9px !important; 
         }
 
+        /* COMPENSACIÓN GEOMÉTRICA DE ES/EN: Sólida, sin márgenes laterales extras para evitar desalineación */
         .hud-controls {
             gap: 10px !important;
             font-size: 9px !important;
+            margin-right: 25px !important; /* Desplaza el botón y alinea ES/EN exactamente como en español */
         }
 
         .btn-cta-nav {
@@ -373,8 +374,8 @@ import data from '../../data/en.json';
         }
 
         .layer-hero .hero-title {
-            /* ESCALA MÁS GRANDE PREMIUM EN MÓVIL: 9vw le da el peso óptimo a las palabras más cortas en inglés sin desbordar */
-            font-size: 9vw !important; 
+            /* ESCALA MÁS GRANDE PREMIUM EN MÓVIL: 8.5vw para balancear el menor conteo de letras */
+            font-size: 8.5vw !important; 
             line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
         }
     }
@@ -404,8 +405,7 @@ import data from '../../data/en.json';
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
             
-            // CORRECCIÓN CLAVE: Sincronización exacta de fuentes para celulares (9px)
-            var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span, .hud-left div:not(.hud-logo)');
+            var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
             switcherText.forEach(function(el) {
                 el.style.setProperty('text-transform', 'uppercase', 'important');
                 el.style.setProperty('font-weight', '700', 'important');
@@ -426,21 +426,26 @@ import data from '../../data/en.json';
             if (window.innerWidth <= 1024) {
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 15px' : '20px', 'important'); // Sincronizado a 15px exactos de español
-                nav.style.setProperty('height', '80px', 'important'); // Sincronizado a 80px exactos de español
+                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 15px' : '20px', 'important');
+                nav.style.setProperty('height', '80px', 'important');
                 nav.style.setProperty('justify-content', 'space-between', 'important');
                 
                 if (status) status.style.setProperty('display', 'none', 'important');
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '8px', 'important'); // Sincronizado a 8px exactos de español
+                    controls.style.setProperty('gap', '8px', 'important');
+                    if (window.innerWidth <= 480) {
+                        controls.style.setProperty('margin-right', '25px', 'important'); // Sincronizado dinámicamente con CSS
+                    } else {
+                        controls.style.removeProperty('margin-right');
+                    }
                 }
                 
                 if (cta) {
                     cta.style.setProperty('margin-left', '0px', 'important');
-                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 14px' : '10px 20px', 'important'); // Sincronizado a 8px 14px exactos de español
-                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important'); // Sincronizado a 8.5px exactos de español
+                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 14px' : '10px 20px', 'important');
+                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important');
                     cta.style.setProperty('white-space', 'nowrap', 'important');
                 }
                 
@@ -462,6 +467,7 @@ import data from '../../data/en.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
+                    controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
                     cta.style.setProperty('margin-left', '25px', 'important');
