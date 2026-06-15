@@ -189,8 +189,8 @@ import data from '../../data/en.json';
             <div><a href="#" class="footer-logo-wrap hover-target magnetic-target"><img src="/assets/logo.png" alt="Oscar Pozo Creativo" class="footer-logo" loading="lazy" decoding="async"></a></div>
             <div class="footer-links">
                 <button type="button" id="backToTop" class="hover-target magnetic-target">{data.footer.backToTop}</button>
-                <a href="#cases" class="hover-target nav-link magnetic-target">{data.footer.port}</a>
-                <a href="#method" class="hover-target nav-link magnetic-target">{data.footer.proc}</a>
+                <a href="#casos" class="hover-target nav-link magnetic-target">{data.footer.port}</a>
+                <a href="#metodo" class="hover-target nav-link magnetic-target">{data.footer.proc}</a>
             </div>
             <div><span>{data.footer.rights}</span></div>
         </div>
@@ -353,11 +353,12 @@ import data from '../../data/en.json';
             gap: 15px !important;
         }
 
+        /* ESCALA AJUSTADA AL MENÚ DE INGLÉS PARA EVITAR COLISIONES EN CELULARES */
         nav#main-nav .hud-left a:not(.hud-logo),
         nav#main-nav .hud-left span,
         nav#main-nav .hud-left p,
         nav#main-nav .hud-left div:not(.hud-logo) {
-            font-size: 9px !important; 
+            font-size: 9px !important; /* Escala de 9px exacta de la versión en español */
         }
 
         .hud-controls {
@@ -402,9 +403,8 @@ import data from '../../data/en.json';
             var controls = nav.querySelector('.hud-controls');
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
-            var hudRight = nav.querySelector('.hud-right');
             
-            // CORRECCIÓN CLAVE: Agregamos div:not(.hud-logo) para forzar escala responsiva en el menú izquierdo de inglés
+            // CORRECCIÓN CLAVE: Sincronización exacta de fuentes para celulares (9px)
             var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span, .hud-left div:not(.hud-logo)');
             switcherText.forEach(function(el) {
                 el.style.setProperty('text-transform', 'uppercase', 'important');
@@ -426,21 +426,21 @@ import data from '../../data/en.json';
             if (window.innerWidth <= 1024) {
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 10px' : '20px', 'important');
-                nav.style.setProperty('height', 'auto', 'important');
+                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 15px' : '20px', 'important'); // Sincronizado a 15px exactos de español
+                nav.style.setProperty('height', '80px', 'important'); // Sincronizado a 80px exactos de español
                 nav.style.setProperty('justify-content', 'space-between', 'important');
                 
                 if (status) status.style.setProperty('display', 'none', 'important');
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '10px', 'important');
+                    controls.style.setProperty('gap', '8px', 'important'); // Sincronizado a 8px exactos de español
                 }
                 
                 if (cta) {
-                    cta.style.setProperty('margin-left', '10px', 'important');
-                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 16px' : '10px 20px', 'important');
-                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                    cta.style.setProperty('margin-left', '0px', 'important');
+                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 14px' : '10px 20px', 'important'); // Sincronizado a 8px 14px exactos de español
+                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important'); // Sincronizado a 8.5px exactos de español
                     cta.style.setProperty('white-space', 'nowrap', 'important');
                 }
                 
