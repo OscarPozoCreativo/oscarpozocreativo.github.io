@@ -341,8 +341,8 @@ import data from '../data/es.json';
         }
         
         .layer-hero .hero-title {
-            font-size: 8vw !important; 
-            line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
+            font-size: 7vw !important; /* Escala de seguridad unificada responsiva */
+            line-height: 0.76 !important; 
             margin-bottom: 5px !important;
         }
     }
@@ -378,8 +378,8 @@ import data from '../data/es.json';
         }
 
         .layer-hero .hero-title {
-            /* CALIBRADO FINAL EXTREMO: 8vw es imponente, gigante y entra al 100% en pantallas de 320px en adelante */
-            font-size: 8vw !important; 
+            /* MICRO-CALIBRADO DE SEGURIDAD EXTREMA: 7.2vw garantiza que el texto no desborde y mantenga una escala masiva y limpia */
+            font-size: 7.2vw !important; 
             line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
         }
     }
@@ -434,12 +434,12 @@ import data from '../data/es.json';
             var heroTitle = document.querySelector('.layer-hero .hero-title');
             if (heroTitle) {
                 if (window.innerWidth <= 480) {
-                    // MÓVIL EXTREMO: El tamaño perfecto y escalado equivalente de Fotografía (8vw)
-                    heroTitle.style.setProperty('font-size', '8vw', 'important');
+                    // MÓVIL MICRO-CALIBRADO: Proporción ultra-segura equivalente de Fotografía (7.2vw)
+                    heroTitle.style.setProperty('font-size', '7.2vw', 'important');
                     heroTitle.style.setProperty('line-height', '0.75', 'important');
                 } else if (window.innerWidth <= 1024) {
                     // TABLET EXTREMO
-                    heroTitle.style.setProperty('font-size', '8vw', 'important');
+                    heroTitle.style.setProperty('font-size', '7vw', 'important');
                     heroTitle.style.setProperty('line-height', '0.76', 'important');
                 } else {
                     // ESCRITORIO
