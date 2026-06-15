@@ -47,16 +47,16 @@ import data from '../data/en.json';
 
         {data.zProjects.map((project) => (
             <div class="z-layer">
-                <article class="monolith hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={project.title}>
+                <article class="monolith hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
                     <div class="m-img-wrap"><img src={project.img} alt={project.title} class="m-img target-img" loading="lazy" decoding="async"></div>
                     <div class="m-content">
                         <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                         <h2 class="m-title">{project.title}</h2>
                         <div class="project-details" style="display:none;">
                             <p class="m-summary">{project.summary}</p>
-                            <div class="m-item"><strong>Challenge</strong><p>{project.reto}</p></div>
-                            <div class="m-item"><strong>Approach</strong><p>{project.enfoque}</p></div>
-                            <div class="m-item"><strong>Result</strong><p>{project.resultado}</p></div>
+                            <div class="m-item"><strong>Reto</strong><p>{project.reto}</p></div>
+                            <div class="m-item"><strong>Enfoque</strong><p>{project.enfoque}</p></div>
+                            <div class="m-item"><strong>Resultado</strong><p>{project.resultado}</p></div>
                         </div>
                     </div>
                 </article>
@@ -68,17 +68,17 @@ import data from '../data/en.json';
         <div class="h-container">
             {data.hProjects.map((project) => (
                 <div class="h-panel">
-                    <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={project.title}>
+                    <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
                         <div class="card-glare"></div>
-                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img parallax-img" loading="lazy" decoding="async"></div>
+                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
                         <div class="h-info">
                             <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                             <h3>{project.title}</h3>
                             <div class="project-details" style="display:none;">
                                 <p class="m-summary">{project.summary}</p>
-                                <div class="m-item"><strong>Challenge</strong><p>{project.reto}</p></div>
-                                <div class="m-item"><strong>Approach</strong><p>{project.enfoque}</p></div>
-                                <div class="m-item"><strong>Result</strong><p>{project.resultado}</p></div>
+                                <div class="m-item"><strong>Reto</strong><p>{project.reto}</p></div>
+                                <div class="m-item"><strong>Enfoque</strong><p>{project.enfoque}</p></div>
+                                <div class="m-item"><strong>Resultado</strong><p>{project.resultado}</p></div>
                             </div>
                         </div>
                     </article>
@@ -91,7 +91,7 @@ import data from '../data/en.json';
         <div class="section-header"><h2 class="has-reveal">{data.reelsTitle}</h2></div>
         <div class="reels-track">
             {data.reels.map((reel) => (
-                <article class="reel-item hover-target lb-trigger" tabindex="0" role="button" aria-label="Open project" data-title={reel.title} data-video-full={reel.videoFull}>
+                <article class="reel-item hover-target lb-trigger" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={reel.title} data-video-full={reel.videoFull}>
                     <img src={reel.thumb} alt={reel.title} class="reel-bg target-img" loading="lazy" decoding="async">
                     <video class="hover-video" src={reel.videoHover} muted loop playsinline preload="metadata"></video>
                     <div class="reel-overlay"></div><div class="reel-glare"></div>
@@ -107,19 +107,19 @@ import data from '../data/en.json';
         <div class="section-header"><h2 class="has-reveal">{data.vaultTitle}</h2></div>
         <div class="vault-grid">
             {data.vault.map((item) => (
-                <article class="v-item hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={item.title}>
+                <article class="v-item hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={item.title}>
                     <img src={item.img} alt={item.title} class="v-bg target-img" loading="lazy" decoding="async">
                     <div class="v-info"><span>{item.meta}</span><h4>{item.title}</h4></div>
                     <div class="project-details" style="display:none;">
                         <p class="m-summary">{item.summary}</p>
-                        <div class="m-item"><strong>Challenge</strong><p>{item.reto}</p></div>
-                        <div class="m-item"><strong>Approach</strong><p>{item.enfoque}</p></div>
-                        <div class="m-item"><strong>Result</strong><p>{item.resultado}</p></div>
+                        <div class="m-item"><strong>Reto</strong><p>{item.reto}</p></div>
+                        <div class="m-item"><strong>Enfoque</strong><p>{item.enfoque}</p></div>
+                        <div class="m-item"><strong>Resultado</strong><p>{item.resultado}</p></div>
                     </div>
                 </article>
-            ))}
-        </div>
-    </section>
+            </div>
+        ))}
+	</section>
 
     <section class="process-wrapper" id="metodo">
         <div class="section-header"><h2 class="has-reveal">{data.processTitle}</h2></div>
@@ -198,39 +198,7 @@ import data from '../data/en.json';
 </DesignLayout>
 
 <style is:global>
-    /* ==========================================================================
-       1. HEADER: ALINEACIÓN MILIMÉTRICA (INTACTO)
-       ========================================================================== */
-    .hud-status strong {
-        font-size: 10px !important;
-        text-transform: uppercase !important;
-        font-weight: 700 !important;
-        letter-spacing: 1px !important;
-    }
-
-    nav#main-nav .hud-left a:not(.hud-logo),
-    nav#main-nav .hud-left span,
-    nav#main-nav .hud-left p,
-    nav#main-nav .hud-left div:not(.hud-logo) {
-        font-size: 10px !important;
-        text-transform: uppercase !important;
-        font-weight: 700 !important;
-        letter-spacing: 1px !important;
-    }
-
-    .hud-left {
-        display: flex !important;
-        align-items: center !important;
-        gap: 40px !important; 
-    }
-
-    .hud-logo { display: flex !important; align-items: center !important; justify-content: center !important; width: 35px !important; height: 35px !important; flex-shrink: 0 !important; }
-    .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; transition: transform 0.4s; }
-    .hud-logo:hover img { transform: scale(1.15); }
-
-    /* ==========================================================================
-       2. HERO: CLONACIÓN DE FOTOGRAFÍA + COMPRESIÓN DE INTERLINEADO BRUTALISTA
-       ========================================================================== */
+    /* --- BLINDAJE RESPONSIVE PREMIUM PARA EL HERO DE DISEÑO --- */
     .photo-env .layer-hero,
     .layer-hero {
         display: flex !important;
@@ -238,70 +206,8 @@ import data from '../data/en.json';
         align-items: center !important;
         justify-content: center !important;
         text-align: center !important;
-        width: 100% !important;
-        max-width: 100vw !important;
+        width: 100vw !important;
         box-sizing: border-box !important;
-        padding: 0 15px !important;
-        overflow: hidden !important;
-    }
-
-    .layer-hero .hero-title {
-        font-size: clamp(2.5rem, 7vw, 8rem) !important;
-        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
-        letter-spacing: -2px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 0 !important;
-        margin-bottom: 10px !important;
-        text-transform: uppercase !important;
-        width: 100% !important;
-    }
-
-    /* ELIMINA LA LÍNEA EN BLANCO GENERADA POR EL SALTO DE LÍNEA <br> */
-    .layer-hero .hero-title br {
-        display: none !important;
-    }
-
-    /* AISLAMIENTO EXCLUSIVO AL HERO: Orden de apilamiento controlado */
-    .layer-hero .reveal-wrap {
-        display: block !important; 
-        width: 100% !important;
-        max-width: 100vw !important;
-        overflow: visible !important; 
-        text-align: center !important;
-    }
-
-    /* FORZADO DE ORDEN DE PINTADO NATIVO: La primera línea pisa a la segunda */
-    .layer-hero .reveal-wrap:first-of-type {
-        position: relative !important;
-        z-index: 10 !important; /* Capa superior: Tapa el acento */
-    }
-
-    .layer-hero .reveal-wrap:last-of-type {
-        position: relative !important;
-        z-index: 1 !important; /* Capa inferior: Se deja tapar */
-    }
-
-    .layer-hero .reveal-text {
-        display: inline-block !important;
-        white-space: nowrap !important; 
-        padding-bottom: 0px !important; 
-    }
-
-    /* EFECTO PLASMA DE FOTOGRAFÍA ORIGINAL */
-    .layer-hero .glow-text { 
-        background: linear-gradient(270deg, var(--accent), #ffffff, var(--accent)) !important; 
-        background-size: 200% 200% !important; 
-        -webkit-background-clip: text !important; 
-        -webkit-text-fill-color: transparent !important; 
-        animation: flowPlasma 4s ease-in-out infinite alternate !important; 
-        text-shadow: 0 0 35px rgba(64,181,229,0.3) !important; 
-        display: inline-block !important; 
-    }
-    @keyframes flowPlasma { 
-        0%{background-position:0% 50%} 
-        100%{background-position:100% 50%} 
     }
 
     .layer-hero .hero-desc {
@@ -310,79 +216,10 @@ import data from '../data/en.json';
         line-height: 1.6 !important;
         color: #888888 !important;
         max-width: 600px !important;
-        width: 100% !important;
-        margin: 25px auto 0 auto !important;
+        width: 90% !important;
+        margin: 0 auto !important;
         text-align: center !important;
         box-sizing: border-box !important;
-    }
-
-    /* ==========================================================================
-       3. MEDIA QUERIES (COMPRESIÓN DE INTERLINEADO ULTRA-TIGHT PARA MÓVIL)
-       ========================================================================== */
-    @media (max-width: 1024px) {
-        #main-nav {
-            height: auto !important;
-            padding: 20px !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-        }
-
-        .hud-status,
-        #main-nav div[style*="width: 1px"] {
-            display: none !important;
-        }
-
-        .hud-right {
-            gap: 12px !important; /* Espacio de aire forzado para tablets */
-        }
-
-        .hud-logo, .hud-logo img {
-            width: 30px !important;
-            height: 30px !important;
-        }
-        
-        .layer-hero .hero-title {
-            font-size: 8vw !important; /* Escalado unificado responsivo para tablets */
-            line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
-            margin-bottom: 5px !important;
-        }
-    }
-
-    @media (max-width: 480px) {
-        #main-nav {
-            padding: 15px 10px !important; /* Reducción de paddings laterales para ganar 20px de aire horizontal */
-        }
-
-        .hud-left {
-            gap: 12px !important; /* Reducción táctica de separación para evitar colisiones */
-        }
-
-        /* BARRERA FÍSICA INFRANQUEABLE EN CELULARES CONTRA EL GAP: 0 INLINE DEL PADRE */
-        .hud-controls {
-            margin-left: 15px !important; /* Empuja el ES/EN lejos del menú izquierdo */
-            margin-right: 15px !important; /* Empuja el botón Iniciar Proyecto lejos de ES/EN */
-            gap: 8px !important;
-            font-size: 8.5px !important;
-        }
-
-        nav#main-nav .hud-left a:not(.hud-logo),
-        nav#main-nav .hud-left span,
-        nav#main-nav .hud-left p,
-        nav#main-nav .hud-left div:not(.hud-logo) {
-            font-size: 8.5px !important; /* Micro-ajuste de tamaño de menú izquierdo para celulares */
-        }
-
-        .btn-cta-nav {
-            padding: 6px 10px !important; /* Reducción optimizada de padding */
-            font-size: 8px !important; /* Fuente comprimida para liberar espacio */
-            margin-left: 0 !important;
-        }
-
-        .layer-hero .hero-title {
-            /* CALIBRADO FINAL EXTREMO: 8vw es imponente, gigante y entra al 100% en pantallas de 320px en adelante */
-            font-size: 8vw !important; 
-            line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
-        }
     }
 
     /* --- ALINEACIÓN DE COLOR ACTIVO DE IDIOMA EN DISEÑO --- */
@@ -395,9 +232,7 @@ import data from '../data/en.json';
     }
 </style>
 
-<!-- ==========================================================================
-     4. SCRIPT ÚNICO: CONTROL DE BOTÓN Y LAYOUT FLUIDO (CON RETORNO AL INICIO)
-     ========================================================================== -->
+<!-- INJECTOR DINÁMICO DE RESPONSIVE (Garantiza adaptabilidad móvil sobre tus estilos inline intactos) -->
 <script is:inline>
     (function() {
         function adjustHeader() {
@@ -409,105 +244,53 @@ import data from '../data/en.json';
             var controls = nav.querySelector('.hud-controls');
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
-            var hudRight = nav.querySelector('.hud-right');
             
-            var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
-            switcherText.forEach(function(el) {
-                el.style.setProperty('text-transform', 'uppercase', 'important');
-                el.style.setProperty('font-weight', '700', 'important');
-                el.style.setProperty('letter-spacing', '1px', 'important');
-                el.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important');
-            });
-
-            // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO (PREVIENE INTERCEPCIÓN DE GSAP/LENIS)
-            var logo = nav.querySelector('.hud-logo');
-            if (logo && !logo.dataset.listenerActive) {
-                logo.dataset.listenerActive = "true";
-                logo.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-            }
-
-            // ==========================================================================
-            // FORZADO DE ALINEACIÓN POR JS DEL HERO (Aplica directo a los spans hijos de GSAP)
-            // ==========================================================================
-            var heroTitle = document.querySelector('.layer-hero .hero-title');
-            var revealTexts = document.querySelectorAll('.layer-hero .hero-title .reveal-text');
-            if (heroTitle) {
-                if (window.innerWidth <= 480) {
-                    // MÓVIL MICRO-CALIBRADO: Proporción ultra-segura equivalente de Fotografía (7.2vw)
-                    heroTitle.style.setProperty('font-size', '7.2vw', 'important');
-                    heroTitle.style.setProperty('line-height', '0.75', 'important');
-                    revealTexts.forEach(function(t) {
-                        t.style.setProperty('font-size', '7.2vw', 'important');
-                    });
-                } else if (window.innerWidth <= 1024) {
-                    // TABLET EXTREMO
-                    heroTitle.style.setProperty('font-size', '7vw', 'important');
-                    heroTitle.style.setProperty('line-height', '0.76', 'important');
-                    revealTexts.forEach(function(t) {
-                        t.style.setProperty('font-size', '7vw', 'important');
-                    });
-                } else {
-                    // ESCRITORIO
-                    heroTitle.style.removeProperty('font-size');
-                    heroTitle.style.removeProperty('line-height');
-                    revealTexts.forEach(function(t) {
-                        t.style.removeProperty('font-size');
-                    });
-                }
-            }
-
             if (window.innerWidth <= 1024) {
+                // Móvil y Tablets
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 10px' : '20px', 'important');
-                nav.style.setProperty('height', 'auto', 'important');
-                nav.style.setProperty('justify-content', 'space-between', 'important');
+                nav.style.setProperty('padding', '15px 15px', 'important');
+                nav.style.setProperty('height', '80px', 'important');
                 
                 if (status) status.style.setProperty('display', 'none', 'important');
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
                     controls.style.setProperty('gap', '8px', 'important');
-                    controls.style.setProperty('margin-left', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA DINÁMICA IZQUIERDA
-                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA DINÁMICA DERECHA
                 }
-                
                 if (cta) {
                     cta.style.setProperty('margin-left', '0px', 'important');
-                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '6px 10px' : '8px 16px', 'important');
-                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8px' : '9px', 'important');
-                    cta.style.setProperty('white-space', 'nowrap', 'important');
+                    cta.style.setProperty('padding', '8px 14px', 'important');
+                    cta.style.setProperty('font-size', '8.5px', 'important');
                 }
-                
                 if (logoImg) {
                     logoImg.style.setProperty('width', '30px', 'important');
                     logoImg.style.setProperty('height', '30px', 'important');
                 }
             } else {
+                // Restaurar tus estilos de escritorio exactos
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'flex-start', 'important');
                 nav.style.setProperty('padding', '25px 40px', 'important');
                 nav.style.setProperty('height', '120px', 'important');
-                nav.style.setProperty('justify-content', 'space-between', 'important');
                 
                 if (status) status.style.setProperty('display', 'block', 'important');
                 if (divider) {
                     divider.style.setProperty('display', 'block', 'important');
+                    divider.style.setProperty('width', '1px', 'important');
+                    divider.style.setProperty('height', '24px', 'important');
+                    divider.style.setProperty('background', 'rgba(255, 255, 255, 0.1)', 'important');
+                    divider.style.setProperty('margin-left', '25px', 'important');
+                    divider.style.setProperty('margin-right', '24px', 'important');
                 }
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
-                    controls.style.removeProperty('margin-left');
-                    controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
                     cta.style.setProperty('margin-left', '25px', 'important');
                     cta.style.removeProperty('padding');
                     cta.style.removeProperty('font-size');
-                    cta.style.removeProperty('white-space');
                 }
                 if (logoImg) {
                     logoImg.style.setProperty('width', '35px', 'important');
@@ -516,12 +299,9 @@ import data from '../data/en.json';
             }
         }
         
-        var resizeTimeout;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(adjustHeader, 15);
-        });
+        window.addEventListener('resize', adjustHeader);
         window.addEventListener('DOMContentLoaded', adjustHeader);
         adjustHeader();
     })();
+    
 </script>
