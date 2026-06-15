@@ -70,7 +70,7 @@ import data from '../data/es.json';
                 <div class="h-panel">
                     <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
                         <div class="card-glare"></div>
-                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img parallax-img" loading="lazy" decoding="async"></div>
+                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
                         <div class="h-info">
                             <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                             <h3>{project.title}</h3>
@@ -246,7 +246,7 @@ import data from '../data/es.json';
 
     .layer-hero .hero-title {
         font-size: clamp(2.5rem, 7vw, 8rem) !important;
-        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA */
+        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
         letter-spacing: -2px !important;
         display: flex !important;
         flex-direction: column !important;
@@ -331,48 +331,52 @@ import data from '../data/es.json';
             display: none !important;
         }
 
-        .hud-right {
-            gap: 15px !important;
-        }
-
         .hud-logo, .hud-logo img {
             width: 30px !important;
             height: 30px !important;
         }
         
         .layer-hero .hero-title {
-            font-size: 7vw !important; 
-            line-height: 0.75 !important; /* Compresión extrema para tablets */
+            /* IMPONENTE EN TABLET: Escalado aumentado a 9.5vw para máxima autoridad visual */
+            font-size: 9.5vw !important; 
+            line-height: 0.74 !important; /* Compresión extrema para tablets en inline-blocks */
             margin-bottom: 5px !important;
         }
     }
 
     @media (max-width: 480px) {
+        #main-nav {
+            padding: 15px 10px !important; /* Reducción de paddings laterales para ganar 20px de aire horizontal */
+        }
+
         .hud-left {
-            gap: 15px !important;
+            gap: 12px !important; /* Reducción táctica de separación para evitar colisiones */
+        }
+
+        /* BYPASS DE GAP INLINE: Forzamos separación física del menú de idiomas mediante margen del hijo */
+        .hud-controls {
+            margin-right: 15px !important; /* Barrera física absoluta anticolisión */
+            gap: 8px !important;
+            font-size: 8.5px !important;
         }
 
         nav#main-nav .hud-left a:not(.hud-logo),
         nav#main-nav .hud-left span,
         nav#main-nav .hud-left p,
         nav#main-nav .hud-left div:not(.hud-logo) {
-            font-size: 9px !important; 
-        }
-
-        .hud-controls {
-            gap: 10px !important;
-            font-size: 9px !important;
+            font-size: 8.5px !important; /* Micro-ajuste de tamaño de menú izquierdo para celulares */
         }
 
         .btn-cta-nav {
-            padding: 8px 16px !important;
-            font-size: 9px !important;
+            padding: 6px 10px !important; /* Reducción optimizada de padding */
+            font-size: 8px !important; /* Fuente comprimida para liberar espacio */
             margin-left: 0 !important;
         }
 
         .layer-hero .hero-title {
-            font-size: 7.5vw !important; 
-            line-height: 0.75 !important; /* Compresión extrema: Slices del acento perfectos en móviles */
+            /* IMPONENTE Y MASIVO: Escalado aumentado a 11.5vw para dominio total de pantalla */
+            font-size: 11.5vw !important; 
+            line-height: 0.72 !important; /* Compresión extrema: Slices del acento perfectos en móviles */
         }
     }
 
@@ -387,7 +391,7 @@ import data from '../data/es.json';
 </style>
 
 <!-- ==========================================================================
-     4. SCRIPT ÚNICO: CONTROL DE BOTÓN Y LAYOUT FLUIDO (INTACTO)
+     4. SCRIPT ÚNICO: CONTROL DE BOTÓN Y LAYOUT FLUIDO (CON RETORNO AL INICIO)
      ========================================================================== -->
 <script is:inline>
     (function() {
@@ -406,13 +410,23 @@ import data from '../data/es.json';
                 el.style.setProperty('text-transform', 'uppercase', 'important');
                 el.style.setProperty('font-weight', '700', 'important');
                 el.style.setProperty('letter-spacing', '1px', 'important');
-                el.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                el.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important');
             });
+
+            // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO (PREVIENE INTERCEPCIÓN DE GSAP/LENIS)
+            var logo = nav.querySelector('.hud-logo');
+            if (logo && !logo.dataset.listenerActive) {
+                logo.dataset.listenerActive = "true";
+                logo.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
 
             if (window.innerWidth <= 1024) {
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', '20px', 'important');
+                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 10px' : '20px', 'important');
                 nav.style.setProperty('height', 'auto', 'important');
                 nav.style.setProperty('justify-content', 'space-between', 'important');
                 
@@ -420,13 +434,14 @@ import data from '../data/es.json';
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '10px', 'important');
+                    controls.style.setProperty('gap', '8px', 'important');
+                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // Sincronización JS/CSS
                 }
                 
                 if (cta) {
-                    cta.style.setProperty('margin-left', '10px', 'important');
-                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 16px' : '10px 20px', 'important');
-                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                    cta.style.setProperty('margin-left', '0px', 'important');
+                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '6px 10px' : '8px 16px', 'important');
+                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8px' : '9px', 'important');
                     cta.style.setProperty('white-space', 'nowrap', 'important');
                 }
                 
@@ -448,6 +463,7 @@ import data from '../data/es.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
+                    controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
                     cta.style.setProperty('margin-left', '25px', 'important');
