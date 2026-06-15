@@ -245,7 +245,8 @@ import data from '../../data/en.json';
     }
 
     .layer-hero .hero-title {
-        font-size: clamp(2.5rem, 7vw, 8rem) !important;
+        /* ESCALA MÁS GRANDE PREMIUM PARA PALABRAS EN INGLÉS */
+        font-size: clamp(2.6rem, 7.8vw, 8.5rem) !important;
         line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
         letter-spacing: -2px !important;
         display: flex !important;
@@ -341,15 +342,26 @@ import data from '../../data/en.json';
         }
         
         .layer-hero .hero-title {
-            font-size: 7vw !important; /* Escalado unificado responsivo para tablets */
+            font-size: 8vw !important; /* Escalado unificado responsivo para tablets */
             line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
             margin-bottom: 5px !important;
         }
     }
 
     @media (max-width: 480px) {
+        #main-nav {
+            padding: 15px 10px !important; /* Reducción de paddings laterales para ganar 20px de aire horizontal */
+        }
+
         .hud-left {
-            gap: 15px !important;
+            gap: 12px !important; /* Reducción táctica de separación para evitar colisiones */
+        }
+
+        /* BARRERA FÍSICA INFRANQUEABLE EN CELULARES CONTRA EL GAP: 0 INLINE DEL PADRE */
+        .hud-controls {
+            margin-right: 15px !important; /* BARRERA FÍSICA DE SEGURIDAD (IGUAL QUE EN ESPAÑOL) */
+            gap: 10px !important;
+            font-size: 9px !important;
         }
 
         nav#main-nav .hud-left a:not(.hud-logo),
@@ -359,11 +371,6 @@ import data from '../../data/en.json';
             font-size: 9px !important; 
         }
 
-        .hud-controls {
-            gap: 10px !important;
-            font-size: 9px !important;
-        }
-
         .btn-cta-nav {
             padding: 8px 16px !important;
             font-size: 9px !important;
@@ -371,8 +378,8 @@ import data from '../../data/en.json';
         }
 
         .layer-hero .hero-title {
-            /* VITAL: 7.5vw en móvil hace que "CREATIVIDAD" quepa al 100% en pantallas de 320px a 430px */
-            font-size: 7.5vw !important; 
+            /* ESCALA MÁS GRANDE PREMIUM EN MÓVIL: 8.5vw le da el peso óptimo a las palabras más cortas en inglés */
+            font-size: 8.5vw !important; 
             line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
         }
     }
@@ -401,6 +408,7 @@ import data from '../../data/en.json';
             var controls = nav.querySelector('.hud-controls');
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
+            var hudRight = nav.querySelector('.hud-right');
             
             var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
             switcherText.forEach(function(el) {
@@ -431,13 +439,14 @@ import data from '../../data/en.json';
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '8px', 'important');
+                    controls.style.setProperty('gap', '10px', 'important');
+                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA MÓVIL POR JS
                 }
                 
                 if (cta) {
-                    cta.style.setProperty('margin-left', '0px', 'important');
-                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '6px 10px' : '8px 16px', 'important');
-                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8px' : '9px', 'important');
+                    cta.style.setProperty('margin-left', '10px', 'important');
+                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 16px' : '10px 20px', 'important');
+                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
                     cta.style.setProperty('white-space', 'nowrap', 'important');
                 }
                 
@@ -459,6 +468,7 @@ import data from '../../data/en.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
+                    controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
                     cta.style.setProperty('margin-left', '25px', 'important');
