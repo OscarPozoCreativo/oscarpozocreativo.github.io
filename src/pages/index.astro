@@ -70,7 +70,7 @@ import data from '../data/es.json';
                 <div class="h-panel">
                     <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
                         <div class="card-glare"></div>
-                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img parallax-img" loading="lazy" decoding="async"></div>
+                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
                         <div class="h-info">
                             <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                             <h3>{project.title}</h3>
@@ -248,6 +248,10 @@ import data from '../data/es.json';
     .layer-hero .hero-title,
     .layer-hero .hero-title .reveal-text {
         font-size: clamp(2.5rem, 7vw, 8rem) !important;
+<<<<<<< HEAD
+=======
+        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
+>>>>>>> c8f40f2757b59d0230b8c152dc15049f5b295965
         letter-spacing: -2px !important;
         text-transform: uppercase !important;
     }
@@ -338,10 +342,13 @@ import data from '../data/es.json';
             display: none !important;
         }
 
+<<<<<<< HEAD
         .hud-right {
             gap: 12px !important; /* Espacio de aire forzado para tablets */
         }
 
+=======
+>>>>>>> c8f40f2757b59d0230b8c152dc15049f5b295965
         .hud-logo, .hud-logo img {
             width: 30px !important;
             height: 30px !important;
@@ -353,20 +360,36 @@ import data from '../data/es.json';
         }
 
         .layer-hero .hero-title {
+<<<<<<< HEAD
             line-height: 0.76 !important; 
+=======
+            /* IMPONENTE EN TABLET: Escalado aumentado a 9.5vw para máxima autoridad visual */
+            font-size: 9.5vw !important; 
+            line-height: 0.74 !important; /* Compresión extrema para tablets en inline-blocks */
+>>>>>>> c8f40f2757b59d0230b8c152dc15049f5b295965
             margin-bottom: 5px !important;
         }
     }
 
     @media (max-width: 480px) {
+        #main-nav {
+            padding: 15px 10px !important; /* Reducción de paddings laterales para ganar 20px de aire horizontal */
+        }
+
         .hud-left {
             gap: 12px !important; /* Reducción táctica de separación para evitar colisiones */
         }
 
+<<<<<<< HEAD
         /* BARRERA FÍSICA INFRANQUEABLE EN CELULARES CONTRA EL GAP: 0 INLINE DEL PADRE */
         .hud-controls {
             margin-left: 15px !important; /* Empuja el ES/EN lejos del menú izquierdo */
             margin-right: 15px !important; /* Empuja el botón Iniciar Proyecto lejos de ES/EN */
+=======
+        /* BYPASS DE GAP INLINE: Forzamos separación física del menú de idiomas mediante margen del hijo */
+        .hud-controls {
+            margin-right: 15px !important; /* Barrera física absoluta anticolisión */
+>>>>>>> c8f40f2757b59d0230b8c152dc15049f5b295965
             gap: 8px !important;
             font-size: 8.5px !important;
         }
@@ -391,7 +414,13 @@ import data from '../data/es.json';
         }
 
         .layer-hero .hero-title {
+<<<<<<< HEAD
             line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
+=======
+            /* IMPONENTE Y MASIVO: Escalado aumentado a 11.5vw para dominio total de pantalla */
+            font-size: 11.5vw !important; 
+            line-height: 0.72 !important; /* Compresión extrema: Slices del acento perfectos en móviles */
+>>>>>>> c8f40f2757b59d0230b8c152dc15049f5b295965
         }
     }
 
@@ -439,6 +468,7 @@ import data from '../data/es.json';
                 });
             }
 
+<<<<<<< HEAD
             // ==========================================================================
             // FORZADO DE ALINEACIÓN POR JS DEL HERO (Aplica directo a los spans hijos de GSAP)
             // ==========================================================================
@@ -469,6 +499,8 @@ import data from '../data/es.json';
                 }
             }
 
+=======
+>>>>>>> c8f40f2757b59d0230b8c152dc15049f5b295965
             if (window.innerWidth <= 1024) {
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
@@ -481,8 +513,12 @@ import data from '../data/es.json';
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
                     controls.style.setProperty('gap', '8px', 'important');
+<<<<<<< HEAD
                     controls.style.setProperty('margin-left', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA DINÁMICA IZQUIERDA
                     controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA DINÁMICA DERECHA
+=======
+                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // Sincronización JS/CSS
+>>>>>>> c8f40f2757b59d0230b8c152dc15049f5b295965
                 }
                 
                 if (cta) {
@@ -510,7 +546,10 @@ import data from '../data/es.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
+<<<<<<< HEAD
                     controls.style.removeProperty('margin-left');
+=======
+>>>>>>> c8f40f2757b59d0230b8c152dc15049f5b295965
                     controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
