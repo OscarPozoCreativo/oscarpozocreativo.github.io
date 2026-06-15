@@ -1,7 +1,7 @@
 ---
-import DesignLayout from '../layouts/DesignLayout.astro';
-import GlobalSwitcher from '../components/UI/GlobalSwitcher.astro';
-import data from '../data/en.json';
+import DesignLayout from '../../layouts/DesignLayout.astro';
+import GlobalSwitcher from '../../components/UI/GlobalSwitcher.astro';
+import data from '../../data/en.json';
 ---
 
 <DesignLayout title="Oscar Pozo Creative | Senior Graphic Designer" description={data.hero.desc} lang="en">
@@ -47,16 +47,16 @@ import data from '../data/en.json';
 
         {data.zProjects.map((project) => (
             <div class="z-layer">
-                <article class="monolith hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={project.title}>
+                <article class="monolith hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
                     <div class="m-img-wrap"><img src={project.img} alt={project.title} class="m-img target-img" loading="lazy" decoding="async"></div>
                     <div class="m-content">
                         <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                         <h2 class="m-title">{project.title}</h2>
                         <div class="project-details" style="display:none;">
                             <p class="m-summary">{project.summary}</p>
-                            <div class="m-item"><strong>Challenge</strong><p>{project.reto}</p></div>
-                            <div class="m-item"><strong>Approach</strong><p>{project.enfoque}</p></div>
-                            <div class="m-item"><strong>Result</strong><p>{project.resultado}</p></div>
+                            <div class="m-item"><strong>Reto</strong><p>{project.reto}</p></div>
+                            <div class="m-item"><strong>Enfoque</strong><p>{project.enfoque}</p></div>
+                            <div class="m-item"><strong>Resultado</strong><p>{project.resultado}</p></div>
                         </div>
                     </div>
                 </article>
@@ -68,7 +68,7 @@ import data from '../data/en.json';
         <div class="h-container">
             {data.hProjects.map((project) => (
                 <div class="h-panel">
-                    <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={project.title}>
+                    <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
                         <div class="card-glare"></div>
                         <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
                         <div class="h-info">
@@ -76,9 +76,9 @@ import data from '../data/en.json';
                             <h3>{project.title}</h3>
                             <div class="project-details" style="display:none;">
                                 <p class="m-summary">{project.summary}</p>
-                                <div class="m-item"><strong>Challenge</strong><p>{project.reto}</p></div>
-                                <div class="m-item"><strong>Approach</strong><p>{project.enfoque}</p></div>
-                                <div class="m-item"><strong>Result</strong><p>{project.resultado}</p></div>
+                                <div class="m-item"><strong>Reto</strong><p>{project.reto}</p></div>
+                                <div class="m-item"><strong>Enfoque</strong><p>{project.enfoque}</p></div>
+                                <div class="m-item"><strong>Resultado</strong><p>{project.resultado}</p></div>
                             </div>
                         </div>
                     </article>
@@ -91,7 +91,7 @@ import data from '../data/en.json';
         <div class="section-header"><h2 class="has-reveal">{data.reelsTitle}</h2></div>
         <div class="reels-track">
             {data.reels.map((reel) => (
-                <article class="reel-item hover-target lb-trigger" tabindex="0" role="button" aria-label="Open project" data-title={reel.title} data-video-full={reel.videoFull}>
+                <article class="reel-item hover-target lb-trigger" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={reel.title} data-video-full={reel.videoFull}>
                     <img src={reel.thumb} alt={reel.title} class="reel-bg target-img" loading="lazy" decoding="async">
                     <video class="hover-video" src={reel.videoHover} muted loop playsinline preload="metadata"></video>
                     <div class="reel-overlay"></div><div class="reel-glare"></div>
@@ -107,14 +107,14 @@ import data from '../data/en.json';
         <div class="section-header"><h2 class="has-reveal">{data.vaultTitle}</h2></div>
         <div class="vault-grid">
             {data.vault.map((item) => (
-                <article class="v-item hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={item.title}>
+                <article class="v-item hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={item.title}>
                     <img src={item.img} alt={item.title} class="v-bg target-img" loading="lazy" decoding="async">
                     <div class="v-info"><span>{item.meta}</span><h4>{item.title}</h4></div>
                     <div class="project-details" style="display:none;">
                         <p class="m-summary">{item.summary}</p>
-                        <div class="m-item"><strong>Challenge</strong><p>{item.reto}</p></div>
-                        <div class="m-item"><strong>Approach</strong><p>{item.enfoque}</p></div>
-                        <div class="m-item"><strong>Result</strong><p>{project.resultado}</p></div>
+                        <div class="m-item"><strong>Reto</strong><p>{item.reto}</p></div>
+                        <div class="m-item"><strong>Enfoque</strong><p>{item.enfoque}</p></div>
+                        <div class="m-item"><strong>Resultado</strong><p>{project.resultado}</p></div>
                     </div>
                 </article>
             ))}
