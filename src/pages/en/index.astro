@@ -189,8 +189,8 @@ import data from '../../data/en.json';
             <div><a href="#" class="footer-logo-wrap hover-target magnetic-target"><img src="/assets/logo.png" alt="Oscar Pozo Creativo" class="footer-logo" loading="lazy" decoding="async"></a></div>
             <div class="footer-links">
                 <button type="button" id="backToTop" class="hover-target magnetic-target">{data.footer.backToTop}</button>
-                <a href="#casos" class="hover-target nav-link magnetic-target">{data.footer.port}</a>
-                <a href="#metodo" class="hover-target nav-link magnetic-target">{data.footer.proc}</a>
+                <a href="#cases" class="hover-target nav-link magnetic-target">{data.footer.port}</a>
+                <a href="#method" class="hover-target nav-link magnetic-target">{data.footer.proc}</a>
             </div>
             <div><span>{data.footer.rights}</span></div>
         </div>
@@ -228,7 +228,7 @@ import data from '../../data/en.json';
     .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; }
 
     /* ==========================================================================
-       2. HERO: CLONACIÓN DE FOTOGRAFÍA + COMPRESIÓN DE INTERLINEADO BRUTALISTA
+       2. HERO: ESCALA MÁS GRANDE PREMIUM EN INGLÉS
        ========================================================================== */
     .photo-env .layer-hero,
     .layer-hero {
@@ -245,8 +245,8 @@ import data from '../../data/en.json';
     }
 
     .layer-hero .hero-title {
-        /* ESCALA MÁS GRANDE PREMIUM PARA PALABRAS EN INGLÉS */
-        font-size: clamp(2.6rem, 7.8vw, 8.5rem) !important;
+        /* ESCALA PREMIUM DE ALTO IMPACTO EN INGLÉS */
+        font-size: clamp(2.7rem, 7.8vw, 8.5rem) !important;
         line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
         letter-spacing: -2px !important;
         display: flex !important;
@@ -342,7 +342,7 @@ import data from '../../data/en.json';
         }
         
         .layer-hero .hero-title {
-            font-size: 7vw !important; /* Escalado unificado responsivo para tablets */
+            font-size: 8vw !important; /* Escalado unificado responsivo para tablets */
             line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
             margin-bottom: 5px !important;
         }
@@ -402,8 +402,10 @@ import data from '../../data/en.json';
             var controls = nav.querySelector('.hud-controls');
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
+            var hudRight = nav.querySelector('.hud-right');
             
-            var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
+            // CORRECCIÓN CLAVE: Agregamos div:not(.hud-logo) para forzar escala responsiva en el menú izquierdo de inglés
+            var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span, .hud-left div:not(.hud-logo)');
             switcherText.forEach(function(el) {
                 el.style.setProperty('text-transform', 'uppercase', 'important');
                 el.style.setProperty('font-weight', '700', 'important');
