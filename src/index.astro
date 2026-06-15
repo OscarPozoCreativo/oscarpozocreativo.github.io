@@ -20,7 +20,7 @@ import data from '../data/es.json';
                 <span>República Dominicana</span>
             </div>
             
-            <!-- LÍNEA DE DIVISIÓN EDITORIAL MAESTRA (1:1 COORDENADA FOTOGRAFÍA) -->
+            <!-- LÍNEA DE DIVISIÓN EDITORIAL MAESTRA -->
             <div style="width: 1px; height: 24px; background: rgba(255, 255, 255, 0.1); margin-left: 25px !important; margin-right: 24px !important; align-self: center; flex-shrink: 0;"></div>
 
             <!-- CONTROLES DE IDIOMA ALINEADOS -->
@@ -244,10 +244,16 @@ import data from '../data/es.json';
         overflow: hidden !important;
     }
 
-    .layer-hero .hero-title {
+    /* REDUCCIÓN DE TAMAÑO DIRECTA AL CONTENEDOR Y A LA ANIMACIÓN INTERNA */
+    .layer-hero .hero-title,
+    .layer-hero .hero-title .reveal-text {
         font-size: clamp(2.5rem, 7vw, 8rem) !important;
-        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
         letter-spacing: -2px !important;
+        text-transform: uppercase !important;
+    }
+
+    .layer-hero .hero-title {
+        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA */
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
@@ -255,6 +261,7 @@ import data from '../data/es.json';
         margin-bottom: 10px !important;
         text-transform: uppercase !important;
         width: 100% !important;
+        display: block !important; /* Desactiva flexbox */
     }
 
     /* ELIMINA LA LÍNEA EN BLANCO GENERADA POR EL SALTO DE LÍNEA <br> */
@@ -340,18 +347,18 @@ import data from '../data/es.json';
             height: 30px !important;
         }
         
+        .layer-hero .hero-title,
+        .layer-hero .hero-title .reveal-text {
+            font-size: 8vw !important; /* Escala de seguridad unificada responsiva */
+        }
+
         .layer-hero .hero-title {
-            font-size: 7vw !important; /* Escala de seguridad unificada responsiva */
             line-height: 0.76 !important; 
             margin-bottom: 5px !important;
         }
     }
 
     @media (max-width: 480px) {
-        #main-nav {
-            padding: 15px 10px !important; /* Reducción de paddings laterales para ganar 20px de aire horizontal */
-        }
-
         .hud-left {
             gap: 12px !important; /* Reducción táctica de separación para evitar colisiones */
         }
@@ -377,9 +384,13 @@ import data from '../data/es.json';
             margin-left: 0 !important;
         }
 
-        .layer-hero .hero-title {
+        .layer-hero .hero-title,
+        .layer-hero .hero-title .reveal-text {
             /* MICRO-CALIBRADO DE SEGURIDAD EXTREMA: 7.2vw garantiza que el texto no desborde y mantenga una escala masiva y limpia */
             font-size: 7.2vw !important; 
+        }
+
+        .layer-hero .hero-title {
             line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
         }
     }
@@ -429,22 +440,32 @@ import data from '../data/es.json';
             }
 
             // ==========================================================================
-            // FORZADO DE ALINEACIÓN POR JS DEL HERO (Bypassea cualquier caché del navegador)
+            // FORZADO DE ALINEACIÓN POR JS DEL HERO (Aplica directo a los spans hijos de GSAP)
             // ==========================================================================
             var heroTitle = document.querySelector('.layer-hero .hero-title');
+            var revealTexts = document.querySelectorAll('.layer-hero .hero-title .reveal-text');
             if (heroTitle) {
                 if (window.innerWidth <= 480) {
                     // MÓVIL MICRO-CALIBRADO: Proporción ultra-segura equivalente de Fotografía (7.2vw)
                     heroTitle.style.setProperty('font-size', '7.2vw', 'important');
                     heroTitle.style.setProperty('line-height', '0.75', 'important');
+                    revealTexts.forEach(function(t) {
+                        t.style.setProperty('font-size', '7.2vw', 'important');
+                    });
                 } else if (window.innerWidth <= 1024) {
                     // TABLET EXTREMO
                     heroTitle.style.setProperty('font-size', '7vw', 'important');
                     heroTitle.style.setProperty('line-height', '0.76', 'important');
+                    revealTexts.forEach(function(t) {
+                        t.style.setProperty('font-size', '7vw', 'important');
+                    });
                 } else {
                     // ESCRITORIO
                     heroTitle.style.removeProperty('font-size');
                     heroTitle.style.removeProperty('line-height');
+                    revealTexts.forEach(function(t) {
+                        t.style.removeProperty('font-size');
+                    });
                 }
             }
 
