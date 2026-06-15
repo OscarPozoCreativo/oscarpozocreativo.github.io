@@ -350,7 +350,7 @@ import data from '../../data/en.json';
 
     @media (max-width: 480px) {
         .hud-left {
-            gap: 15px !important;
+            gap: 15px !important; /* DESPLAZAMIENTO A LA IZQUIERDA: Encoge el espacio vacío con el logo para jalar el menú izquierdo */
         }
 
         nav#main-nav .hud-left a:not(.hud-logo),
@@ -360,11 +360,10 @@ import data from '../../data/en.json';
             font-size: 9px !important; 
         }
 
-        /* COMPENSACIÓN GEOMÉTRICA DE ES/EN: Sin márgenes laterales extras para evitar desalineación */
         .hud-controls {
             gap: 10px !important;
             font-size: 9px !important;
-            margin-right: 24px !important; /* COMPENSACIÓN EXACTA: Desplaza ES/EN a la izquierda milimétricamente */
+            margin-right: 24px !important; /* Mantiene la posición idéntica a español */
         }
 
         .btn-cta-nav {
@@ -404,6 +403,7 @@ import data from '../../data/en.json';
             var controls = nav.querySelector('.hud-controls');
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
+            var hudLeft = nav.querySelector('.hud-left');
             
             var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span, .hud-left div:not(.hud-logo)');
             switcherText.forEach(function(el) {
@@ -441,6 +441,11 @@ import data from '../../data/en.json';
                         controls.style.removeProperty('margin-right');
                     }
                 }
+
+                // Sincroniza el desplazamiento dinámico izquierdo del logo en JS
+                if (hudLeft) {
+                    hudLeft.style.setProperty('gap', window.innerWidth <= 480 ? '15px' : '40px', 'important');
+                }
                 
                 if (cta) {
                     cta.style.setProperty('margin-left', '0px', 'important');
@@ -468,6 +473,9 @@ import data from '../../data/en.json';
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
                     controls.style.removeProperty('margin-right');
+                }
+                if (hudLeft) {
+                    hudLeft.style.setProperty('gap', '40px', 'important'); // Restaura a 40px en escritorio
                 }
                 if (cta) {
                     cta.style.setProperty('margin-left', '25px', 'important');
