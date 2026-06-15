@@ -138,7 +138,7 @@ import data from '../../data/en.json';
         <div class="profile-grid">
             <div class="profile-main">
                 <span class="t-eyebrow">{data.profile.eyebrow}</span>
-                <h2 class="t-title clicks-to-top has-reveal">{data.profile.title}</h2>
+                <h2 class="t-title has-reveal">{data.profile.title}</h2>
                 <div class="profile-bio-wrap" style="display: flex; gap: 30px; align-items: flex-start; margin-bottom: 30px; flex-wrap: wrap;">
                     <div class="profile-avatar tilt-target" style="flex: 0 0 220px; height: 250px; border-radius: 10px; overflow: hidden; position: relative; border: 1px solid var(--border); background: #050505;">
                         <img src="/assets/oscar-profile.webp" alt="Oscar Pozo" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" decoding="async">
@@ -245,8 +245,7 @@ import data from '../../data/en.json';
     }
 
     .layer-hero .hero-title {
-        /* ESCALA MÁS GRANDE PREMIUM PARA PALABRAS EN INGLÉS */
-        font-size: clamp(2.8rem, 8vw, 8.5rem) !important;
+        font-size: clamp(2.5rem, 7vw, 8rem) !important;
         line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
         letter-spacing: -2px !important;
         display: flex !important;
@@ -342,8 +341,8 @@ import data from '../../data/en.json';
         }
         
         .layer-hero .hero-title {
-            font-size: 8vw !important; /* Escalado unificado responsivo para tablets */
-            line-height: 0.76 !important; /* Compresión de interlineado */
+            font-size: 7vw !important; /* Escalado unificado responsivo para tablets */
+            line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
             margin-bottom: 5px !important;
         }
     }
@@ -353,18 +352,16 @@ import data from '../../data/en.json';
             gap: 15px !important;
         }
 
-        /* BARRERA FÍSICA INFRANQUEABLE EN CELULARES: Alineación perfecta idéntica a español */
-        .hud-controls {
-            margin-right: 15px !important; /* Crea el mismo espaciado de seguridad que el español */
-            gap: 10px !important;
-            font-size: 9px !important;
-        }
-
         nav#main-nav .hud-left a:not(.hud-logo),
         nav#main-nav .hud-left span,
         nav#main-nav .hud-left p,
         nav#main-nav .hud-left div:not(.hud-logo) {
             font-size: 9px !important; 
+        }
+
+        .hud-controls {
+            gap: 10px !important;
+            font-size: 9px !important;
         }
 
         .btn-cta-nav {
@@ -374,9 +371,9 @@ import data from '../../data/en.json';
         }
 
         .layer-hero .hero-title {
-            /* ESCALA MÁS GRANDE PREMIUM EN MÓVIL: 9.5vw le da el peso óptimo a las palabras más cortas en inglés */
-            font-size: 9.5vw !important; 
-            line-height: 0.75 !important; 
+            /* VITAL: 7.5vw en móvil hace que "CREATIVIDAD" quepa al 100% en pantallas de 320px a 430px */
+            font-size: 7.5vw !important; 
+            line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
         }
     }
 
@@ -426,7 +423,7 @@ import data from '../../data/en.json';
             if (window.innerWidth <= 1024) {
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', '20px', 'important');
+                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 10px' : '20px', 'important');
                 nav.style.setProperty('height', 'auto', 'important');
                 nav.style.setProperty('justify-content', 'space-between', 'important');
                 
@@ -434,18 +431,13 @@ import data from '../../data/en.json';
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '10px', 'important');
-                    if (window.innerWidth <= 480) {
-                        controls.style.setProperty('margin-right', '15px', 'important'); // Aplica misma barrera física que el español por JS
-                    } else {
-                        controls.style.removeProperty('margin-right');
-                    }
+                    controls.style.setProperty('gap', '8px', 'important');
                 }
                 
                 if (cta) {
-                    cta.style.setProperty('margin-left', '10px', 'important');
-                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 16px' : '10px 20px', 'important');
-                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                    cta.style.setProperty('margin-left', '0px', 'important');
+                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '6px 10px' : '8px 16px', 'important');
+                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8px' : '9px', 'important');
                     cta.style.setProperty('white-space', 'nowrap', 'important');
                 }
                 
@@ -467,7 +459,6 @@ import data from '../../data/en.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
-                    controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
                     cta.style.setProperty('margin-left', '25px', 'important');
