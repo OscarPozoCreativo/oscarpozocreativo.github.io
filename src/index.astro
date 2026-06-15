@@ -70,7 +70,7 @@ import data from '../data/es.json';
                 <div class="h-panel">
                     <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
                         <div class="card-glare"></div>
-                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
+                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img parallax-img" loading="lazy" decoding="async"></div>
                         <div class="h-info">
                             <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                             <h3>{project.title}</h3>
@@ -316,7 +316,7 @@ import data from '../data/es.json';
     }
 
     /* ==========================================================================
-       3. MEDIA QUERIES (COMPRESIÓN DE INTERLINEADO ULTRA-TIGHT PARA MÓVIL)
+       3. MEDIA QUERIES (COMPRESIÓN RESPONSIVA SQUEEZE: COMPENSA EL PIXEL ROUNDING)
        ========================================================================== */
     @media (max-width: 1024px) {
         #main-nav {
@@ -341,8 +341,9 @@ import data from '../data/es.json';
         }
         
         .layer-hero .hero-title {
-            font-size: 8vw !important; /* Escalado unificado responsivo para tablets */
-            line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
+            /* COMPRESIÓN PARA TABLETS: 8vw es imponente pero completamente seguro */
+            font-size: 8vw !important; 
+            line-height: 0.76 !important; 
             margin-bottom: 5px !important;
         }
     }
@@ -356,9 +357,10 @@ import data from '../data/es.json';
             gap: 12px !important; /* Reducción táctica de separación para evitar colisiones */
         }
 
-        /* BYPASS DE GAP INLINE: Forzamos separación física del menú de idiomas mediante margen del hijo */
+        /* BARRERA FÍSICA INFRANQUEABLE EN CELULARES CONTRA EL GAP: 0 INLINE DEL PADRE */
         .hud-controls {
-            margin-right: 15px !important; /* Barrera física absoluta anticolisión */
+            margin-left: 15px !important; /* Empuja el ES/EN lejos del menú izquierdo */
+            margin-right: 15px !important; /* Empuja el botón Iniciar Proyecto lejos de ES/EN */
             gap: 8px !important;
             font-size: 8.5px !important;
         }
@@ -377,8 +379,8 @@ import data from '../data/es.json';
         }
 
         .layer-hero .hero-title {
-            /* CALIBRADO FINAL DE SEGURIDAD: 8.5vw es el máximo absoluto para que "ESTRATÉGICA." quepa 100% en 320px */
-            font-size: 8.5vw !important; 
+            /* CALIBRADO FINAL EXTREMO: 8vw es imponente, gigante y entra al 100% en pantallas de 320px en adelante */
+            font-size: 8vw !important; 
             line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
         }
     }
@@ -439,7 +441,8 @@ import data from '../data/es.json';
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
                     controls.style.setProperty('gap', '8px', 'important');
-                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // Sincronización JS/CSS
+                    controls.style.setProperty('margin-left', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA DINÁMICA IZQUIERDA
+                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA DINÁMICA DERECHA
                 }
                 
                 if (cta) {
@@ -467,6 +470,7 @@ import data from '../data/es.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
+                    controls.style.removeProperty('margin-left');
                     controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
