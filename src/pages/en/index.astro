@@ -343,7 +343,7 @@ import data from '../../data/en.json';
         
         .layer-hero .hero-title {
             font-size: 8vw !important; /* Escalado unificado responsivo para tablets */
-            line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
+            line-height: 0.76 !important; /* Compresión de interlineado */
             margin-bottom: 5px !important;
         }
     }
@@ -353,17 +353,18 @@ import data from '../../data/en.json';
             gap: 15px !important;
         }
 
-        /* CLÓN DE FUENTE DE MÓVIL ESPAÑOL: 9px exactos */
         nav#main-nav .hud-left a:not(.hud-logo),
         nav#main-nav .hud-left span,
         nav#main-nav .hud-left p,
         nav#main-nav .hud-left div:not(.hud-logo) {
-            font-size: 8.5px !important; /* Sincronizado a 8.5px para absorber la Y extra de PHOTOGRAPHY */
+            font-size: 9px !important; 
         }
 
+        /* COMPENSACIÓN GEOMÉTRICA DE ES/EN: Sin márgenes laterales extras para evitar desalineación */
         .hud-controls {
             gap: 10px !important;
             font-size: 9px !important;
+            margin-right: 24px !important; /* COMPENSACIÓN EXACTA: Desplaza ES/EN a la izquierda milimétricamente */
         }
 
         .btn-cta-nav {
@@ -404,13 +405,12 @@ import data from '../../data/en.json';
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
             
-            // Sincronización milimétrica con la versión en español
             var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span, .hud-left div:not(.hud-logo)');
             switcherText.forEach(function(el) {
                 el.style.setProperty('text-transform', 'uppercase', 'important');
                 el.style.setProperty('font-weight', '700', 'important');
                 el.style.setProperty('letter-spacing', '1px', 'important');
-                el.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important');
+                el.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
             });
 
             // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO (PREVIENE INTERCEPCIÓN DE GSAP/LENIS)
@@ -426,21 +426,26 @@ import data from '../../data/en.json';
             if (window.innerWidth <= 1024) {
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', '15px 15px', 'important'); // Sincronizado a 15px de la versión en español
-                nav.style.setProperty('height', '80px', 'important'); // Sincronizado a 80px de la versión en español
+                nav.style.setProperty('padding', '15px 15px', 'important'); // Sincronizado a 15px exactos de español
+                nav.style.setProperty('height', '80px', 'important'); // Sincronizado a 80px exactos de español
                 nav.style.setProperty('justify-content', 'space-between', 'important');
                 
                 if (status) status.style.setProperty('display', 'none', 'important');
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '8px', 'important'); // Sincronizado a 8px de la versión en español
+                    controls.style.setProperty('gap', '8px', 'important'); // Sincronizado a 8px exactos de español
+                    if (window.innerWidth <= 480) {
+                        controls.style.setProperty('margin-right', '24px', 'important'); // Sincronizado dinámicamente con CSS
+                    } else {
+                        controls.style.removeProperty('margin-right');
+                    }
                 }
                 
                 if (cta) {
                     cta.style.setProperty('margin-left', '0px', 'important');
-                    cta.style.setProperty('padding', '8px 14px', 'important'); // Sincronizado a 8px 14px de la versión en español
-                    cta.style.setProperty('font-size', '8.5px', 'important'); // Sincronizado a 8.5px de la versión en español
+                    cta.style.setProperty('padding', '8px 14px', 'important'); // Sincronizado a 8px 14px de español
+                    cta.style.setProperty('font-size', '8.5px', 'important'); // Sincronizado a 8.5px de español
                     cta.style.setProperty('white-space', 'nowrap', 'important');
                 }
                 
@@ -462,6 +467,7 @@ import data from '../../data/en.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
+                    controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
                     cta.style.setProperty('margin-left', '25px', 'important');
