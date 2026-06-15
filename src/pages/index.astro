@@ -70,7 +70,7 @@ import data from '../data/es.json';
                 <div class="h-panel">
                     <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
                         <div class="card-glare"></div>
-                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img parallax-img" loading="lazy" decoding="async"></div>
+                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
                         <div class="h-info">
                             <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                             <h3>{project.title}</h3>
@@ -341,8 +341,8 @@ import data from '../data/es.json';
         }
         
         .layer-hero .hero-title {
-            font-size: 7vw !important; /* Escala de seguridad unificada responsiva */
-            line-height: 0.76 !important; 
+            font-size: 8vw !important; /* Escalado unificado responsivo para tablets */
+            line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
             margin-bottom: 5px !important;
         }
     }
@@ -356,10 +356,9 @@ import data from '../data/es.json';
             gap: 12px !important; /* Reducción táctica de separación para evitar colisiones */
         }
 
-        /* BARRERA FÍSICA INFRANQUEABLE EN CELULARES CONTRA EL GAP: 0 INLINE DEL PADRE */
+        /* BYPASS DE GAP INLINE: Forzamos separación física del menú de idiomas mediante margen del hijo */
         .hud-controls {
-            margin-left: 15px !important; /* Empuja el ES/EN lejos del menú izquierdo */
-            margin-right: 15px !important; /* Empuja el botón Iniciar Proyecto lejos de ES/EN */
+            margin-right: 15px !important; /* Barrera física absoluta anticolisión */
             gap: 8px !important;
             font-size: 8.5px !important;
         }
@@ -378,8 +377,8 @@ import data from '../data/es.json';
         }
 
         .layer-hero .hero-title {
-            /* MICRO-CALIBRADO DE SEGURIDAD EXTREMA: 7.2vw garantiza que el texto no desborde y mantenga una escala masiva y limpia */
-            font-size: 7.2vw !important; 
+            /* CALIBRADO FINAL DE SEGURIDAD: 8.5vw es el máximo absoluto para que "ESTRATÉGICA." quepa 100% en 320px */
+            font-size: 8.5vw !important; 
             line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
         }
     }
@@ -428,26 +427,6 @@ import data from '../data/es.json';
                 });
             }
 
-            // ==========================================================================
-            // FORZADO DE ALINEACIÓN POR JS DEL HERO (Bypassea cualquier caché del navegador)
-            // ==========================================================================
-            var heroTitle = document.querySelector('.layer-hero .hero-title');
-            if (heroTitle) {
-                if (window.innerWidth <= 480) {
-                    // MÓVIL MICRO-CALIBRADO: Proporción ultra-segura equivalente de Fotografía (7.2vw)
-                    heroTitle.style.setProperty('font-size', '7.2vw', 'important');
-                    heroTitle.style.setProperty('line-height', '0.75', 'important');
-                } else if (window.innerWidth <= 1024) {
-                    // TABLET EXTREMO
-                    heroTitle.style.setProperty('font-size', '7vw', 'important');
-                    heroTitle.style.setProperty('line-height', '0.76', 'important');
-                } else {
-                    // ESCRITORIO
-                    heroTitle.style.removeProperty('font-size');
-                    heroTitle.style.removeProperty('line-height');
-                }
-            }
-
             if (window.innerWidth <= 1024) {
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
@@ -460,8 +439,7 @@ import data from '../data/es.json';
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
                     controls.style.setProperty('gap', '8px', 'important');
-                    controls.style.setProperty('margin-left', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA DINÁMICA IZQUIERDA
-                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA DINÁMICA DERECHA
+                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // Sincronización JS/CSS
                 }
                 
                 if (cta) {
@@ -489,7 +467,6 @@ import data from '../data/es.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
-                    controls.style.removeProperty('margin-left');
                     controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
