@@ -222,18 +222,6 @@ import data from '../../data/en.json';
         box-sizing: border-box !important;
     }
 
-    /* AUMENTO SUTIL Y PREMIUM EXCLUSIVO PARA EL HERO EN INGLÉS */
-    @media (max-width: 480px) {
-        .layer-hero .hero-title {
-            font-size: 9vw !important;
-        }
-    }
-    @media (min-width: 1025px) {
-        .layer-hero .hero-title {
-            font-size: 7.5vw !important;
-        }
-    }
-
     /* --- ALINEACIÓN DE COLOR ACTIVO DE IDIOMA EN DISEÑO --- */
     #main-nav .ctrl-btn.active {
         color: #40B5E5 !important;
@@ -256,16 +244,6 @@ import data from '../../data/en.json';
             var controls = nav.querySelector('.hud-controls');
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
-            var logo = nav.querySelector('.hud-logo');
-
-            // CLICK AL INICIO: Manda la pantalla arriba suavemente sin alterar layout
-            if (logo && !logo.dataset.scrollBound) {
-                logo.dataset.scrollBound = "true";
-                logo.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-            }
             
             if (window.innerWidth <= 1024) {
                 // Móvil y Tablets
