@@ -1,10 +1,10 @@
 ---
-import DesignLayout from '../../layouts/DesignLayout.astro';
-import GlobalSwitcher from '../../components/UI/GlobalSwitcher.astro';
-import data from '../../data/en.json';
+import DesignLayout from '../layouts/DesignLayout.astro';
+import GlobalSwitcher from '../components/UI/GlobalSwitcher.astro';
+import data from '../data/en.json';
 ---
 
-<DesignLayout title="Oscar Pozo Creativo | Senior Graphic Designer" description={data.hero.desc} lang="en">
+<DesignLayout title="Oscar Pozo Creative | Senior Graphic Designer" description={data.hero.desc} lang="en">
 	
 	<!-- TU HEADER EXACTO E IDÉNTICO SIN NINGUNA ALTERACIÓN -->
 	<nav id="main-nav" style="display: flex !important; align-items: flex-start !important; padding: 25px 40px !important; height: 120px !important; box-sizing: border-box !important;">
@@ -40,7 +40,7 @@ import data from '../../data/en.json';
 			<h1 class="hero-title">
                 <span class="reveal-wrap"><span class="reveal-text">STRATEGIC</span></span><br>
                 <span class="reveal-wrap"><span class="reveal-text glow-text">CREATIVITY.</span></span>
-			</h1>
+            </h1>
 			<p class="hero-desc" style="opacity:0; transform:translateY(20px);">{data.hero.desc}</p>
             <div class="scroll-indicator"><div class="scroll-line"></div><span>{data.hero.scroll}</span></div>
 		</div>
@@ -70,7 +70,7 @@ import data from '../../data/en.json';
                 <div class="h-panel">
                     <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={project.title}>
                         <div class="card-glare"></div>
-                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
+                        <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img parallax-img" loading="lazy" decoding="async"></div>
                         <div class="h-info">
                             <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                             <h3>{project.title}</h3>
@@ -225,7 +225,8 @@ import data from '../../data/en.json';
     }
 
     .hud-logo { display: flex !important; align-items: center !important; justify-content: center !important; width: 35px !important; height: 35px !important; flex-shrink: 0 !important; }
-    .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; }
+    .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; transition: transform 0.4s; }
+    .hud-logo:hover img { transform: scale(1.15); }
 
     /* ==========================================================================
        2. HERO: CLONACIÓN DE FOTOGRAFÍA + COMPRESIÓN DE INTERLINEADO BRUTALISTA
@@ -246,7 +247,7 @@ import data from '../../data/en.json';
 
     .layer-hero .hero-title {
         font-size: clamp(2.5rem, 7vw, 8rem) !important;
-        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA */
+        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
         letter-spacing: -2px !important;
         display: flex !important;
         flex-direction: column !important;
@@ -332,7 +333,7 @@ import data from '../../data/en.json';
         }
 
         .hud-right {
-            gap: 15px !important;
+            gap: 12px !important; /* Espacio de aire forzado para tablets */
         }
 
         .hud-logo, .hud-logo img {
@@ -341,38 +342,46 @@ import data from '../../data/en.json';
         }
         
         .layer-hero .hero-title {
-            font-size: 7vw !important; 
-            line-height: 0.75 !important; /* Compresión extrema para tablets */
+            font-size: 8vw !important; /* Escalado unificado responsivo para tablets */
+            line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
             margin-bottom: 5px !important;
         }
     }
 
     @media (max-width: 480px) {
+        #main-nav {
+            padding: 15px 10px !important; /* Reducción de paddings laterales para ganar 20px de aire horizontal */
+        }
+
         .hud-left {
-            gap: 15px !important;
+            gap: 12px !important; /* Reducción táctica de separación para evitar colisiones */
+        }
+
+        /* BARRERA FÍSICA INFRANQUEABLE EN CELULARES CONTRA EL GAP: 0 INLINE DEL PADRE */
+        .hud-controls {
+            margin-left: 15px !important; /* Empuja el ES/EN lejos del menú izquierdo */
+            margin-right: 15px !important; /* Empuja el botón Iniciar Proyecto lejos de ES/EN */
+            gap: 8px !important;
+            font-size: 8.5px !important;
         }
 
         nav#main-nav .hud-left a:not(.hud-logo),
         nav#main-nav .hud-left span,
         nav#main-nav .hud-left p,
         nav#main-nav .hud-left div:not(.hud-logo) {
-            font-size: 9px !important; 
-        }
-
-        .hud-controls {
-            gap: 10px !important;
-            font-size: 9px !important;
+            font-size: 8.5px !important; /* Micro-ajuste de tamaño de menú izquierdo para celulares */
         }
 
         .btn-cta-nav {
-            padding: 8px 16px !important;
-            font-size: 9px !important;
+            padding: 6px 10px !important; /* Reducción optimizada de padding */
+            font-size: 8px !important; /* Fuente comprimida para liberar espacio */
             margin-left: 0 !important;
         }
 
         .layer-hero .hero-title {
-            font-size: 7.5vw !important; 
-            line-height: 0.75 !important; /* Compresión extrema: Slices del acento perfectos en móviles */
+            /* CALIBRADO FINAL EXTREMO: 8vw es imponente, gigante y entra al 100% en pantallas de 320px en adelante */
+            font-size: 8vw !important; 
+            line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
         }
     }
 
@@ -387,7 +396,7 @@ import data from '../../data/en.json';
 </style>
 
 <!-- ==========================================================================
-     4. SCRIPT ÚNICO: CONTROL DE BOTÓN Y LAYOUT FLUIDO (INTACTO)
+     4. SCRIPT ÚNICO: CONTROL DE BOTÓN Y LAYOUT FLUIDO (CON RETORNO AL INICIO)
      ========================================================================== -->
 <script is:inline>
     (function() {
@@ -400,19 +409,60 @@ import data from '../../data/en.json';
             var controls = nav.querySelector('.hud-controls');
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
+            var hudRight = nav.querySelector('.hud-right');
             
             var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
             switcherText.forEach(function(el) {
                 el.style.setProperty('text-transform', 'uppercase', 'important');
                 el.style.setProperty('font-weight', '700', 'important');
                 el.style.setProperty('letter-spacing', '1px', 'important');
-                el.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                el.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important');
             });
+
+            // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO (PREVIENE INTERCEPCIÓN DE GSAP/LENIS)
+            var logo = nav.querySelector('.hud-logo');
+            if (logo && !logo.dataset.listenerActive) {
+                logo.dataset.listenerActive = "true";
+                logo.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
+            // ==========================================================================
+            // FORZADO DE ALINEACIÓN POR JS DEL HERO (Aplica directo a los spans hijos de GSAP)
+            // ==========================================================================
+            var heroTitle = document.querySelector('.layer-hero .hero-title');
+            var revealTexts = document.querySelectorAll('.layer-hero .hero-title .reveal-text');
+            if (heroTitle) {
+                if (window.innerWidth <= 480) {
+                    // MÓVIL MICRO-CALIBRADO: Proporción ultra-segura equivalente de Fotografía (7.2vw)
+                    heroTitle.style.setProperty('font-size', '7.2vw', 'important');
+                    heroTitle.style.setProperty('line-height', '0.75', 'important');
+                    revealTexts.forEach(function(t) {
+                        t.style.setProperty('font-size', '7.2vw', 'important');
+                    });
+                } else if (window.innerWidth <= 1024) {
+                    // TABLET EXTREMO
+                    heroTitle.style.setProperty('font-size', '7vw', 'important');
+                    heroTitle.style.setProperty('line-height', '0.76', 'important');
+                    revealTexts.forEach(function(t) {
+                        t.style.setProperty('font-size', '7vw', 'important');
+                    });
+                } else {
+                    // ESCRITORIO
+                    heroTitle.style.removeProperty('font-size');
+                    heroTitle.style.removeProperty('line-height');
+                    revealTexts.forEach(function(t) {
+                        t.style.removeProperty('font-size');
+                    });
+                }
+            }
 
             if (window.innerWidth <= 1024) {
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', '20px', 'important');
+                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 10px' : '20px', 'important');
                 nav.style.setProperty('height', 'auto', 'important');
                 nav.style.setProperty('justify-content', 'space-between', 'important');
                 
@@ -420,13 +470,15 @@ import data from '../../data/en.json';
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '10px', 'important');
+                    controls.style.setProperty('gap', '8px', 'important');
+                    controls.style.setProperty('margin-left', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA DINÁMICA IZQUIERDA
+                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // BARRERA FÍSICA DINÁMICA DERECHA
                 }
                 
                 if (cta) {
-                    cta.style.setProperty('margin-left', '10px', 'important');
-                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 16px' : '10px 20px', 'important');
-                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                    cta.style.setProperty('margin-left', '0px', 'important');
+                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '6px 10px' : '8px 16px', 'important');
+                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8px' : '9px', 'important');
                     cta.style.setProperty('white-space', 'nowrap', 'important');
                 }
                 
@@ -448,6 +500,8 @@ import data from '../../data/en.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
+                    controls.style.removeProperty('margin-left');
+                    controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
                     cta.style.setProperty('margin-left', '25px', 'important');
