@@ -316,7 +316,7 @@ import data from '../data/es.json';
     }
 
     /* ==========================================================================
-       3. MEDIA QUERIES (COMPRESIÓN RESPONSIVA SQUEEZE: COMPENSA EL PIXEL ROUNDING)
+       3. MEDIA QUERIES (COMPRESIÓN DE INTERLINEADO ULTRA-TIGHT PARA MÓVIL)
        ========================================================================== */
     @media (max-width: 1024px) {
         #main-nav {
@@ -341,9 +341,8 @@ import data from '../data/es.json';
         }
         
         .layer-hero .hero-title {
-            /* COMPRESIÓN PARA TABLETS: 8vw es imponente pero completamente seguro */
             font-size: 8vw !important; 
-            line-height: 0.76 !important; 
+            line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
             margin-bottom: 5px !important;
         }
     }
@@ -427,6 +426,26 @@ import data from '../data/es.json';
                     e.preventDefault();
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
+            }
+
+            // ==========================================================================
+            // FORZADO DE ALINEACIÓN POR JS DEL HERO (Bypassea cualquier caché del navegador)
+            // ==========================================================================
+            var heroTitle = document.querySelector('.layer-hero .hero-title');
+            if (heroTitle) {
+                if (window.innerWidth <= 480) {
+                    // MÓVIL EXTREMO: El tamaño perfecto y escalado equivalente de Fotografía (8vw)
+                    heroTitle.style.setProperty('font-size', '8vw', 'important');
+                    heroTitle.style.setProperty('line-height', '0.75', 'important');
+                } else if (window.innerWidth <= 1024) {
+                    // TABLET EXTREMO
+                    heroTitle.style.setProperty('font-size', '8vw', 'important');
+                    heroTitle.style.setProperty('line-height', '0.76', 'important');
+                } else {
+                    // ESCRITORIO
+                    heroTitle.style.removeProperty('font-size');
+                    heroTitle.style.removeProperty('line-height');
+                }
             }
 
             if (window.innerWidth <= 1024) {
