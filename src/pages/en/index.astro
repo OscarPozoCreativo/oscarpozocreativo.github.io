@@ -1,10 +1,10 @@
 ---
-import DesignLayout from '../layouts/DesignLayout.astro';
-import GlobalSwitcher from '../components/UI/GlobalSwitcher.astro';
-import data from '../data/en.json';
+import DesignLayout from '../../layouts/DesignLayout.astro';
+import GlobalSwitcher from '../../components/UI/GlobalSwitcher.astro';
+import data from '../../data/en.json';
 ---
 
-<DesignLayout title="Oscar Pozo Creativo | Diseñador Gráfico Senior" description={data.hero.desc} lang="es">
+<DesignLayout title="Oscar Pozo Creativo | Senior Graphic Designer" description={data.hero.desc} lang="en">
 	
 	<!-- TU HEADER EXACTO E IDÉNTICO SIN NINGUNA ALTERACIÓN -->
 	<nav id="main-nav" style="display: flex !important; align-items: flex-start !important; padding: 25px 40px !important; height: 120px !important; box-sizing: border-box !important;">
@@ -16,8 +16,8 @@ import data from '../data/en.json';
         </div>
         <div class="hud-right" style="display: flex !important; align-items: center !important; gap: 0px !important;">
             <div class="hud-status" style="text-align: right !important; flex-shrink: 0 !important; margin-right: 0px !important;">
-                <strong>Diseñador Gráfico Senior</strong><br>
-                <span>República Dominicana</span>
+                <strong>Senior Graphic Designer</strong><br>
+                <span>Dominican Republic</span>
             </div>
             
             <!-- LÍNEA DE DIVISIÓN EDITORIAL MAESTRA (1:1 COORDENADA FOTOGRAFÍA) -->
@@ -25,9 +25,9 @@ import data from '../data/en.json';
 
             <!-- CONTROLES DE IDIOMA ALINEADOS -->
             <div class="hud-controls flex gap-4 text-xs font-mono tracking-widest text-[var(--text)]" style="pointer-events: auto; align-items: center; flex-shrink: 0;">
-                <a href="/" class="ctrl-btn active">ES</a>
+                <a href="/" class="ctrl-btn">ES</a>
                 <span class="opacity-20">/</span>
-                <a href="/en/" class="ctrl-btn">EN</a>
+                <a href="/en/" class="ctrl-btn active">EN</a>
             </div>
 
             <!-- CTA CON AJUSTE DE MARGEN COHESIVO -->
@@ -38,25 +38,25 @@ import data from '../data/en.json';
 	<section class="z-wrapper">
 		<div class="z-layer layer-hero">
 			<h1 class="hero-title">
-                <span class="reveal-wrap"><span class="reveal-text">CREATIVIDAD</span></span><br>
-                <span class="reveal-wrap"><span class="reveal-text glow-text">ESTRATÉGICA.</span></span>
-            </h1>
+                <span class="reveal-wrap"><span class="reveal-text">STRATEGIC</span></span><br>
+                <span class="reveal-wrap"><span class="reveal-text glow-text">CREATIVITY.</span></span>
+			</h1>
 			<p class="hero-desc" style="opacity:0; transform:translateY(20px);">{data.hero.desc}</p>
             <div class="scroll-indicator"><div class="scroll-line"></div><span>{data.hero.scroll}</span></div>
 		</div>
 
         {data.zProjects.map((project) => (
             <div class="z-layer">
-                <article class="monolith hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
+                <article class="monolith hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={project.title}>
                     <div class="m-img-wrap"><img src={project.img} alt={project.title} class="m-img target-img" loading="lazy" decoding="async"></div>
                     <div class="m-content">
                         <div class="m-meta"><span>{project.meta1}</span><span>{project.meta2}</span></div>
                         <h2 class="m-title">{project.title}</h2>
                         <div class="project-details" style="display:none;">
                             <p class="m-summary">{project.summary}</p>
-                            <div class="m-item"><strong>Reto</strong><p>{project.reto}</p></div>
-                            <div class="m-item"><strong>Enfoque</strong><p>{project.enfoque}</p></div>
-                            <div class="m-item"><strong>Resultado</strong><p>{project.resultado}</p></div>
+                            <div class="m-item"><strong>Challenge</strong><p>{project.reto}</p></div>
+                            <div class="m-item"><strong>Approach</strong><p>{project.enfoque}</p></div>
+                            <div class="m-item"><strong>Result</strong><p>{project.resultado}</p></div>
                         </div>
                     </div>
                 </article>
@@ -68,7 +68,7 @@ import data from '../data/en.json';
         <div class="h-container">
             {data.hProjects.map((project) => (
                 <div class="h-panel">
-                    <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={project.title}>
+                    <article class="h-card hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={project.title}>
                         <div class="card-glare"></div>
                         <div class="h-img-wrap"><img src={project.img} alt={project.title} class="h-img target-img parallax-img" loading="lazy" decoding="async"></div>
                         <div class="h-info">
@@ -76,9 +76,9 @@ import data from '../data/en.json';
                             <h3>{project.title}</h3>
                             <div class="project-details" style="display:none;">
                                 <p class="m-summary">{project.summary}</p>
-                                <div class="m-item"><strong>Reto</strong><p>{project.reto}</p></div>
-                                <div class="m-item"><strong>Enfoque</strong><p>{project.enfoque}</p></div>
-                                <div class="m-item"><strong>Resultado</strong><p>{project.resultado}</p></div>
+                                <div class="m-item"><strong>Challenge</strong><p>{project.reto}</p></div>
+                                <div class="m-item"><strong>Approach</strong><p>{project.enfoque}</p></div>
+                                <div class="m-item"><strong>Result</strong><p>{project.resultado}</p></div>
                             </div>
                         </div>
                     </article>
@@ -91,7 +91,7 @@ import data from '../data/en.json';
         <div class="section-header"><h2 class="has-reveal">{data.reelsTitle}</h2></div>
         <div class="reels-track">
             {data.reels.map((reel) => (
-                <article class="reel-item hover-target lb-trigger" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={reel.title} data-video-full={reel.videoFull}>
+                <article class="reel-item hover-target lb-trigger" tabindex="0" role="button" aria-label="Open project" data-title={reel.title} data-video-full={reel.videoFull}>
                     <img src={reel.thumb} alt={reel.title} class="reel-bg target-img" loading="lazy" decoding="async">
                     <video class="hover-video" src={reel.videoHover} muted loop playsinline preload="metadata"></video>
                     <div class="reel-overlay"></div><div class="reel-glare"></div>
@@ -107,14 +107,14 @@ import data from '../data/en.json';
         <div class="section-header"><h2 class="has-reveal">{data.vaultTitle}</h2></div>
         <div class="vault-grid">
             {data.vault.map((item) => (
-                <article class="v-item hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Abrir proyecto" data-title={item.title}>
+                <article class="v-item hover-target lb-trigger tilt-target skew-target" tabindex="0" role="button" aria-label="Open project" data-title={item.title}>
                     <img src={item.img} alt={item.title} class="v-bg target-img" loading="lazy" decoding="async">
                     <div class="v-info"><span>{item.meta}</span><h4>{item.title}</h4></div>
                     <div class="project-details" style="display:none;">
                         <p class="m-summary">{item.summary}</p>
-                        <div class="m-item"><strong>Reto</strong><p>{item.reto}</p></div>
-                        <div class="m-item"><strong>Enfoque</strong><p>{item.enfoque}</p></div>
-                        <div class="m-item"><strong>Resultado</strong><p>{item.resultado}</p></div>
+                        <div class="m-item"><strong>Challenge</strong><p>{item.reto}</p></div>
+                        <div class="m-item"><strong>Approach</strong><p>{item.enfoque}</p></div>
+                        <div class="m-item"><strong>Result</strong><p>{item.resultado}</p></div>
                     </div>
                 </article>
             ))}
@@ -246,7 +246,7 @@ import data from '../data/en.json';
 
     .layer-hero .hero-title {
         font-size: clamp(2.5rem, 7vw, 8rem) !important;
-        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
+        line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA */
         letter-spacing: -2px !important;
         display: flex !important;
         flex-direction: column !important;
@@ -332,7 +332,7 @@ import data from '../data/en.json';
         }
 
         .hud-right {
-            gap: 12px !important; /* Espacio de aire forzado para tablets */
+            gap: 15px !important;
         }
 
         .hud-logo, .hud-logo img {
@@ -341,45 +341,38 @@ import data from '../data/en.json';
         }
         
         .layer-hero .hero-title {
-            font-size: 8vw !important; /* Escalado unificado responsivo para tablets */
-            line-height: 0.76 !important; /* Compresión extrema para tablets en inline-blocks */
+            font-size: 7vw !important; 
+            line-height: 0.75 !important; /* Compresión extrema para tablets */
             margin-bottom: 5px !important;
         }
     }
 
     @media (max-width: 480px) {
-        #main-nav {
-            padding: 15px 10px !important; /* Reducción de paddings laterales para ganar 20px de aire horizontal */
-        }
-
         .hud-left {
-            gap: 12px !important; /* Reducción táctica de separación para evitar colisiones */
-        }
-
-        /* BYPASS DE GAP INLINE: Forzamos separación física del menú de idiomas mediante margen del hijo */
-        .hud-controls {
-            margin-right: 15px !important; /* Barrera física absoluta anticolisión */
-            gap: 8px !important;
-            font-size: 8.5px !important;
+            gap: 15px !important;
         }
 
         nav#main-nav .hud-left a:not(.hud-logo),
         nav#main-nav .hud-left span,
         nav#main-nav .hud-left p,
         nav#main-nav .hud-left div:not(.hud-logo) {
-            font-size: 8.5px !important; /* Micro-ajuste de tamaño de menú izquierdo para celulares */
+            font-size: 9px !important; 
+        }
+
+        .hud-controls {
+            gap: 10px !important;
+            font-size: 9px !important;
         }
 
         .btn-cta-nav {
-            padding: 6px 10px !important; /* Reducción optimizada de padding */
-            font-size: 8px !important; /* Fuente comprimida para liberar espacio */
+            padding: 8px 16px !important;
+            font-size: 9px !important;
             margin-left: 0 !important;
         }
 
         .layer-hero .hero-title {
-            /* CALIBRADO FINAL DE SEGURIDAD: 8.5vw es el máximo absoluto para que "ESTRATÉGICA." quepa 100% en 320px */
-            font-size: 8.5vw !important; 
-            line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
+            font-size: 7.5vw !important; 
+            line-height: 0.75 !important; /* Compresión extrema: Slices del acento perfectos en móviles */
         }
     }
 
@@ -394,7 +387,7 @@ import data from '../data/en.json';
 </style>
 
 <!-- ==========================================================================
-     4. SCRIPT ÚNICO: CONTROL DE BOTÓN Y LAYOUT FLUIDO (CON RETORNO AL INICIO)
+     4. SCRIPT ÚNICO: CONTROL DE BOTÓN Y LAYOUT FLUIDO (INTACTO)
      ========================================================================== -->
 <script is:inline>
     (function() {
@@ -407,30 +400,19 @@ import data from '../data/en.json';
             var controls = nav.querySelector('.hud-controls');
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
-            var hudRight = nav.querySelector('.hud-right');
             
             var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
             switcherText.forEach(function(el) {
                 el.style.setProperty('text-transform', 'uppercase', 'important');
                 el.style.setProperty('font-weight', '700', 'important');
                 el.style.setProperty('letter-spacing', '1px', 'important');
-                el.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important');
+                el.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
             });
-
-            // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO (PREVIENE INTERCEPCIÓN DE GSAP/LENIS)
-            var logo = nav.querySelector('.hud-logo');
-            if (logo && !logo.dataset.listenerActive) {
-                logo.dataset.listenerActive = "true";
-                logo.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-            }
 
             if (window.innerWidth <= 1024) {
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 10px' : '20px', 'important');
+                nav.style.setProperty('padding', '20px', 'important');
                 nav.style.setProperty('height', 'auto', 'important');
                 nav.style.setProperty('justify-content', 'space-between', 'important');
                 
@@ -438,14 +420,13 @@ import data from '../data/en.json';
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '8px', 'important');
-                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // Sincronización JS/CSS
+                    controls.style.setProperty('gap', '10px', 'important');
                 }
                 
                 if (cta) {
-                    cta.style.setProperty('margin-left', '0px', 'important');
-                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '6px 10px' : '8px 16px', 'important');
-                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8px' : '9px', 'important');
+                    cta.style.setProperty('margin-left', '10px', 'important');
+                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 16px' : '10px 20px', 'important');
+                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
                     cta.style.setProperty('white-space', 'nowrap', 'important');
                 }
                 
@@ -467,7 +448,6 @@ import data from '../data/en.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
-                    controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
                     cta.style.setProperty('margin-left', '25px', 'important');
