@@ -228,7 +228,7 @@ import data from '../../data/en.json';
     .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; }
 
     /* ==========================================================================
-       2. HERO: ESCALA MÁS GRANDE PREMIUM EN INGLÉS
+       2. HERO: CLONACIÓN DE FOTOGRAFÍA + COMPRESIÓN DE INTERLINEADO BRUTALISTA
        ========================================================================== */
     .photo-env .layer-hero,
     .layer-hero {
@@ -245,8 +245,7 @@ import data from '../../data/en.json';
     }
 
     .layer-hero .hero-title {
-        /* ESCALA PREMIUM DE ALTO IMPACTO EN INGLÉS */
-        font-size: clamp(2.7rem, 7.8vw, 8.5rem) !important;
+        font-size: clamp(2.5rem, 7vw, 8rem) !important;
         line-height: 0.82 !important; /* COMPRESIÓN DESKTOP PERFECTA (INLINE-BLOCKS) */
         letter-spacing: -2px !important;
         display: flex !important;
@@ -349,32 +348,37 @@ import data from '../../data/en.json';
     }
 
     @media (max-width: 480px) {
-        .hud-left {
-            gap: 15px !important;
+        #main-nav {
+            padding: 15px 10px !important; /* Reducción de paddings laterales para ganar 20px de aire horizontal */
         }
 
-        /* ESCALA AJUSTADA AL MENÚ DE INGLÉS PARA EVITAR COLISIONES EN CELULARES */
+        .hud-left {
+            gap: 12px !important; /* Reducción táctica de separación para evitar colisiones */
+        }
+
+        /* BYPASS DE GAP INLINE: Forzamos separación física del menú de idiomas mediante margen del hijo */
+        .hud-controls {
+            margin-right: 15px !important; /* Barrera física absoluta anticolisión */
+            gap: 8px !important;
+            font-size: 8.5px !important;
+        }
+
         nav#main-nav .hud-left a:not(.hud-logo),
         nav#main-nav .hud-left span,
         nav#main-nav .hud-left p,
         nav#main-nav .hud-left div:not(.hud-logo) {
-            font-size: 9px !important; /* Escala de 9px exacta de la versión en español */
-        }
-
-        .hud-controls {
-            gap: 10px !important;
-            font-size: 9px !important;
+            font-size: 8.5px !important; /* Micro-ajuste de tamaño de menú izquierdo para celulares */
         }
 
         .btn-cta-nav {
-            padding: 8px 16px !important;
-            font-size: 9px !important;
+            padding: 6px 10px !important; /* Reducción optimizada de padding */
+            font-size: 8px !important; /* Fuente comprimida para liberar espacio */
             margin-left: 0 !important;
         }
 
         .layer-hero .hero-title {
-            /* ESCALA MÁS GRANDE PREMIUM EN MÓVIL: 9vw le da el peso óptimo a las palabras más cortas en inglés sin desbordar */
-            font-size: 9vw !important; 
+            /* CALIBRADO FINAL DE SEGURIDAD: 8.5vw es el máximo absoluto para que "ESTRATÉGICA." quepa 100% en 320px */
+            font-size: 8.5vw !important; 
             line-height: 0.75 !important; /* Slices del acento perfectos en móviles mediante inline-blocks */
         }
     }
@@ -403,14 +407,14 @@ import data from '../../data/en.json';
             var controls = nav.querySelector('.hud-controls');
             var cta = nav.querySelector('.btn-cta-nav');
             var logoImg = nav.querySelector('.hud-logo img');
+            var hudRight = nav.querySelector('.hud-right');
             
-            // CORRECCIÓN CLAVE: Sincronización exacta de fuentes para celulares (9px)
-            var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span, .hud-left div:not(.hud-logo)');
+            var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
             switcherText.forEach(function(el) {
                 el.style.setProperty('text-transform', 'uppercase', 'important');
                 el.style.setProperty('font-weight', '700', 'important');
                 el.style.setProperty('letter-spacing', '1px', 'important');
-                el.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                el.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important');
             });
 
             // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO (PREVIENE INTERCEPCIÓN DE GSAP/LENIS)
@@ -426,21 +430,22 @@ import data from '../../data/en.json';
             if (window.innerWidth <= 1024) {
                 nav.style.setProperty('display', 'flex', 'important');
                 nav.style.setProperty('align-items', 'center', 'important');
-                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 15px' : '20px', 'important'); // Sincronizado a 15px exactos de español
-                nav.style.setProperty('height', '80px', 'important'); // Sincronizado a 80px exactos de español
+                nav.style.setProperty('padding', window.innerWidth <= 480 ? '15px 10px' : '20px', 'important');
+                nav.style.setProperty('height', 'auto', 'important');
                 nav.style.setProperty('justify-content', 'space-between', 'important');
                 
                 if (status) status.style.setProperty('display', 'none', 'important');
                 if (divider) divider.style.setProperty('display', 'none', 'important');
                 if (controls) {
                     controls.style.setProperty('padding-left', '0', 'important');
-                    controls.style.setProperty('gap', '8px', 'important'); // Sincronizado a 8px exactos de español
+                    controls.style.setProperty('gap', '8px', 'important');
+                    controls.style.setProperty('margin-right', window.innerWidth <= 480 ? '15px' : '0px', 'important'); // Sincronización JS/CSS
                 }
                 
                 if (cta) {
                     cta.style.setProperty('margin-left', '0px', 'important');
-                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 14px' : '10px 20px', 'important'); // Sincronizado a 8px 14px exactos de español
-                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important'); // Sincronizado a 8.5px exactos de español
+                    cta.style.setProperty('padding', window.innerWidth <= 480 ? '6px 10px' : '8px 16px', 'important');
+                    cta.style.setProperty('font-size', window.innerWidth <= 480 ? '8px' : '9px', 'important');
                     cta.style.setProperty('white-space', 'nowrap', 'important');
                 }
                 
@@ -462,6 +467,7 @@ import data from '../../data/en.json';
                 if (controls) {
                     controls.style.removeProperty('padding-left');
                     controls.style.removeProperty('gap');
+                    controls.style.removeProperty('margin-right');
                 }
                 if (cta) {
                     cta.style.setProperty('margin-left', '25px', 'important');
