@@ -1,11 +1,11 @@
 ---
 import Preloader from '../components/UI/Preloader.astro';
-import GlobalSwitcher from '../components/UI/GlobalSwitcher.astro';
-import '../styles/global.css';
+import GlobalSwitcher from '../../components/UI/GlobalSwitcher.astro';
+import '../../styles/global.css';
 ---
 
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -20,7 +20,7 @@ import '../styles/global.css';
         window.onbeforeunload = function () { window.scrollTo(0, 0); }
     </script>
     
-    <title>Oscar Pozo | Fotógrafo Profesional</title>
+    <title>Oscar Pozo | Professional Photographer</title>
     <meta name="theme-color" content="#020202">
     
     <script is:inline src="https://cdn.tailwindcss.com"></script>
@@ -35,7 +35,7 @@ import '../styles/global.css';
 <body class="photo-env">
 
     <!-- TU PRELOADER DE DISEÑO ORIGINAL -->
-    <Preloader loaderLabel="ESTABLECIENDO CONEXIÓN..." />
+    <Preloader loaderLabel="ESTABLISHING CONNECTION..." />
 
     <!-- PORTAL LIGHTBOX SOTY -->
     <div id="photo-portal">
@@ -53,7 +53,7 @@ import '../styles/global.css';
     <div class="noise-overlay"></div>
 
     <!-- ==========================================================================
-         NAVEGACIÓN: CLON EXACTO DE LA PÁGINA DE DISEÑO (CON COORDENADAS COHESIVAS)
+         NAVEGACIÓN: CLON EXACTO DE LA PÁGINA DE DISEÑO
          ========================================================================== -->
     <nav id="main-nav" style="display: flex !important; align-items: flex-start !important; padding: 25px 40px !important; height: 120px !important; box-sizing: border-box !important;">
         <div class="hud-left">
@@ -64,8 +64,8 @@ import '../styles/global.css';
         </div>
         <div class="hud-right" style="display: flex !important; align-items: center !important; gap: 0px !important;">
             <div class="hud-status" style="text-align: right !important; flex-shrink: 0 !important; margin-right: 0px !important;">
-                <strong>Fotógrafo Profesional</strong><br>
-                <span>República Dominicana</span>
+                <strong>Professional Photographer</strong><br>
+                <span>Dominican Republic</span>
             </div>
             
             <!-- LÍNEA DE DIVISIÓN EDITORIAL MAESTRA (1:1 COORDENADA FOTOGRAFÍA) -->
@@ -73,13 +73,13 @@ import '../styles/global.css';
 
             <!-- CONTROLES DE IDIOMA ALINEADOS -->
             <div class="hud-controls flex gap-4 text-xs font-mono tracking-widest text-[var(--text)]" style="pointer-events: auto; align-items: center; flex-shrink: 0;">
-                <a href="/photo" class="ctrl-btn active">ES</a>
+                <a href="/photo" class="ctrl-btn">ES</a>
                 <span class="opacity-20">/</span>
-                <a href="/en/photo" class="ctrl-btn">EN</a>
+                <a href="/en/photo" class="ctrl-btn active">EN</a>
             </div>
 
             <!-- CTA CON AJUSTE DE MARGEN COHESIVO -->
-            <a href="#agendar" class="btn-cta-nav nav-link" style="margin-left: 25px !important; flex-shrink: 0 !important;">AGENDAR SESIÓN</a>
+            <a href="#agendar" class="btn-cta-nav nav-link" style="margin-left: 25px !important; flex-shrink: 0 !important;">BOOK SESSION</a>
         </div>
     </nav>
 
@@ -89,17 +89,17 @@ import '../styles/global.css';
             <!-- HERO SECTION -->
             <section class="layer-hero">
                 <div class="hero-bg">
-                    <img src="/hero-boda-beso.webp" alt="Fondo Boda" id="hero-bg-img" loading="eager">
+                    <img src="/hero-boda-beso.webp" alt="Wedding Background" id="hero-bg-img" loading="eager">
                     <div class="hero-bg-overlay"></div>
                 </div>
                 
                 <h1 class="hero-title">
-                    <div class="hero-anim gpu-layer" style="padding-top: 20px;">FOTOGRAFÍA</div>
-                    <div class="hero-anim glow-text gpu-layer">PROFESIONAL.</div>
+                    <div class="hero-anim gpu-layer" style="padding-top: 20px;">PROFESSIONAL</div>
+                    <div class="hero-anim glow-text gpu-layer">PHOTOGRAPHY.</div>
                 </h1>
                 
                 <p class="hero-desc hero-anim mt-4">
-                    Imágenes de alto nivel para bodas, quinceañeras y maternidad en República Dominicana. Capturamos tu mejor momento con calidad de revista.
+                    High-end images for weddings, sweet sixteens, and maternity in the Dominican Republic. We capture your best moment with magazine quality.
                 </p>
             </section>
 
@@ -113,12 +113,12 @@ import '../styles/global.css';
                             <div class="reveal-shutter" data-reveal="left">
                                 <div class="art-piece hover-target gpu-layer trigger-portal">
                                     <div class="glare"></div>
-                                    <img src="/boda-pareja-manos.webp" alt="Manos Pareja" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                    <img src="/boda-pareja-manos.webp" alt="Couple Hands" class="reveal-img gallery-image" loading="lazy" decoding="async">
                                 </div>
                             </div>
                             <div class="photo-info">
-                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Complicidad</h3></div>
-                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Fotografía de Bodas</span></div>
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Complicity</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Wedding Photography</span></div>
                             </div>
                         </div>
                     </div>
@@ -129,12 +129,12 @@ import '../styles/global.css';
                             <div class="reveal-shutter" data-reveal="bottom">
                                 <div class="art-piece hover-target gpu-layer trigger-portal">
                                     <div class="glare"></div>
-                                    <img src="/boda-pareja-ceremonia.webp" alt="Ceremonia" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                    <img src="/boda-pareja-ceremonia.webp" alt="Ceremony" class="reveal-img gallery-image" loading="lazy" decoding="async">
                                 </div>
                             </div>
                             <div class="photo-info">
-                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">La Ceremonia</h3></div>
-                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Fotografía de Bodas</span></div>
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">The Ceremony</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Wedding Photography</span></div>
                             </div>
                         </div>
                     </div>
@@ -145,12 +145,12 @@ import '../styles/global.css';
                             <div class="reveal-shutter" data-reveal="right">
                                 <div class="art-piece hover-target gpu-layer trigger-portal">
                                     <div class="glare"></div>
-                                    <img src="/quinceanera-rojo-piedra.webp" alt="Quinceañera" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                    <img src="/quinceanera-rojo-piedra.webp" alt="Sweet Sixteen" class="reveal-img gallery-image" loading="lazy" decoding="async">
                                 </div>
                             </div>
                             <div class="photo-info">
-                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Sesión Colonial de Rojo</h3></div>
-                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Sesión de Quinceañera</span></div>
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Red Colonial Session</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Sweet Sixteen Session</span></div>
                             </div>
                         </div>
                     </div>
@@ -161,12 +161,12 @@ import '../styles/global.css';
                             <div class="reveal-shutter" data-reveal="center">
                                 <div class="art-piece hover-target gpu-layer trigger-portal">
                                     <div class="glare"></div>
-                                    <img src="/maternidad-playa-abanico.webp" alt="Maternidad Playa" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                    <img src="/maternidad-playa-abanico.webp" alt="Maternity Beach" class="reveal-img gallery-image" loading="lazy" decoding="async">
                                 </div>
                             </div>
                             <div class="photo-info">
-                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Dulce Espera en la Playa</h3></div>
-                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Fotos de Maternidad</span></div>
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Sweet Wait at the Beach</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Maternity Photos</span></div>
                             </div>
                         </div>
                     </div>
@@ -177,12 +177,12 @@ import '../styles/global.css';
                             <div class="reveal-shutter" data-reveal="top">
                                 <div class="art-piece hover-target gpu-layer trigger-portal">
                                     <div class="glare"></div>
-                                    <img src="/maternidad-pareja-atardecer.webp" alt="Maternidad Atardecer" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                    <img src="/maternidad-pareja-atardecer.webp" alt="Maternity Sunset" class="reveal-img gallery-image" loading="lazy" decoding="async">
                                 </div>
                             </div>
                             <div class="photo-info">
-                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Atardecer en Pareja</h3></div>
-                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Fotos de Maternidad</span></div>
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Sunset as a Couple</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Maternity Photos</span></div>
                             </div>
                         </div>
                     </div>
@@ -193,12 +193,12 @@ import '../styles/global.css';
                             <div class="reveal-shutter" data-reveal="left">
                                 <div class="art-piece hover-target gpu-layer trigger-portal">
                                     <div class="glare"></div>
-                                    <img src="/familia-bicicletas-colonial.webp" alt="Familia Urbana" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                    <img src="/familia-bicicletas-colonial.webp" alt="Urban Family" class="reveal-img gallery-image" loading="lazy" decoding="async">
                                 </div>
                             </div>
                             <div class="photo-info">
-                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Paseo en Bici Familiar</h3></div>
-                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Foto Familiar en Exteriores</span></div>
+                                <div class="text-mask"><h3 class="text-mask-inner info-text gpu-layer">Family Bike Ride</h3></div>
+                                <div class="text-mask"><span class="text-mask-inner info-text gpu-layer">Outdoor Family Photo</span></div>
                             </div>
                         </div>
                     </div>
@@ -209,19 +209,19 @@ import '../styles/global.css';
             <!-- ARCHIVO COMERCIAL -->
             <section class="vault-wrapper" id="archivo">
                 <div class="section-header">
-                    <div class="text-mask"><h2 class="font-display text-[3rem] uppercase text-mask-inner header-reveal gpu-layer">Portafolio</h2></div>
+                    <div class="text-mask"><h2 class="font-display text-[3rem] uppercase text-mask-inner header-reveal gpu-layer">Portfolio</h2></div>
                 </div>
 
                 <!-- 1. Grid 50/50 -->
                 <div class="grid-50-50">
                     <div class="text-box fade-up order-2 md:order-1">
-                        <span class="meta">Fotografía de Bodas</span>
-                        <h3>La Felicidad de la Novia</h3>
-                        <p>Capturamos las risas y la emoción real de tu día especial. Sin poses forzadas ni momentos incómodos, solo tú disfrutando cada segundo mientras nosotros guardamos tus mejores recuerdos de boda.</p>
+                        <span class="meta">Wedding Photography</span>
+                        <h3>The Bride's Happiness</h3>
+                        <p>We capture the laughter and real emotion of your special day. No forced poses or awkward moments, just you enjoying every second while we save your best wedding memories.</p>
                     </div>
                     <div class="img-box fade-up order-1 md:order-2">
                         <div class="hover-target trigger-portal w-full flex justify-center gpu-layer">
-                            <img src="/boda-novia-feliz.webp" alt="Novia Feliz" class="gallery-image" loading="lazy">
+                            <img src="/boda-novia-feliz.webp" alt="Happy Bride" class="gallery-image" loading="lazy">
                         </div>
                     </div>
                 </div>
@@ -230,26 +230,26 @@ import '../styles/global.css';
                 <div class="grid-50-50">
                     <div class="img-box fade-up order-1 md:order-1">
                         <div class="hover-target trigger-portal w-full flex justify-center gpu-layer">
-                            <img src="/familia-madre-bebe.webp" alt="Conexión Familiar" class="gallery-image" loading="lazy">
+                            <img src="/familia-madre-bebe.webp" alt="Family Connection" class="gallery-image" loading="lazy">
                         </div>
                     </div>
                     <div class="text-box fade-up order-2 md:order-2">
-                        <span class="meta">Fotografía Familiar</span>
-                        <h3>Conexión de Madre e Hija</h3>
-                        <p>Sesiones de fotos espontáneas en nuestras hermosas playas dominicanas. Creamos recuerdos naturales y emotivos que tu familia atesorará para toda la vida.</p>
+                        <span class="meta">Family Photography</span>
+                        <h3>Mother and Daughter Connection</h3>
+                        <p>Spontaneous photo sessions on our beautiful Dominican beaches. We create natural and emotional memories that your family will treasure for a lifetime.</p>
                     </div>
                 </div>
 
                 <!-- 3. Grid 50/50 -->
                 <div class="grid-50-50">
                     <div class="text-box fade-up order-2 md:order-1">
-                        <span class="meta">Sesión de Quinceañera</span>
-                        <h3>Elegancia en la Zona Colonial</h3>
-                        <p>Un concepto de fotos moderno y sofisticado aprovechando la hermosa arquitectura de Santo Domingo. Hacemos que tus fotos de quince años parezcan una portada de revista de alta moda.</p>
+                        <span class="meta">Sweet Sixteen Session</span>
+                        <h3>Elegance in the Colonial Zone</h3>
+                        <p>A modern and sophisticated photo concept taking advantage of the beautiful architecture of Santo Domingo. We make your sweet sixteen photos look like a high fashion magazine cover.</p>
                     </div>
                     <div class="img-box fade-up order-1 md:order-2">
                         <div class="hover-target trigger-portal w-full flex justify-center gpu-layer">
-                            <img src="/quinceanera-verde-colonial.webp" alt="Quinceañera Verde" class="gallery-image" loading="lazy">
+                            <img src="/quinceanera-verde-colonial.webp" alt="Green Sweet Sixteen" class="gallery-image" loading="lazy">
                         </div>
                     </div>
                 </div>
@@ -259,12 +259,12 @@ import '../styles/global.css';
                     <div class="inline-block">
                         <div class="img-box w-full flex justify-center gpu-layer">
                             <div class="hover-target w-full trigger-portal flex justify-center">
-                                <img src="/boda-recepcion-brindis.webp" alt="Recepción de Boda" class="gallery-image" loading="lazy" decoding="async" style="max-height: 75vh; width: auto; object-fit: contain;">
+                                <img src="/boda-recepcion-brindis.webp" alt="Wedding Reception" class="gallery-image" loading="lazy" decoding="async" style="max-height: 75vh; width: auto; object-fit: contain;">
                             </div>
                         </div>
                         <div class="mt-8 flex flex-col items-start w-full photo-info">
-                            <div class="text-mask"><h3>El Brindis de los Novios</h3></div>
-                            <div class="text-mask"><span>Fotografía de Bodas</span></div>
+                            <div class="text-mask"><h3>The Couple's Toast</h3></div>
+                            <div class="text-mask"><span>Wedding Photography</span></div>
                         </div>
                     </div>
                 </div>
@@ -273,13 +273,13 @@ import '../styles/global.css';
                 <div class="grid-50-50">
                     <div class="img-box fade-up order-1 md:order-1">
                         <div class="hover-target trigger-portal w-full flex justify-center gpu-layer">
-                            <img src="/urbano-noche-luces.webp" alt="Retrato Urbano Noche" class="gallery-image" loading="lazy">
+                            <img src="/urbano-noche-luces.webp" alt="Urban Night Portrait" class="gallery-image" loading="lazy">
                         </div>
                     </div>
                     <div class="text-box fade-up order-2 md:order-2">
-                        <span class="meta">Retrato Personal</span>
-                        <h3>Luces en la Ciudad de Noche</h3>
-                        <p>Fotografías nocturnas espectaculares usando las luces y el ambiente de la ciudad de Santo Domingo. Iluminación profesional y dirección de arte para lograr un retrato único y diferente.</p>
+                        <span class="meta">Personal Portrait</span>
+                        <h3>City Lights at Night</h3>
+                        <p>Spectacular night photography using the lights and atmosphere of Santo Domingo city. Professional lighting and art direction to achieve a unique and different portrait.</p>
                     </div>
                 </div>
 
@@ -288,28 +288,28 @@ import '../styles/global.css';
             <!-- AGENDAR SESIÓN -->
             <section class="booking-wrapper" id="agendar">
                 <div class="booking-container">
-                    <div class="text-mask"><h2 class="booking-title text-mask-inner form-anim gpu-layer">Agendar Sesión</h2></div>
+                    <div class="text-mask"><h2 class="booking-title text-mask-inner form-anim gpu-layer">Book a Session</h2></div>
                     <div class="text-mask"><p class="text-muted mb-10 text-sm mx-auto max-w-xl text-mask-inner form-anim gpu-layer">
-                        Trabajamos con un número limitado de clientes al mes para garantizar la máxima calidad en cada entrega. Cuéntanos sobre tu evento o sesión y te contactaremos a la brevedad.
+                        We work with a limited number of clients per month to guarantee the highest quality in every delivery. Tell us about your event or session and we will contact you shortly.
                     </p></div>
                     
                     <form id="booking-form">
                         <div class="form-grid">
-                            <div class="text-mask"><input type="text" id="form-name" placeholder="Nombre Completo" class="form-input hover-target text-mask-inner form-anim gpu-layer" required></div>
-                            <div class="text-mask"><input type="email" id="form-email" placeholder="Correo Electrónico" class="form-input hover-target text-mask-inner form-anim gpu-layer" required></div>
+                            <div class="text-mask"><input type="text" id="form-name" placeholder="Full Name" class="form-input hover-target text-mask-inner form-anim gpu-layer" required></div>
+                            <div class="text-mask"><input type="email" id="form-email" placeholder="Email Address" class="form-input hover-target text-mask-inner form-anim gpu-layer" required></div>
                         </div>
                         <div class="form-grid">
-                            <div class="text-mask"><input type="text" id="form-phone" placeholder="Teléfono / WhatsApp" class="form-input hover-target text-mask-inner form-anim gpu-layer" required></div>
+                            <div class="text-mask"><input type="text" id="form-phone" placeholder="Phone / WhatsApp" class="form-input hover-target text-mask-inner form-anim gpu-layer" required></div>
                             <div class="text-mask">
                                 <select id="form-type" class="form-input hover-target text-mask-inner form-anim gpu-layer" style="color: #888;" required>
-                                    <option value="" disabled selected>Tipo de Sesión...</option>
-                                    <option value="Boda / Evento">Boda / Evento</option>
-                                    <option value="Maternidad / Familia">Maternidad / Familia</option>
-                                    <option value="Retrato / Quinceañera">Retrato / Quinceañera</option>
+                                    <option value="" disabled selected>Session Type...</option>
+                                    <option value="Wedding / Event">Wedding / Event</option>
+                                    <option value="Maternity / Family">Maternity / Family</option>
+                                    <option value="Portrait / Sweet Sixteen">Portrait / Sweet Sixteen</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="text-mask"><button type="submit" class="btn-submit hover-target text-mask-inner form-anim gpu-layer">Enviar Solicitud</button></div>
+                        <div class="text-mask"><button type="submit" class="btn-submit hover-target text-mask-inner form-anim gpu-layer">Send Request</button></div>
                     </form>
                 </div>
             </section>
@@ -495,15 +495,9 @@ import '../styles/global.css';
         .footer-links a:hover { color: var(--text); }
 
         /* ==========================================================================
-           3. MEDIA QUERIES (COMPRESIÓN RESPONSIVA SIN ALTERACIONES)
+           3. MEDIA QUERIES (COMPRESIÓN RESPONSIVA SIN ALTERACIONES DE HEADER)
            ========================================================================== */
         @media (max-width: 1024px) {
-            /* HEADER DISEÑO RESPONSIVE */
-            #main-nav { height: auto !important; padding: 20px !important; align-items: center !important; justify-content: space-between !important; }
-            .hud-status, #main-nav div[style*="width: 1px"] { display: none !important; }
-            .hud-right { gap: 15px !important; }
-            .hud-logo img { width: 30px !important; height: 30px !important; }
-
             /* REGLAS FOTOGRAFÍA INTACTAS */
             .photo-env .layer-hero { height: auto !important; padding: 100px 20px 20px 20px !important; }
             .photo-env .hero-title { font-size: 2.3rem !important; line-height: 1.1 !important; margin-bottom: 5px !important; }
@@ -518,22 +512,6 @@ import '../styles/global.css';
             .footer-grid { flex-direction: column; text-align: center; }
             .lb-btn { width: 40px; height: 40px; font-size: 12px; }
             .site-footer { padding: 30px 5vw !important; }
-        }
-
-        @media (max-width: 480px) {
-            /* HEADER DISEÑO RESPONSIVE */
-            .hud-left { gap: 15px !important; }
-            
-            /* PENETRACIÓN MÓVIL EXACTA */
-            nav#main-nav .hud-left a:not(.hud-logo),
-            nav#main-nav .hud-left span,
-            nav#main-nav .hud-left p,
-            nav#main-nav .hud-left div:not(.hud-logo) {
-                font-size: 8.5px !important; /* Ajustado milimétricamente para absorber el ancho de FOTOGRAFÍA */
-            }
-            
-            .hud-controls { gap: 10px !important; font-size: 9px !important; }
-            .btn-cta-nav { padding: 8px 16px !important; font-size: 9px !important; margin-left: 0 !important; }
         }
     </style>
 
@@ -595,7 +573,7 @@ import '../styles/global.css';
                     }
                     
                     var padProgress = progress < 10 ? '00' + progress : (progress < 100 ? '0' + progress : progress);
-                    if (pct) pct.innerText = '[' + padProgress + '%]';
+                    if (pct) pct.innerText = '[' + padProgress + '%];';
                     if (progBar) progBar.style.width = progress + "%";
                 }, 50);
             }
@@ -821,7 +799,7 @@ import '../styles/global.css';
                 var logo = nav.querySelector('.hud-logo');
                 var hudLeft = nav.querySelector('.hud-left');
 
-                // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO
+                // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO (PREVIENE INTERCEPCIÓN DE GSAP/LENIS)
                 if (logo && !logo.dataset.listenerActive) {
                     logo.dataset.listenerActive = "true";
                     logo.addEventListener('click', function(e) {
@@ -830,13 +808,12 @@ import '../styles/global.css';
                     });
                 }
                 
-                // Sincronización milimétrica exacta de fuentes para celulares (8.5px) para absorber PHOTOGRAPHY
-                var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span, .hud-left div:not(.hud-logo)');
+                var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
                 switcherText.forEach(function(el) {
                     el.style.setProperty('text-transform', 'uppercase', 'important');
                     el.style.setProperty('font-weight', '700', 'important');
                     el.style.setProperty('letter-spacing', '1px', 'important');
-                    el.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important');
+                    el.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
                 });
 
                 if (window.innerWidth <= 1024) {
@@ -851,11 +828,6 @@ import '../styles/global.css';
                     if (controls) {
                         controls.style.setProperty('padding-left', '0', 'important');
                         controls.style.setProperty('gap', '8px', 'important'); // Sincronizado a 8px de la versión en español
-                    }
-
-                    // Sincroniza el desplazamiento dinámico izquierdo del logo en JS (Fuerza 15px en celular)
-                    if (hudLeft) {
-                        hudLeft.style.setProperty('gap', window.innerWidth <= 480 ? '15px' : '40px', 'important');
                     }
                     
                     if (cta) {
@@ -883,9 +855,6 @@ import '../styles/global.css';
                     if (controls) {
                         controls.style.removeProperty('padding-left');
                         controls.style.removeProperty('gap');
-                    }
-                    if (hudLeft) {
-                        hudLeft.style.setProperty('gap', '40px', 'important'); // Restaura el gap de escritorio
                     }
                     if (cta) {
                         cta.style.setProperty('margin-left', '25px', 'important');
