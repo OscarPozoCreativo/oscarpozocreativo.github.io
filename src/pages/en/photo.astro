@@ -53,7 +53,7 @@ import '../../styles/global.css';
     <div class="noise-overlay"></div>
 
     <!-- ==========================================================================
-         NAVEGACIÓN: CLON EXACTO DE LA PÁGINA DE DISEÑO
+         NAVEGACIÓN: CLON EXACTO DE LA PÁGINA DE DISEÑO (CON COORDENADAS COHESIVAS)
          ========================================================================== -->
     <nav id="main-nav" style="display: flex !important; align-items: flex-start !important; padding: 25px 40px !important; height: 120px !important; box-sizing: border-box !important;">
         <div class="hud-left">
@@ -68,7 +68,7 @@ import '../../styles/global.css';
                 <span>Dominican Republic</span>
             </div>
             
-            <!-- LÍNEA DE DIVISIÓN EDITORIAL MAESTRA -->
+            <!-- LÍNEA DE DIVISIÓN EDITORIAL MAESTRA (1:1 COORDENADA FOTOGRAFÍA) -->
             <div style="width: 1px; height: 24px; background: rgba(255, 255, 255, 0.1); margin-left: 25px !important; margin-right: 24px !important; align-self: center; flex-shrink: 0;"></div>
 
             <!-- CONTROLES DE IDIOMA ALINEADOS -->
@@ -89,7 +89,7 @@ import '../../styles/global.css';
             <!-- HERO SECTION -->
             <section class="layer-hero">
                 <div class="hero-bg">
-                    <img src="/hero-boda-beso.webp" alt="Wedding Background" id="hero-bg-img" loading="eager">
+                    <img src="/hero-boda-beso.webp" alt="Fondo Boda" id="hero-bg-img" loading="eager">
                     <div class="hero-bg-overlay"></div>
                 </div>
                 
@@ -351,23 +351,20 @@ import '../../styles/global.css';
         .noise-overlay { position: fixed; inset: 0; z-index: -1; opacity: 0.03; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
 
         /* ==========================================================================
-           1. HEADER: CLON EXACTO DE DISEÑO (CON PENETRACIÓN NUCLEAR DE COMPONENTE)
+           1. HEADER: ALINEACIÓN MILIMÉTRICA COPIADA DE DISEÑO
            ========================================================================== */
         nav { position: fixed; top: 0; width: 100%; z-index: 100; pointer-events: none; }
         nav::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(to bottom, rgba(2,2,2,0.95) 0%, rgba(2,2,2,0) 100%); }
         
         .hud-left, .hud-right { pointer-events: auto; }
         
-        .hud-status { font-family: var(--font-display); font-size: 8px; opacity: 0.7; line-height: 1.8; text-transform: uppercase; letter-spacing: 1px; }
         .hud-status strong {
             font-size: 10px !important;
             text-transform: uppercase !important;
             font-weight: 700 !important;
             letter-spacing: 1px !important;
-            opacity: 1;
         }
 
-        /* PENETRACIÓN AGRESIVA Y ABSOLUTA PARA EL COMPONENTE GLOBAL SWITCHER */
         nav#main-nav .hud-left a:not(.hud-logo),
         nav#main-nav .hud-left span,
         nav#main-nav .hud-left p,
@@ -381,10 +378,10 @@ import '../../styles/global.css';
         .hud-left {
             display: flex !important;
             align-items: center !important;
-            gap: 40px !important;
+            gap: 40px !important; 
         }
 
-        .hud-logo { display: flex; align-items: center; justify-content: center; width: 35px !important; height: 35px !important; flex-shrink: 0 !important; }
+        .hud-logo { display: flex !important; align-items: center !important; justify-content: center !important; width: 35px !important; height: 35px !important; flex-shrink: 0 !important; }
         .hud-logo img { width: 35px !important; height: 35px !important; aspect-ratio: 1/1 !important; flex-shrink: 0 !important; transition: transform 0.4s; }
         .hud-logo:hover img { transform: scale(1.15); }
 
@@ -568,7 +565,7 @@ import '../../styles/global.css';
                         
                         var hideLoader = function() {
                             if (typeof gsap !== 'undefined') {
-                                gsap.to([initScreen, progBar, blurShield], {
+                                            gsap.to([initScreen, progBar, blurShield], {
                                     opacity: 0,
                                     duration: 0.8,
                                     ease: "power2.inOut",
