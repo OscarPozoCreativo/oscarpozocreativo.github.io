@@ -766,19 +766,6 @@ import '../styles/global.css';
                 });
             }
 
-            function setupVerticalAnimations() {
-                document.querySelectorAll('.vault-wrapper .reveal-shutter').forEach(wrapper => {
-                    let direction = wrapper.getAttribute('data-reveal');
-                    gsap.fromTo(wrapper, { clipPath: getClipPath(direction) }, { clipPath: direction === 'center' ? 'inset(0% 0% 0% 0%)' : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 1.4, ease: "power4.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
-                    const img = wrapper.querySelector('.reveal-img');
-                    if(img) gsap.fromTo(img, { scale: 1.15 }, { scale: 1, duration: 1.4, ease: "power4.inOut", scrollTrigger: { trigger: wrapper, start: "top 85%", toggleActions: "play none none reverse" } });
-                });
-
-                gsap.utils.toArray('.fade-up').forEach(el => {
-                    gsap.fromTo(el, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none reverse" } });
-                });
-            }
-
             // --- GESTIÓN DE FORMULARIO ---
             const form = document.getElementById('booking-form');
             if(form) {
@@ -821,7 +808,7 @@ import '../styles/global.css';
                 var logo = nav.querySelector('.hud-logo');
                 var hudLeft = nav.querySelector('.hud-left');
 
-                // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO
+                // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO (PREVIENE INTERCEPCIÓN DE GSAP/LENIS)
                 if (logo && !logo.dataset.listenerActive) {
                     logo.dataset.listenerActive = "true";
                     logo.addEventListener('click', function(e) {
