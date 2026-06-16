@@ -821,7 +821,7 @@ import '../styles/global.css';
                 var logo = nav.querySelector('.hud-logo');
                 var hudLeft = nav.querySelector('.hud-left');
 
-                // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO (PREVIENE INTERCEPCIÓN DE GSAP/LENIS)
+                // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO
                 if (logo && !logo.dataset.listenerActive) {
                     logo.dataset.listenerActive = "true";
                     logo.addEventListener('click', function(e) {
