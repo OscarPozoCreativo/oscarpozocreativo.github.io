@@ -1,7 +1,7 @@
 ---
-import Preloader from '../../components/UI/Preloader.astro';
-import GlobalSwitcher from '../../components/UI/GlobalSwitcher.astro';
-import '../../styles/global.css';
+import Preloader from '../../../components/UI/Preloader.astro';
+import GlobalSwitcher from '../../../components/UI/GlobalSwitcher.astro';
+import '../../../styles/global.css';
 ---
 
 <!DOCTYPE html>
@@ -99,7 +99,7 @@ import '../../styles/global.css';
                 </h1>
                 
                 <p class="hero-desc hero-anim mt-4">
-                    High-end images for weddings, sweet sixteens, and maternity in the Dominican Republic. We capture your best moments with magazine quality.
+                    High-end images for weddings, sweet sixteens, and maternity in the Dominican Republic. We capture your best moment with magazine quality.
                 </p>
             </section>
 
@@ -113,7 +113,7 @@ import '../../styles/global.css';
                             <div class="reveal-shutter" data-reveal="left">
                                 <div class="art-piece hover-target gpu-layer trigger-portal">
                                     <div class="glare"></div>
-                                    <img src="/boda-pareja-manos.webp" alt="Couple Hands" class="reveal-img gallery-image" loading="lazy" decoding="async">
+                                    <img src="/boda-pareja-manos.webp" alt="Hands Couple" class="reveal-img gallery-image" loading="lazy" decoding="async">
                                 </div>
                             </div>
                             <div class="photo-info">
@@ -498,10 +498,10 @@ import '../../styles/global.css';
         .footer-links a:hover { color: var(--text); }
 
         /* ==========================================================================
-           3. MEDIA QUERIES: HEADER DISEÑO + REGLAS FOTOGRAFÍA
+           3. MEDIA QUERIES (COMPRESIÓN RESPONSIVA SIN ALTERACIONES)
            ========================================================================== */
         @media (max-width: 1024px) {
-            /* HEADER DISEÑO */
+            /* HEADER DISEÑO RESPONSIVE */
             #main-nav { height: auto !important; padding: 20px !important; align-items: center !important; justify-content: space-between !important; }
             .hud-status, #main-nav div[style*="width: 1px"] { display: none !important; }
             .hud-right { gap: 15px !important; }
@@ -524,14 +524,16 @@ import '../../styles/global.css';
         }
 
         @media (max-width: 480px) {
-            /* HEADER DISEÑO */
+            /* HEADER DISEÑO RESPONSIVE */
             .hud-left { gap: 15px !important; }
             
-            /* PENETRACIÓN MÓVIL PARA EL COMPONENTE */
-            .hud-left a:not(.hud-logo),
-            .hud-left span,
-            .hud-left > *:not(.hud-logo), 
-            .hud-left > *:not(.hud-logo) * { font-size: 9px !important; }
+            /* PENETRACIÓN MÓVIL EXACTA */
+            nav#main-nav .hud-left a:not(.hud-logo),
+            nav#main-nav .hud-left span,
+            nav#main-nav .hud-left p,
+            nav#main-nav .hud-left div:not(.hud-logo) {
+                font-size: 8.5px !important; /* Ajustado milimétricamente para absorber el ancho de FOTOGRAFÍA */
+            }
             
             .hud-controls { gap: 10px !important; font-size: 9px !important; }
             .btn-cta-nav { padding: 8px 16px !important; font-size: 9px !important; margin-left: 0 !important; }
@@ -819,34 +821,50 @@ import '../../styles/global.css';
                 var controls = nav.querySelector('.hud-controls');
                 var cta = nav.querySelector('.btn-cta-nav');
                 var logoImg = nav.querySelector('.hud-logo img');
+                var logo = nav.querySelector('.hud-logo');
+                var hudLeft = nav.querySelector('.hud-left');
+
+                // GESTOR DE RETORNO AL INICIO FÍSICO AL TOCAR EL LOGO (PREVIENE INTERCEPCIÓN DE GSAP/LENIS)
+                if (logo && !logo.dataset.listenerActive) {
+                    logo.dataset.listenerActive = "true";
+                    logo.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                }
                 
-                // FORZADO FÍSICO DE ESTILOS PARA BYPASSEAR ASTRO SCOPED CSS
-                var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span');
+                // Sincronización milimétrica exacta de fuentes para celulares (8.5px) para absorber PHOTOGRAPHY
+                var switcherText = nav.querySelectorAll('.hud-left a:not(.hud-logo), .hud-left span, .hud-left div:not(.hud-logo)');
                 switcherText.forEach(function(el) {
                     el.style.setProperty('text-transform', 'uppercase', 'important');
                     el.style.setProperty('font-weight', '700', 'important');
                     el.style.setProperty('letter-spacing', '1px', 'important');
-                    el.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                    el.style.setProperty('font-size', window.innerWidth <= 480 ? '8.5px' : '10px', 'important');
                 });
 
                 if (window.innerWidth <= 1024) {
                     nav.style.setProperty('display', 'flex', 'important');
                     nav.style.setProperty('align-items', 'center', 'important');
-                    nav.style.setProperty('padding', '20px', 'important');
-                    nav.style.setProperty('height', 'auto', 'important');
+                    nav.style.setProperty('padding', '15px 15px', 'important'); // Sincronizado a 15px de la versión en español
+                    nav.style.setProperty('height', '80px', 'important'); // Sincronizado a 80px de la versión en español
                     nav.style.setProperty('justify-content', 'space-between', 'important');
                     
                     if (status) status.style.setProperty('display', 'none', 'important');
                     if (divider) divider.style.setProperty('display', 'none', 'important');
                     if (controls) {
                         controls.style.setProperty('padding-left', '0', 'important');
-                        controls.style.setProperty('gap', '10px', 'important');
+                        controls.style.setProperty('gap', '8px', 'important'); // Sincronizado a 8px de la versión en español
+                    }
+
+                    // Sincroniza el desplazamiento dinámico izquierdo del logo en JS (Fuerza 15px en celular)
+                    if (hudLeft) {
+                        hudLeft.style.setProperty('gap', window.innerWidth <= 480 ? '15px' : '40px', 'important');
                     }
                     
                     if (cta) {
-                        cta.style.setProperty('margin-left', '10px', 'important');
-                        cta.style.setProperty('padding', window.innerWidth <= 480 ? '8px 16px' : '10px 20px', 'important');
-                        cta.style.setProperty('font-size', window.innerWidth <= 480 ? '9px' : '10px', 'important');
+                        cta.style.setProperty('margin-left', '0px', 'important');
+                        cta.style.setProperty('padding', '8px 14px', 'important'); // Sincronizado a 8px 14px de español
+                        cta.style.setProperty('font-size', '8.5px', 'important'); // Sincronizado a 8.5px de español
                         cta.style.setProperty('white-space', 'nowrap', 'important');
                     }
                     
@@ -868,6 +886,9 @@ import '../../styles/global.css';
                     if (controls) {
                         controls.style.removeProperty('padding-left');
                         controls.style.removeProperty('gap');
+                    }
+                    if (hudLeft) {
+                        hudLeft.style.setProperty('gap', '40px', 'important'); // Restaura el gap de escritorio
                     }
                     if (cta) {
                         cta.style.setProperty('margin-left', '25px', 'important');
