@@ -53,7 +53,7 @@ import '../../styles/global.css';
     <div class="noise-overlay"></div>
 
     <!-- ==========================================================================
-         NAVEGACIÓN: CLON EXACTO DE LA PÁGINA DE DISEÑO (CON COORDENADAS COHESIVAS)
+         NAVEGACIÓN: CLON EXACTO DE LA PÁGINA DE DISEÑO
          ========================================================================== -->
     <nav id="main-nav" style="display: flex !important; align-items: flex-start !important; padding: 25px 40px !important; height: 120px !important; box-sizing: border-box !important;">
         <div class="hud-left">
@@ -89,7 +89,7 @@ import '../../styles/global.css';
             <!-- HERO SECTION -->
             <section class="layer-hero">
                 <div class="hero-bg">
-                    <img src="/hero-boda-beso.webp" alt="Fondo Boda" id="hero-bg-img" loading="eager">
+                    <img src="/hero-boda-beso.webp" alt="Wedding Background" id="hero-bg-img" loading="eager">
                     <div class="hero-bg-overlay"></div>
                 </div>
                 
@@ -565,7 +565,7 @@ import '../../styles/global.css';
                         
                         var hideLoader = function() {
                             if (typeof gsap !== 'undefined') {
-                                            gsap.to([initScreen, progBar, blurShield], {
+                                gsap.to([initScreen, progBar, blurShield], {
                                     opacity: 0,
                                     duration: 0.8,
                                     ease: "power2.inOut",
